@@ -1,0 +1,114 @@
+from rich.panel import Panel
+from rich.text import Text
+from model import Switch, Router, Host, Packet
+from time import sleep
+from .errors import NetLangRuntimeError
+from .utils import get_port_by_id
+from .logging import log
+
+def visitSendPacketStatement(self, ctx):
+    packet_name = ctx.ID().getText()
+
+    if packet_name not in self.variables:
+        raise NetLangRuntimeError(
+            message=f"Packet '{packet_name}' is not defined",
+            ctx=ctx
+        )
+
+    packet = self.variables[packet_name]
+
+    if not isinstance(packet, Packet):
+        raise NetLangRuntimeError(
+            message=f"Variable '{packet_name}' is not a Packet",
+            ctx=ctx
+        )
+
+    device_name = ctx.fieldAccess().ID(0).getText()
+    # trzeba poprawić - nie działa np. dla listy urządzeń
+
+    if device_name not in self.variables:
+        raise NetLangRuntimeError(
+            message=f"Device '{device_name}' is not defined",
+            ctx=ctx
+        )
+
+    device = self.variables[device_name]
+    if not isinstance(device, Host):
+        raise NetLangRuntimeError(
+            message="Only hosts can send packets",
+            ctx=ctx
+        )
+
+    port = self.visit(ctx.fieldAccess())
+
+    target_ip = ctx.IPADDR().getText()
+
+    packet.src = port.ip
+    packet.dst = target_ip
+
+    log(f"[bold magenta]Sent[/bold magenta] {packet} from [cyan]{port.portId}[/cyan] to [yellow]{packet.dst}[/yellow]")
+
+    self.forward_packet(packet, port)
+
+def forward_packet(self, packet, current_port):
+    visited_ports = set()
+    queue = [(current_port, None)]  # (port, from_device_name)
+
+    while queue:
+        port, from_device_name = queue.pop(0)
+        visited_ports.add(port)
+
+        for conn in self.connections:
+            if conn.port1 == port.portId:
+                device_name = conn.device2
+                next_port_id = conn.port2
+            elif conn.port2 == port.portId:
+                device_name = conn.device1
+                next_port_id = conn.port1
+            else:
+                continue
+
+            device = self.variables.get(device_name)
+            next_port = get_port_by_id(device, next_port_id)
+
+            if next_port in visited_ports:
+                continue
+
+            sleep(0.3)
+            log("")
+
+            if isinstance(device, Switch):
+                body = Text()
+                body.append(f"Received packet on {next_port.portId}\n", style="white")
+                for p in device.ports:
+                    if p != next_port and p not in visited_ports:
+                        body.append(f"Forwarded packet to {p.portId}\n", style="green")
+                        queue.append((p, device.name))
+
+                log(Panel(body, title=f"Switch {device.name}", style="cyan"))
+
+            elif isinstance(device, Router):
+                body = Text()
+                body.append(f"Received packet on {next_port.portId}\n", style="white")
+                if str(next_port.ip).split("/")[0] == packet.dst:
+                    body.append(f"[✓] Delivered to {packet.dst}\n", style="bold green")
+                    log(Panel(body, title=f"Router {device.name}", style="blue"))
+                    return
+
+                log(Panel(body, title=f"Router {device.name}", style="blue"))
+
+            elif isinstance(device, Host):
+                body = Text()
+                body.append(f"Received packet on {next_port.portId}\n", style="white")
+                if str(next_port.ip).split("/")[0] == packet.dst:
+                    body.append(f"[✓] Delivered to {packet.dst}\n", style="bold green")
+                    log(Panel(body, title=f"Host {device.name}", style="magenta"))
+                    return
+
+                log(Panel(body, title=f"Host {device.name}", style="magenta"))
+
+            # Przekazanie dalej
+            log(f"Forwarding packet to [white]{device.name}.{next_port.portId}[/white]")
+            queue.append((next_port, device.name))
+
+    log(f"[bold red]Packet could not be delivered to {packet.dst}[/bold red]")

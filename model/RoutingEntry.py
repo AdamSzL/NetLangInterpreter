@@ -1,0 +1,37 @@
+from dataclasses import dataclass
+from ipaddress import IPv4Network
+
+from interpreter.errors import NetLangRuntimeError
+from model.CIDR import CIDR
+from model.base import NetLangObject
+
+
+@dataclass
+class RoutingEntry(NetLangObject):
+    allowed_fields = {"destination", "via"}
+    destination: CIDR
+    via: str
+
+    @classmethod
+    def from_dict(cls, data: dict, ctx=None):
+        cls.check_fields(data, ctx)
+
+        destination = data.get("destination")
+        via = data.get("via")
+
+        if not isinstance(destination, CIDR):
+            raise NetLangRuntimeError(
+                message="RoutingEntry field 'destination' must be a CIDR object",
+                ctx=ctx
+            )
+
+        if not isinstance(via, str):
+            raise NetLangRuntimeError(
+                message="RoutingEntry field 'via' must be a string (portId)",
+                ctx=ctx
+            )
+
+        return RoutingEntry(destination, via)
+
+
+

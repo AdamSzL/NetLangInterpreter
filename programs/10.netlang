@@ -1,0 +1,7 @@
+set names: [string] <- ["Adam", "John"]
+print names.size
+
+set port: CopperEthernetPort <- {
+    portId <- "eth0"
+}
+print port.portId

@@ -1,0 +1,17 @@
+//lol
+
+set s1: Switch <- {
+    name <- "Switch1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.2.1/24
+        },
+        CopperEthernetPort { portId <- "eth1" },
+        CopperEthernetPort { portId <- "eth2" }
+    ]
+}
+
+print s1.name
+print s1.ports
+print s1

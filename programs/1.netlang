@@ -1,0 +1,12 @@
+set x: int <- 3
+set y: float <- 2.3
+set name: string <- "Adam"
+set isUp: bool <- true
+
+set names: [string] <- ["Adam", "John", "Bob"]
+
+
+x <- 5
+
+print x
+print name

@@ -1,0 +1,35 @@
+set ethPort: CopperEthernetPort <- {
+    portId <- "eth0",
+    ip <- 192.168.1.0/24,
+    mac <- A0:B1:C2:D3:E4:F5,
+    bandwidth <- 100,
+    mtu <- 1500
+}
+ethPort.mtu <- 2000
+ethPort.ip <- 192.168.2.0/24
+
+print ethPort
+
+set ethPort1: CopperEthernetPort <- {
+    portId <- "eth1"
+}
+
+print ethPort1
+print ethPort1.portId
+
+set fiberPort: OpticalEthernetPort <- {
+    portId <- "fib0",
+    ip <- 192.168.1.0/24,
+    mac <- BB:B1:EE:A0:C2:C2,
+    bandwidth <- 10000,
+    wavelength <- 1310,
+    mtu <- 1500,
+    connector <- LC
+}
+
+print fiberPort
+print fiberPort.ip
+print fiberPort.connector
+
+fiberPort.connector <- SC
+print fiberPort
