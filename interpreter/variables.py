@@ -18,12 +18,12 @@ def visitVariableDeclaration(self, ctx):
 
     if not check_type(declared_type, value):
         raise NetLangRuntimeError(
-            f"Type mismatch: cannot assign value '{value}' ({type(value).__name__}) to variable '{name}' of type {declared_type}",
+            f"Type mismatch: cannot assign value {value} ({type(value).__name__}) to variable {name} of type {declared_type}",
             ctx
         )
 
     self.variables[name] = value
-    print(f"[set] {name}: {declared_type} = {value}")
+    # print(f"[set] {name}: {declared_type} = {value}")
     return value
 
 def visitVariableAssignment(self, ctx):
@@ -31,7 +31,7 @@ def visitVariableAssignment(self, ctx):
     value = self.visit(ctx.expression())
     if name in self.variables:
         self.variables[name] = value
-        print(f"[assign] {name} <- {value}")
+        # print(f"[assign] {name} <- {value}")
     else:
         raise NetLangRuntimeError(f"Undefined variable {name}", ctx)
     return value
@@ -74,7 +74,7 @@ def visitFieldAssignment(self, ctx):
         if not hasattr(current, field_name):
             raise NetLangRuntimeError(f"'{type(current).__name__}' has no field '{field_name}'")
         setattr(current, field_name, value)
-        print(f"[assign] ...{field_name} ← {value}")
+        # print(f"[assign] ...{field_name} ← {value}")
         return value
 
     elif last_op == "<":
@@ -84,7 +84,7 @@ def visitFieldAssignment(self, ctx):
         if index >= len(current):
             raise NetLangRuntimeError(f"Index {index} out of range")
         current[index] = value
-        print(f"[assign] ...<{index}> ← {value}")
+        # print(f"[assign] ...<{index}> ← {value}")
         return value
 
     raise NetLangRuntimeError(f"Unsupported assignment operator '{last_op}'")

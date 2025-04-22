@@ -1,0 +1,19 @@
+set router: Router <- {
+    name <- "router 1",
+    ports <- [
+        CopperEthernetPort { portId <- "eth0", ip <- 192.168.1.1/24 },
+        CopperEthernetPort { portId <- "eth1", ip <- 192.168.2.1/24 },
+        CopperEthernetPort { portId <- "eth2", ip <- 192.168.3.1/24 }
+    ],
+    routingTable <- [
+        RoutingEntry { destination <- 192.168.2.0/24, via <- "eth1" },
+        RoutingEntry { destination <- 0.0.0.0/0, via <- "eth2" }
+    ]
+}
+
+set entry: RoutingEntry <- {
+    destination <- 2.2.2.2/24,
+    via <- "eth3"
+}
+
+add entry to router.routingTable

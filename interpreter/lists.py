@@ -11,7 +11,7 @@ def visitAddToListStatement(self, ctx):
         )
 
     target_list.append(value)
-    print(f"[add] {value} to {ctx.fieldAccess().getText()}")
+    # print(f"[add] {value} to {ctx.fieldAccess().getText()}")
     return value
 
 
@@ -27,7 +27,7 @@ def visitRemoveFromListStatement(self, ctx):
 
     try:
         target_list.remove(value)
-        print(f"[remove] {value} from {ctx.fieldAccess().getText()}")
+        # print(f"[remove] {value} from {ctx.fieldAccess().getText()}")
     except ValueError:
         raise NetLangRuntimeError(
             message=f"Value '{value}' not found in list '{ctx.fieldAccess().getText()}'",
@@ -75,4 +75,4 @@ def visitListIndexAssignment(self, ctx):
         raise NetLangRuntimeError(f"Index {index} out of range for list {list_name}")
 
     lst[index] = value
-    print(f"[update] {list_name} at {index} <- {value}")
+    # print(f"[update] {list_name} at {index} <- {value}")

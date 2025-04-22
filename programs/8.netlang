@@ -1,10 +1,10 @@
-//set names: [string] <- ["Adam", "John", "Bob"]
+set names: [string] <- ["Adam", "John", "Bob"]
 
-//print names<0>
+print names<0>
 //print names<3>
 
-//names<2> <- "Jacob"
-//print names
+names<2> <- "Jacob"
+print names
 
 set ports: [CopperEthernetPort] <- [
     CopperEthernetPort {

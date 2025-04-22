@@ -1,0 +1,46 @@
+set host: Host <- {
+    name <- "Host 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.1.0/24
+        }
+    ]
+}
+set switch: Switch <- {
+    name <- "Switch 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0"
+        },
+        CopperEthernetPort {
+            portId <- "eth1"
+        }
+    ]
+}
+set router: Router <- {
+    name <- "Router 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.1.1/24
+        }
+    ],
+    routingTable <- [
+        RoutingEntry {
+            destination <- 192.168.1.0/24,
+            via <- "eth0"
+        }
+    ]
+}
+
+set packet: Packet <- {
+    payload <- "Hello!",
+    protocol <- ICMP,
+    size <- 1000
+}
+
+connect host.eth0 to switch.eth0
+connect switch.eth1 to router.eth0
+
+send packet from host.eth0 to 192.168.1.1

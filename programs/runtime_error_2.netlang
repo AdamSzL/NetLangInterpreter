@@ -1,0 +1,12 @@
+set h1: Host <- {
+    name <- "PC1",
+    ports <- [
+        OpticalEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.1.2/24
+        },
+        OpticalEthernetPort {
+            portId <- "eth1"
+        }
+    ]
+}

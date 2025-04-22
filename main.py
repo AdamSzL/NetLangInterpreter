@@ -2,9 +2,10 @@ import sys
 from antlr4 import *
 from generated.NetLangLexer import NetLangLexer
 from generated.NetLangParser import NetLangParser
-from interpreter.errors import NetLangErrorListener, NetLangRuntimeError
+from interpreter.errors import NetLangErrorListener, NetLangRuntimeError, NetLangSyntaxError
 from interpreter import Interpreter
 from interpreter.logging import log
+from rich.text import Text
 
 def main():
     if len(sys.argv) < 2:
@@ -30,7 +31,10 @@ def main():
         interpreter = Interpreter()
         interpreter.visit(tree)
     except NetLangRuntimeError as e:
-        log(f"[bold red]Runtime Error:[/bold red] {e}")
+        log(f"[bold red]Runtime Error:[/bold red]", e)
+        sys.exit(1)
+    except NetLangSyntaxError as e:
+        log(f"[bold red]Syntax Error:[/bold red]", e)
         sys.exit(1)
 
 if __name__ == '__main__':

@@ -1,0 +1,12 @@
+set names: [string] <- ["PC1", "PC2", "PC3", "PC4"]
+
+print names
+print names.size
+print names<3>
+//print names<4> // runtime error
+
+names<0> <- "PC123"
+print names
+
+remove "PC2" from names
+print names

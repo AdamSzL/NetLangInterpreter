@@ -44,7 +44,7 @@ def draw_graph(self):
     tr_figure = ax.transData.transform
     tr_axes = fig.transFigure.inverted().transform
 
-    icon_size = (ax.get_xlim()[1] - ax.get_xlim()[0]) * 0.025
+    icon_size = (ax.get_xlim()[1] - ax.get_xlim()[0]) * 0.05
     icon_center = icon_size / 2.0
 
     for n in G.nodes:

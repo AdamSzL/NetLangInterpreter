@@ -4,7 +4,8 @@ program: statement* EOF;
 
 // ----------- Statements ----------
 statement
-    : variableDeclaration
+    : listIndexAssignment
+    | variableDeclaration
     | variableAssignment
     | addToListStatement
     | removeFromListStatement
@@ -18,7 +19,6 @@ statement
     | loopStatement
     | functionDeclarationStatement
     | returnStatement
-    | listIndexAssignment
     ;
 
 
@@ -122,25 +122,25 @@ listIndexAssignment
     ;
 
 // ----------- Types ----------
-//type
-//    : 'int'
-//    | 'float'
-//    | 'bool'
-//    | 'string'
-//    | 'IP'
-//    | 'MAC'
-//    | 'Port'
-//    | '[' type ']'
-//    | objectType
-//    | deviceType
-//    ;
-
 type
-    : ID
+    : 'int'
+    | 'float'
+    | 'bool'
+    | 'string'
+    | 'IP'
+    | 'MAC'
+    | 'Port'
+    | '[' type ']'
     | objectType
     | deviceType
-    | '[' type ']'
     ;
+
+//type
+//    : ID
+//    | objectType
+//    | deviceType
+//    | '[' type ']'
+//    ;
 
 objectType
     : 'CIDR'
