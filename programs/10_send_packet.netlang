@@ -1,5 +1,5 @@
 set host: Host <- {
-    name <- "Host 1",
+    name <- "PC1",
     ports <- [
         CopperEthernetPort {
             portId <- "eth0",
@@ -8,7 +8,7 @@ set host: Host <- {
     ]
 }
 set switch: Switch <- {
-    name <- "Switch 1",
+    name <- "S1",
     ports <- [
         CopperEthernetPort {
             portId <- "eth0"
@@ -19,7 +19,7 @@ set switch: Switch <- {
     ]
 }
 set router: Router <- {
-    name <- "Router 1",
+    name <- "R1",
     ports <- [
         CopperEthernetPort {
             portId <- "eth0",

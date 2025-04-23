@@ -40,13 +40,20 @@ def visitSendPacketStatement(self, ctx):
         )
 
     port = self.visit(ctx.fieldAccess())
-
     target_ip = ctx.IPADDR().getText()
+
+    body = Text()
+    body.append("📤 Sending packet\n", style="bold white")
+    body.append(Text.from_markup(f"[bold cyan]Source:[/bold cyan] [green]{device.name}.{port.portId}[/green]\n"))
+    body.append(Text.from_markup(f"[bold cyan]Destination:[/bold cyan] [yellow]{target_ip}[/yellow]\n"))
+    body.append(Text.from_markup(f"[bold cyan]Payload:[/bold cyan] [magenta]{packet.payload}[/magenta]\n"))
+    body.append(Text.from_markup(f"[bold cyan]Protocol:[/bold cyan] [blue]{packet.protocol}[/blue]\n"))
+    body.append(Text.from_markup(f"[bold cyan]Size:[/bold cyan] [white]{packet.size}[/white] B\n"))
+
+    log(Panel(body, title=f"[b]Host {device.name}[/b]", style="cyan"))
 
     packet.src = port.ip
     packet.dst = target_ip
-
-    log(f"[bold magenta]Sent[/bold magenta] {packet} from [cyan]{port.portId}[/cyan] to [yellow]{packet.dst}[/yellow]")
 
     self.forward_packet(packet, port)
 
@@ -75,14 +82,13 @@ def forward_packet(self, packet, current_port):
                 continue
 
             sleep(0.3)
-            log("")
 
             if isinstance(device, Switch):
                 body = Text()
-                body.append(f"Received packet on {next_port.portId}\n", style="white")
+                body.append(f"Received packet on {device.name}.{next_port.portId}\n", style="white")
                 for p in device.ports:
                     if p != next_port and p not in visited_ports:
-                        body.append(f"Forwarded packet to {p.portId}\n", style="green")
+                        body.append(f"Forwarded packet to {device.name}.{p.portId}\n", style="green")
                         queue.append((p, device.name))
 
                 log(Panel(body, title=f"Switch {device.name}", style="cyan"))
@@ -106,9 +112,5 @@ def forward_packet(self, packet, current_port):
                     return
 
                 log(Panel(body, title=f"Host {device.name}", style="magenta"))
-
-            # Przekazanie dalej
-            log(f"Forwarding packet to [white]{device.name}.{next_port.portId}[/white]")
-            queue.append((next_port, device.name))
 
     log(f"[bold red]Packet could not be delivered to {packet.dst}[/bold red]")

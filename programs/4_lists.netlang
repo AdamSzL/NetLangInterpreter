@@ -11,15 +11,16 @@ set router: Router <- {
     ]
 }
 
-print router.name
-print router.ports
-print router.routingTable
-print router.routingTable<0>.destination
-
 set entry: RoutingEntry <- {
     destination <- 2.2.2.2/24,
     via <- "eth3"
 }
-add entry to router.routingTable
+set port: CopperEthernetPort <- {
+    portId <- "eth3",
+    ip <- 192.168.4.1/24
+}
 
-router.ports <- "siema"
+add entry to router.routingTable
+add port to router.ports
+
+print router.ports

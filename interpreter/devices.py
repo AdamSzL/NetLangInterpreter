@@ -42,7 +42,7 @@ def visitShowInterfacesStatement(self, ctx):
     if not hasattr(device, "ports"):
         raise NetLangRuntimeError(f"Device '{device_name}' has no ports")
 
-    log(f"\n[bold]Interfaces of {device_name}[/bold]\n")
+    log(f"\n[bold]Interfaces of {device.name}[/bold]\n")
 
     table = Table(show_header=True, header_style="bold blue")
     table.add_column("Interface", style="white", no_wrap=True)

@@ -135,13 +135,6 @@ type
     | deviceType
     ;
 
-//type
-//    : ID
-//    | objectType
-//    | deviceType
-//    | '[' type ']'
-//    ;
-
 objectType
     : 'CIDR'
     | 'CopperEthernetPort'

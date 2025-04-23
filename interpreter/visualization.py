@@ -3,7 +3,6 @@ from PIL import Image
 import networkx as nx
 from model import Host, Router, Switch
 
-
 def draw_graph(self):
     icons = {
         "router": "images/router.png",
@@ -22,13 +21,17 @@ def draw_graph(self):
         elif isinstance(value, Switch):
             G.add_node(name, image=images["switch"])
 
+    if G.number_of_nodes() == 0:
+        return
+
     for conn in self.connections:
         dev1 = conn.device1
         dev2 = conn.device2
-        G.add_edge(dev1, dev2)
+        G.add_edge(dev1, dev2, port1=conn.port1, port2=conn.port2)
 
     pos = nx.spring_layout(G, seed=1734289230)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(14, 11))
+    fig.canvas.manager.set_window_title("NetLang Network Topology")
     ax.axis("off")
 
     nx.draw_networkx_edges(
@@ -37,14 +40,27 @@ def draw_graph(self):
         ax=ax,
         arrows=True,
         arrowstyle="-",
-        min_source_margin=15,
-        min_target_margin=15,
+        min_source_margin=25,
+        min_target_margin=25,
     )
+
+    # Rysujemy etykiety na środku krawędzi
+    # nx.draw_networkx_edge_labels(
+    #     G,
+    #     pos=pos,
+    #     edge_labels=edge_labels,
+    #     font_size=12,
+    #     ax=ax,
+    #     label_pos=0.5,  # środek krawędzi
+    #     verticalalignment='center'
+    # )
 
     tr_figure = ax.transData.transform
     tr_axes = fig.transFigure.inverted().transform
 
-    icon_size = (ax.get_xlim()[1] - ax.get_xlim()[0]) * 0.05
+    multiplier = 0.25 / G.number_of_nodes()
+    # multiplier = 0.05
+    icon_size = (ax.get_xlim()[1] - ax.get_xlim()[0]) * multiplier
     icon_center = icon_size / 2.0
 
     for n in G.nodes:
@@ -55,11 +71,11 @@ def draw_graph(self):
         a.axis("off")
         label = self.variables[n].name
         a.text(
-            0.5, -0.1,
+            0.5, -0.01,
             label,
             ha='center',
             va='top',
-            fontsize=9,
+            fontsize=14,
             fontweight='bold',
             transform=a.transAxes
         )
