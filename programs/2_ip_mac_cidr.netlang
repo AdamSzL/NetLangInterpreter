@@ -18,3 +18,5 @@ print hostIP.broadcast
 print hostIP.network
 
 set pcMAC: MAC <- A0:BA:E6:E3:FD:E1
+
+print pcMAC

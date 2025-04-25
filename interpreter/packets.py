@@ -55,62 +55,60 @@ def visitSendPacketStatement(self, ctx):
     packet.src = port.ip
     packet.dst = target_ip
 
-    self.forward_packet(packet, port)
+    self.forward_packet(packet, device_name, port)
 
-def forward_packet(self, packet, current_port):
+def forward_packet(self, packet, start_device, start_port):
     visited_ports = set()
-    queue = [(current_port, None)]  # (port, from_device_name)
+    queue = [(start_port, start_device)]  # (port, from_device_name)
 
     while queue:
         port, from_device_name = queue.pop(0)
         visited_ports.add(port)
 
         for conn in self.connections:
-            if conn.port1 == port.portId:
-                device_name = conn.device2
+            if conn.port1 == port.portId and conn.device1 == from_device_name:
+                next_device_name = conn.device2
                 next_port_id = conn.port2
-            elif conn.port2 == port.portId:
-                device_name = conn.device1
+            elif conn.port2 == port.portId and conn.device2 == from_device_name:
+                next_device_name = conn.device1
                 next_port_id = conn.port1
             else:
                 continue
 
-            device = self.variables.get(device_name)
-            next_port = get_port_by_id(device, next_port_id)
+            next_device = self.variables.get(next_device_name)
+            next_port = get_port_by_id(next_device, next_port_id)
 
             if next_port in visited_ports:
                 continue
 
             sleep(0.3)
 
-            if isinstance(device, Switch):
+            if isinstance(next_device, Switch):
                 body = Text()
-                body.append(f"Received packet on {device.name}.{next_port.portId}\n", style="white")
-                for p in device.ports:
+                body.append(f"Received packet on {next_device.name}.{next_port.portId}\n", style="white")
+                for p in next_device.ports:
                     if p != next_port and p not in visited_ports:
-                        body.append(f"Forwarded packet to {device.name}.{p.portId}\n", style="green")
-                        queue.append((p, device.name))
+                        body.append(f"Forwarded packet to {next_device.name}.{p.portId}\n", style="green")
+                        queue.append((p, next_device_name))
 
-                log(Panel(body, title=f"Switch {device.name}", style="cyan"))
+                log(Panel(body, title=f"Switch {next_device.name}", style="cyan"))
 
-            elif isinstance(device, Router):
+            elif isinstance(next_device, Router):
                 body = Text()
-                body.append(f"Received packet on {next_port.portId}\n", style="white")
+                body.append(f"Received packet on {next_device.name}.{next_port.portId}\n", style="white")
                 if str(next_port.ip).split("/")[0] == packet.dst:
                     body.append(f"[✓] Delivered to {packet.dst}\n", style="bold green")
-                    log(Panel(body, title=f"Router {device.name}", style="blue"))
-                    return
+                else:
+                    body.append(f"Packet could not be delivered to {packet.dst}\n", style="bold red")
 
-                log(Panel(body, title=f"Router {device.name}", style="blue"))
+                log(Panel(body, title=f"Router {next_device.name}", style="blue"))
 
-            elif isinstance(device, Host):
+            elif isinstance(next_device, Host):
                 body = Text()
-                body.append(f"Received packet on {next_port.portId}\n", style="white")
+                body.append(f"Received packet on {next_device.name}.{next_port.portId}\n", style="white")
                 if str(next_port.ip).split("/")[0] == packet.dst:
                     body.append(f"[✓] Delivered to {packet.dst}\n", style="bold green")
-                    log(Panel(body, title=f"Host {device.name}", style="magenta"))
-                    return
+                else:
+                    body.append(f"Packet could not be delivered to {packet.dst}\n", style="bold red")
 
-                log(Panel(body, title=f"Host {device.name}", style="magenta"))
-
-    log(f"[bold red]Packet could not be delivered to {packet.dst}[/bold red]")
+                log(Panel(body, title=f"Host {next_device.name}", style="magenta"))
