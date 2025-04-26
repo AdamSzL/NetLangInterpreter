@@ -164,6 +164,11 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by NetLangParser#PowExpr.
+    def visitPowExpr(self, ctx:NetLangParser.PowExprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by NetLangParser#LessEqualExpr.
     def visitLessEqualExpr(self, ctx:NetLangParser.LessEqualExprContext):
         return self.visitChildren(ctx)

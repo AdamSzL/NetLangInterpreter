@@ -287,6 +287,15 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by NetLangParser#PowExpr.
+    def enterPowExpr(self, ctx:NetLangParser.PowExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#PowExpr.
+    def exitPowExpr(self, ctx:NetLangParser.PowExprContext):
+        pass
+
+
     # Enter a parse tree produced by NetLangParser#LessEqualExpr.
     def enterLessEqualExpr(self, ctx:NetLangParser.LessEqualExprContext):
         pass

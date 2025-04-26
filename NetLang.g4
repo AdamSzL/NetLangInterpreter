@@ -152,7 +152,8 @@ deviceType
 
 // ----------- Expressions ----------
 expression
-    : expression MUL expression       # MulExpr
+    : expression POW expression       # PowExpr
+    | expression MUL expression       # MulExpr
     | expression DIV expression       # DivExpr
     | expression PLUS expression      # AddExpr
     | expression MINUS expression     # SubExpr
@@ -230,7 +231,7 @@ PLUS: '+';
 MINUS: '-';
 MUL: '*';
 DIV: '/';
-CARET: '^';
+POW: '^';
 
 // Comparison operators
 EQ: '==';

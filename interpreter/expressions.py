@@ -17,7 +17,7 @@ def visitFloatLiteral(self: "Interpreter", ctx: NetLangParser.FloatLiteralContex
     return float(ctx.FLOAT().getText())
 
 def visitBoolLiteral(self: "Interpreter", ctx: NetLangParser.BoolLiteralContext) -> bool:
-    return ctx.BOOL().getText().lower() == "true"
+    return ctx.BOOL().getText() == "true"
 
 def visitStringLiteral(self: "Interpreter", ctx: NetLangParser.StringLiteralContext) -> str:
     return str(ctx.STRING().getText().strip('"'))
@@ -29,7 +29,7 @@ def visitVariableExpr(self: "Interpreter", ctx: NetLangParser.VariableExprContex
     if variable_name in Protocol.__members__:
         return Protocol[variable_name]
     if variable_name not in self.variables:
-        raise NetLangRuntimeError(f"Undefined variable {variable_name}", ctx)
+        raise NetLangRuntimeError(f"Undefined variable '{variable_name}'", ctx)
     line = ctx.start.line
     if line < self.variables[variable_name].line_declared:
         raise NetLangRuntimeError(

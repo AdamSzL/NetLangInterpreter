@@ -24,6 +24,7 @@ from .expressions import (
 from .operators import (
     visitAddExpr,
     visitSubExpr,
+    visitPowExpr,
     visitMulExpr,
     visitDivExpr,
     visitEqualsExpr,
@@ -51,7 +52,11 @@ class Interpreter(NetLangVisitor):
         self.draw_graph()
 
     def visitPrintStatement(self, ctx):
-        print(self.visit(ctx.expression()))
+        value = self.visit(ctx.expression())
+        if isinstance(value, bool):
+            print("true" if value else "false")
+        else:
+            print(value)
 
     def __init__(self, variables: dict[str, Variable]):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)
@@ -72,6 +77,7 @@ class Interpreter(NetLangVisitor):
 
         self.visitAddExpr = MethodType(visitAddExpr, self)
         self.visitSubExpr = MethodType(visitSubExpr, self)
+        self.visitPowExpr = MethodType(visitPowExpr, self)
         self.visitMulExpr = MethodType(visitMulExpr, self)
         self.visitDivExpr = MethodType(visitDivExpr, self)
         self.visitEqualsExpr = MethodType(visitEqualsExpr, self)

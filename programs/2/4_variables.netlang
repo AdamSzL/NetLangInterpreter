@@ -1,0 +1,13 @@
+set a: int <- 5
+set b: float <- 2.33
+set c: bool <- true
+set d: string <- "Adam"
+
+print a
+
+//a <- true        // error
+c <- false
+print c
+
+set e: float <- a + b
+print e

@@ -27,7 +27,7 @@ class VariableCollectorListener(NetLangListener):
         line: int = ctx.start.line
 
         if variable_name in self.variables:
-            raise NetLangRuntimeError(f"Redeclaration of variable {variable_name} (first declared on line {self.variables[variable_name].line_declared})")
+            raise NetLangRuntimeError(f"Redeclaration of variable {variable_name} (first declared on line {self.variables[variable_name].line_declared})", ctx)
 
         self.variables[variable_name] = Variable(variable_type, line)
 
@@ -59,10 +59,10 @@ def visitVariableAssignment(self: "Interpreter", ctx: NetLangParser.VariableAssi
     value = self.visit(ctx.expression())
 
     if name not in self.variables:
-        raise NetLangRuntimeError(f"Undefined variable {name}", ctx)
+        raise NetLangRuntimeError(f"Undefined variable '{name}'", ctx)
 
     expected_type = type_map[self.variables[name].type]
-    if not isinstance(value, expected_type):
+    if type(value) is not expected_type:
         raise NetLangRuntimeError(
             message=f"Type mismatch in assignment to variable '{name}': expected '{self.variables[name].type}', got '{type(value).__name__}'",
             ctx=ctx

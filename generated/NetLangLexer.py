@@ -282,7 +282,7 @@ class NetLangLexer(Lexer):
     MINUS = 53
     MUL = 54
     DIV = 55
-    CARET = 56
+    POW = 56
     EQ = 57
     NEQ = 58
     LT = 59
@@ -322,7 +322,7 @@ class NetLangLexer(Lexer):
 
     symbolicNames = [ "<INVALID>",
             "ASSIGN", "COLON", "COMMA", "DOT", "PLUS", "MINUS", "MUL", "DIV", 
-            "CARET", "EQ", "NEQ", "LT", "GT", "LE", "GE", "AND", "OR", "NOT", 
+            "POW", "EQ", "NEQ", "LT", "GT", "LE", "GE", "AND", "OR", "NOT", 
             "BOOL", "ID", "INT", "FLOAT", "STRING", "IPADDR", "MACADDR", 
             "WS", "LINE_COMMENT", "BLOCK_COMMENT" ]
 
@@ -334,7 +334,7 @@ class NetLangLexer(Lexer):
                   "T__32", "T__33", "T__34", "T__35", "T__36", "T__37", 
                   "T__38", "T__39", "T__40", "T__41", "T__42", "T__43", 
                   "T__44", "T__45", "T__46", "ASSIGN", "COLON", "COMMA", 
-                  "DOT", "PLUS", "MINUS", "MUL", "DIV", "CARET", "EQ", "NEQ", 
+                  "DOT", "PLUS", "MINUS", "MUL", "DIV", "POW", "EQ", "NEQ", 
                   "LT", "GT", "LE", "GE", "AND", "OR", "NOT", "BOOL", "ID", 
                   "INT", "FLOAT", "STRING", "IPADDR", "UP_TO_THREE_DIGITS", 
                   "MACADDR", "HEXPAIR", "HEX", "WS", "LINE_COMMENT", "BLOCK_COMMENT" ]

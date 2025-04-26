@@ -1,0 +1,6 @@
+set x: int <- 3
+set y: bool <- true
+
+print x
+
+set x: float <- 2.3

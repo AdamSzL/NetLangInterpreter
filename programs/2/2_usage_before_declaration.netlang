@@ -1,0 +1,4 @@
+set x: int <- y + 2
+set y: int <- 3
+
+print y
