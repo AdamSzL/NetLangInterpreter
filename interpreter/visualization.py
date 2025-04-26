@@ -1,9 +1,14 @@
 import matplotlib.pyplot as plt
 from PIL import Image
 import networkx as nx
-from model import Host, Router, Switch
 
-def draw_graph(self):
+from model import Host, Router, Switch
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .interpreter import Interpreter
+
+def draw_graph(self: "Interpreter"):
     icons = {
         "router": "images/router.png",
         "switch": "images/switch.png",
@@ -25,9 +30,9 @@ def draw_graph(self):
         return
 
     for conn in self.connections:
-        dev1 = conn.device1
-        dev2 = conn.device2
-        G.add_edge(dev1, dev2, port1=conn.port1, port2=conn.port2)
+        dev1 = conn.device1_id
+        dev2 = conn.device2_id
+        G.add_edge(dev1, dev2, port1=conn.port1_id, port2=conn.port2_id)
 
     pos = nx.spring_layout(G, seed=1734289230)
     fig, ax = plt.subplots(figsize=(14, 11))

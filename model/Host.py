@@ -1,9 +1,10 @@
 from interpreter.errors import NetLangRuntimeError
+from model.Device import Device
 from model.base import NetLangObject
 from dataclasses import dataclass
 
 @dataclass
-class Host(NetLangObject):
+class Host(NetLangObject, Device):
     allowed_fields = {"name", "ports"}
     name: str
     ports: list

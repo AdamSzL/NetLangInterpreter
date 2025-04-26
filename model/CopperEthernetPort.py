@@ -1,18 +1,23 @@
+from typing import Any
+
 from interpreter.errors import NetLangRuntimeError
 from model.CIDR import CIDR
 from model.MACAddress import MACAddress
+from model.Port import Port
 from model.base import NetLangObject
+from dataclasses import dataclass, field
 
-class CopperEthernetPort(NetLangObject):
+
+@dataclass
+class CopperEthernetPort(NetLangObject, Port):
     allowed_fields = {"portId", "ip", "mac", "bandwidth", "mtu"}
 
-    def __init__(self, port_id: str, ip: CIDR = None, mac: MACAddress = None, bandwidth: int = 100, mtu: int = 1500):
-        self.portId = port_id
-        self.ip = ip
-        self.mac = mac or MACAddress.generate()  # generuj MAC jeśli nie podano
-        self.bandwidth = bandwidth
-        self.mtu = mtu
-        self.connectedTo = None
+    portId: str
+    ip: CIDR
+    mac: MACAddress
+    bandwidth: int = 100
+    mtu: int = 1500
+    connectedTo: Any = None
 
     @classmethod
     def from_dict(cls, data: dict, ctx=None):
@@ -30,17 +35,19 @@ class CopperEthernetPort(NetLangObject):
         if ip is not None and not isinstance(ip, CIDR):
             raise NetLangRuntimeError("Invalid ip for CopperEthernetPort", ctx=ctx)
 
-        if mac is not None:
+        if mac is None:
+            mac = MACAddress.generate()
+        else:
             if not isinstance(mac, MACAddress):
                 raise NetLangRuntimeError("Invalid MAC address", ctx=ctx)
             if MACAddress.is_registered(mac.mac):
                 raise NetLangRuntimeError(message=f"MAC address {mac.mac} is already in use", ctx=ctx)
             MACAddress.register(mac.mac)
 
-        if not isinstance(bandwidth, int) or not isinstance(mtu, int):
-            raise NetLangRuntimeError("Bandwidth and MTU must be integers", ctx=ctx)
+        if not isinstance(bandwidth, int):
+            raise NetLangRuntimeError("Bandwidth must be an integer", ctx=ctx)
+
+        if not isinstance(mtu, int):
+            raise NetLangRuntimeError("MTU must be an integer", ctx=ctx)
 
         return cls(port_id, ip, mac, bandwidth, mtu)
-
-    def __repr__(self):
-        return f"{self.portId} ({self.mac}, {self.ip}, {self.bandwidth}Mbps, {self.mtu}B)"

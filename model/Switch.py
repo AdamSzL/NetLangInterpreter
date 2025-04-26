@@ -1,9 +1,10 @@
 from interpreter.errors import NetLangRuntimeError
+from model.Device import Device
 from model.base import NetLangObject
 from dataclasses import dataclass
 
 @dataclass
-class Switch(NetLangObject):
+class Switch(NetLangObject, Device):
     allowed_fields = {"name", "ports"}
     name: str
     ports: list

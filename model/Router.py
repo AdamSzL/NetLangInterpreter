@@ -1,9 +1,10 @@
 from interpreter.errors import NetLangRuntimeError
+from model.Device import Device
 from model.base import NetLangObject
 from dataclasses import dataclass
 
 @dataclass
-class Router(NetLangObject):
+class Router(NetLangObject, Device):
     allowed_fields = {"name", "ports", "routingTable"}
     name: str
     ports: list

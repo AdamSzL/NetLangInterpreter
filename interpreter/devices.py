@@ -1,12 +1,17 @@
 from rich.table import Table
 from rich.text import Text
 
+from generated.NetLangParser import NetLangParser
 from .errors import NetLangRuntimeError
 from .utils import get_interface_label
 from .logging import log
 from model import Host, Router, Switch, Connection
+from typing import TYPE_CHECKING
 
-def visitConnectStatement(self, ctx):
+if TYPE_CHECKING:
+    from .interpreter import Interpreter
+
+def visitConnectStatement(self: "Interpreter", ctx: NetLangParser.ConnectStatementContext):
     port1 = self.visit(ctx.fieldAccess(0))
     port2 = self.visit(ctx.fieldAccess(1))
 
@@ -21,14 +26,17 @@ def visitConnectStatement(self, ctx):
     dev2_id = ctx.fieldAccess(1).ID(0).getText()
     port2_id = ctx.fieldAccess(1).ID(1).getText()
 
-    self.connections.append(Connection(
-        device1=dev1_id, port1=port1_id,
-        device2=dev2_id, port2=port2_id
-    ))
+    connection = Connection(
+        dev1_id,
+        port1_id,
+        dev2_id,
+        port2_id,
+    )
+    self.connections.append(connection)
 
     print(f"Connected {dev1_id}.{port1_id} <-> {dev2_id}.{port2_id}")
 
-def visitShowInterfacesStatement(self, ctx):
+def visitShowInterfacesStatement(self: "Interpreter", ctx: NetLangParser.ShowInterfacesStatementContext):
     device_name = ctx.ID().getText()
 
     if device_name not in self.variables:
@@ -61,10 +69,11 @@ def visitShowInterfacesStatement(self, ctx):
         port_type = type(port).__name__.replace("Port", "")
 
         # Sprawdzenie czy port jest połączony
+        test = self.connections
         status = "down"
         for conn in self.connections:
-            if (conn.device1 == device_name and conn.port1 == port_id) or \
-                    (conn.device2 == device_name and conn.port2 == port_id):
+            if (conn.device1_id == device_name and conn.port2_id == port_id) or \
+                    (conn.device2_id == device_name and conn.port2_id== port_id):
                 status = "up"
                 break
 

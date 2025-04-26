@@ -2,12 +2,12 @@ from antlr4.error.ErrorListener import ErrorListener
 
 
 class NetLangErrorListener(ErrorListener):
-    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+    def syntaxError(self, recognizer, offendingSymbol, line: int, column: int, msg: str, e):
         raise NetLangSyntaxError(f"[Line {line}, Column {column}]: {msg}")
 
 
 class NetLangRuntimeError(Exception):
-    def __init__(self, message, ctx=None):
+    def __init__(self, message: str, ctx=None):
         if ctx:
             token = ctx.start
             line = token.line
@@ -17,7 +17,7 @@ class NetLangRuntimeError(Exception):
 
 
 class NetLangSyntaxError(Exception):
-    def __init__(self, message, ctx=None):
+    def __init__(self, message: str, ctx=None):
         if ctx:
             token = ctx.start
             line = token.line

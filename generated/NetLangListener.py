@@ -260,138 +260,246 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#geExpr.
-    def enterGeExpr(self, ctx:NetLangParser.GeExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#geExpr.
-    def exitGeExpr(self, ctx:NetLangParser.GeExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#gtExpr.
-    def enterGtExpr(self, ctx:NetLangParser.GtExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#gtExpr.
-    def exitGtExpr(self, ctx:NetLangParser.GtExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#orExpr.
-    def enterOrExpr(self, ctx:NetLangParser.OrExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#orExpr.
-    def exitOrExpr(self, ctx:NetLangParser.OrExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#subExpr.
-    def enterSubExpr(self, ctx:NetLangParser.SubExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#subExpr.
-    def exitSubExpr(self, ctx:NetLangParser.SubExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#parenExpr.
-    def enterParenExpr(self, ctx:NetLangParser.ParenExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#parenExpr.
-    def exitParenExpr(self, ctx:NetLangParser.ParenExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#neqExpr.
-    def enterNeqExpr(self, ctx:NetLangParser.NeqExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#neqExpr.
-    def exitNeqExpr(self, ctx:NetLangParser.NeqExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#ltExpr.
-    def enterLtExpr(self, ctx:NetLangParser.LtExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#ltExpr.
-    def exitLtExpr(self, ctx:NetLangParser.LtExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#eqExpr.
-    def enterEqExpr(self, ctx:NetLangParser.EqExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#eqExpr.
-    def exitEqExpr(self, ctx:NetLangParser.EqExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#addExpr.
-    def enterAddExpr(self, ctx:NetLangParser.AddExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#addExpr.
-    def exitAddExpr(self, ctx:NetLangParser.AddExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#leExpr.
-    def enterLeExpr(self, ctx:NetLangParser.LeExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#leExpr.
-    def exitLeExpr(self, ctx:NetLangParser.LeExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#mulExpr.
+    # Enter a parse tree produced by NetLangParser#MulExpr.
     def enterMulExpr(self, ctx:NetLangParser.MulExprContext):
         pass
 
-    # Exit a parse tree produced by NetLangParser#mulExpr.
+    # Exit a parse tree produced by NetLangParser#MulExpr.
     def exitMulExpr(self, ctx:NetLangParser.MulExprContext):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#divExpr.
-    def enterDivExpr(self, ctx:NetLangParser.DivExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#divExpr.
-    def exitDivExpr(self, ctx:NetLangParser.DivExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#unaryNotExpr.
-    def enterUnaryNotExpr(self, ctx:NetLangParser.UnaryNotExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#unaryNotExpr.
-    def exitUnaryNotExpr(self, ctx:NetLangParser.UnaryNotExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#andExpr.
+    # Enter a parse tree produced by NetLangParser#AndExpr.
     def enterAndExpr(self, ctx:NetLangParser.AndExprContext):
         pass
 
-    # Exit a parse tree produced by NetLangParser#andExpr.
+    # Exit a parse tree produced by NetLangParser#AndExpr.
     def exitAndExpr(self, ctx:NetLangParser.AndExprContext):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#expression.
-    def enterExpression(self, ctx:NetLangParser.ExpressionContext):
+    # Enter a parse tree produced by NetLangParser#MacAddressLiteral.
+    def enterMacAddressLiteral(self, ctx:NetLangParser.MacAddressLiteralContext):
         pass
 
-    # Exit a parse tree produced by NetLangParser#expression.
-    def exitExpression(self, ctx:NetLangParser.ExpressionContext):
+    # Exit a parse tree produced by NetLangParser#MacAddressLiteral.
+    def exitMacAddressLiteral(self, ctx:NetLangParser.MacAddressLiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#LessEqualExpr.
+    def enterLessEqualExpr(self, ctx:NetLangParser.LessEqualExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#LessEqualExpr.
+    def exitLessEqualExpr(self, ctx:NetLangParser.LessEqualExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#EqualsExpr.
+    def enterEqualsExpr(self, ctx:NetLangParser.EqualsExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#EqualsExpr.
+    def exitEqualsExpr(self, ctx:NetLangParser.EqualsExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#BoolLiteral.
+    def enterBoolLiteral(self, ctx:NetLangParser.BoolLiteralContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#BoolLiteral.
+    def exitBoolLiteral(self, ctx:NetLangParser.BoolLiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#ListLiteralExpr.
+    def enterListLiteralExpr(self, ctx:NetLangParser.ListLiteralExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#ListLiteralExpr.
+    def exitListLiteralExpr(self, ctx:NetLangParser.ListLiteralExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#IntLiteral.
+    def enterIntLiteral(self, ctx:NetLangParser.IntLiteralContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#IntLiteral.
+    def exitIntLiteral(self, ctx:NetLangParser.IntLiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#FieldAccessExpr.
+    def enterFieldAccessExpr(self, ctx:NetLangParser.FieldAccessExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#FieldAccessExpr.
+    def exitFieldAccessExpr(self, ctx:NetLangParser.FieldAccessExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#NotExpr.
+    def enterNotExpr(self, ctx:NetLangParser.NotExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#NotExpr.
+    def exitNotExpr(self, ctx:NetLangParser.NotExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#LessThanExpr.
+    def enterLessThanExpr(self, ctx:NetLangParser.LessThanExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#LessThanExpr.
+    def exitLessThanExpr(self, ctx:NetLangParser.LessThanExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#NotEqualsExpr.
+    def enterNotEqualsExpr(self, ctx:NetLangParser.NotEqualsExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#NotEqualsExpr.
+    def exitNotEqualsExpr(self, ctx:NetLangParser.NotEqualsExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#ObjectInitializerExpr.
+    def enterObjectInitializerExpr(self, ctx:NetLangParser.ObjectInitializerExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#ObjectInitializerExpr.
+    def exitObjectInitializerExpr(self, ctx:NetLangParser.ObjectInitializerExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#GreaterThanExpr.
+    def enterGreaterThanExpr(self, ctx:NetLangParser.GreaterThanExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#GreaterThanExpr.
+    def exitGreaterThanExpr(self, ctx:NetLangParser.GreaterThanExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#FloatLiteral.
+    def enterFloatLiteral(self, ctx:NetLangParser.FloatLiteralContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#FloatLiteral.
+    def exitFloatLiteral(self, ctx:NetLangParser.FloatLiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#SubExpr.
+    def enterSubExpr(self, ctx:NetLangParser.SubExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#SubExpr.
+    def exitSubExpr(self, ctx:NetLangParser.SubExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#GreaterEqualExpr.
+    def enterGreaterEqualExpr(self, ctx:NetLangParser.GreaterEqualExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#GreaterEqualExpr.
+    def exitGreaterEqualExpr(self, ctx:NetLangParser.GreaterEqualExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#AddExpr.
+    def enterAddExpr(self, ctx:NetLangParser.AddExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#AddExpr.
+    def exitAddExpr(self, ctx:NetLangParser.AddExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#ListIndexAccessExpr.
+    def enterListIndexAccessExpr(self, ctx:NetLangParser.ListIndexAccessExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#ListIndexAccessExpr.
+    def exitListIndexAccessExpr(self, ctx:NetLangParser.ListIndexAccessExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#CIDRLiteralExpr.
+    def enterCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#CIDRLiteralExpr.
+    def exitCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#OrExpr.
+    def enterOrExpr(self, ctx:NetLangParser.OrExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#OrExpr.
+    def exitOrExpr(self, ctx:NetLangParser.OrExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#DivExpr.
+    def enterDivExpr(self, ctx:NetLangParser.DivExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#DivExpr.
+    def exitDivExpr(self, ctx:NetLangParser.DivExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#FunctionCallExpr.
+    def enterFunctionCallExpr(self, ctx:NetLangParser.FunctionCallExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#FunctionCallExpr.
+    def exitFunctionCallExpr(self, ctx:NetLangParser.FunctionCallExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#StringLiteral.
+    def enterStringLiteral(self, ctx:NetLangParser.StringLiteralContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#StringLiteral.
+    def exitStringLiteral(self, ctx:NetLangParser.StringLiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#ParensExpr.
+    def enterParensExpr(self, ctx:NetLangParser.ParensExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#ParensExpr.
+    def exitParensExpr(self, ctx:NetLangParser.ParensExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#IPAddressLiteral.
+    def enterIPAddressLiteral(self, ctx:NetLangParser.IPAddressLiteralContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#IPAddressLiteral.
+    def exitIPAddressLiteral(self, ctx:NetLangParser.IPAddressLiteralContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#VariableExpr.
+    def enterVariableExpr(self, ctx:NetLangParser.VariableExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#VariableExpr.
+    def exitVariableExpr(self, ctx:NetLangParser.VariableExprContext):
         pass
 
 

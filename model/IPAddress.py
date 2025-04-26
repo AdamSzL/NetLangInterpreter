@@ -1,8 +1,11 @@
 import ipaddress
+from dataclasses import dataclass
 
 class IPAddress:
-    def __init__(self, address: str):
-        self.address = str(ipaddress.IPv4Address(address))
+    ip: ipaddress.IPv4Address
 
-    def __repr__(self):
-        return self.address
+    def __init__(self, address: str):
+        self.ip = ipaddress.ip_address(address)
+
+    def __repr__(self) -> str:
+        return str(self.ip)

@@ -1,10 +1,39 @@
-from interpreter.errors import NetLangRuntimeError
-from interpreter.types import type_map, is_known_type, check_type
-from model.base import NetLangObject
+from __future__ import annotations
 
-def visitVariableDeclaration(self, ctx):
-    name = ctx.ID().getText()
-    declared_type = ctx.type_().getText()
+from generated.NetLangListener import NetLangListener
+from generated.NetLangParser import NetLangParser
+from .errors import NetLangRuntimeError
+from .types import type_map, is_known_type, check_type
+from model.base import NetLangObject
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .interpreter import Interpreter
+
+@dataclass
+class Variable:
+    type: str
+    line_declared: int
+    value: Any = None
+
+@dataclass
+class VariableCollectorListener(NetLangListener):
+    variables: dict[str, Variable] = field(default_factory=dict)
+
+    def enterVariableDeclaration(self, ctx: NetLangParser.VariableDeclarationContext):
+        variable_name: str = ctx.ID().getText()
+        variable_type: str = ctx.type_().getText()
+        line: int = ctx.start.line
+
+        if variable_name in self.variables:
+            raise NetLangRuntimeError(f"Redeclaration of variable {variable_name} (first declared on line {self.variables[variable_name].line_declared})")
+
+        self.variables[variable_name] = Variable(variable_type, line)
+
+def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDeclarationContext):
+    name: str = ctx.ID().getText()
+    declared_type: str = ctx.type_().getText()
     value = self.visit(ctx.expression())
 
     if isinstance(value, dict) and declared_type in type_map and issubclass(type_map[declared_type], NetLangObject):
@@ -22,21 +51,28 @@ def visitVariableDeclaration(self, ctx):
             ctx
         )
 
-    self.variables[name] = value
-    # print(f"[set] {name}: {declared_type} = {value}")
+    self.variables[name].value = value
     return value
 
-def visitVariableAssignment(self, ctx):
+def visitVariableAssignment(self: "Interpreter", ctx: NetLangParser.VariableAssignmentContext):
     name = ctx.ID().getText()
     value = self.visit(ctx.expression())
-    if name in self.variables:
-        self.variables[name] = value
-        # print(f"[assign] {name} <- {value}")
-    else:
+
+    if name not in self.variables:
         raise NetLangRuntimeError(f"Undefined variable {name}", ctx)
+
+    expected_type = type_map[self.variables[name].type]
+    if not isinstance(value, expected_type):
+        raise NetLangRuntimeError(
+            message=f"Type mismatch in assignment to variable '{name}': expected '{self.variables[name].type}', got '{type(value).__name__}'",
+            ctx=ctx
+        )
+
+    self.variables[name].value = value
+
     return value
 
-def visitFieldAssignment(self, ctx):
+def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignmentContext):
     access = ctx.fieldAccess()
     value = self.visit(ctx.expression())
 

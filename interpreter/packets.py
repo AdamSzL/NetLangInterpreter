@@ -1,12 +1,21 @@
+from typing import cast
+
 from rich.panel import Panel
 from rich.text import Text
+
+from generated.NetLangParser import NetLangParser
 from model import Switch, Router, Host, Packet
 from time import sleep
+
 from .errors import NetLangRuntimeError
 from .utils import get_port_by_id
 from .logging import log
+from typing import TYPE_CHECKING
 
-def visitSendPacketStatement(self, ctx):
+if TYPE_CHECKING:
+    from .interpreter import Interpreter
+
+def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketStatementContext):
     packet_name = ctx.ID().getText()
 
     if packet_name not in self.variables:
@@ -15,13 +24,15 @@ def visitSendPacketStatement(self, ctx):
             ctx=ctx
         )
 
-    packet = self.variables[packet_name]
+    packet_var = self.variables[packet_name]
 
-    if not isinstance(packet, Packet):
+    if not isinstance(packet_var, Packet):
         raise NetLangRuntimeError(
             message=f"Variable '{packet_name}' is not a Packet",
             ctx=ctx
         )
+
+    packet = cast(Packet, packet_var)
 
     device_name = ctx.fieldAccess().ID(0).getText()
     # trzeba poprawić - nie działa np. dla listy urządzeń
@@ -57,7 +68,7 @@ def visitSendPacketStatement(self, ctx):
 
     self.forward_packet(packet, device_name, port)
 
-def forward_packet(self, packet, start_device, start_port):
+def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start_port):
     visited_ports = set()
     queue = [(start_port, start_device)]  # (port, from_device_name)
 

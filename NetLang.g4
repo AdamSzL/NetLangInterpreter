@@ -151,38 +151,35 @@ deviceType
     ;
 
 // ----------- Expressions ----------
-operatorExpression
-    : <assoc=right> NOT operatorExpression                #unaryNotExpr
-    | operatorExpression MUL operatorExpression           #mulExpr
-    | operatorExpression DIV operatorExpression           #divExpr
-    | operatorExpression PLUS operatorExpression          #addExpr
-    | operatorExpression MINUS operatorExpression         #subExpr
-    | operatorExpression LT operatorExpression            #ltExpr
-    | operatorExpression GT operatorExpression            #gtExpr
-    | operatorExpression LE operatorExpression            #leExpr
-    | operatorExpression GE operatorExpression            #geExpr
-    | operatorExpression EQ operatorExpression            #eqExpr
-    | operatorExpression NEQ operatorExpression           #neqExpr
-    | operatorExpression AND operatorExpression           #andExpr
-    | operatorExpression OR operatorExpression            #orExpr
-    | '(' operatorExpression ')'                          #parenExpr
-    //| expression                                          #primaryExpr
-    ;
-
 expression
-    : ID
-    | INT
-    | FLOAT
-    | BOOL
-    | STRING
-    | IPADDR
-    | MACADDR
-    | listLiteral
-    | cidrLiteral
-    | objectInitializer
-    | fieldAccess
-    | functionCall
-    | listIndexAccess
+    : expression MUL expression       # MulExpr
+    | expression DIV expression       # DivExpr
+    | expression PLUS expression      # AddExpr
+    | expression MINUS expression     # SubExpr
+    | expression LT expression        # LessThanExpr
+    | expression GT expression        # GreaterThanExpr
+    | expression LE expression        # LessEqualExpr
+    | expression GE expression        # GreaterEqualExpr
+    | expression EQ expression        # EqualsExpr
+    | expression NEQ expression       # NotEqualsExpr
+    | NOT expression                  # NotExpr
+    | expression AND expression       # AndExpr
+    | expression OR expression        # OrExpr
+    | NOT expression                  # NotExpr
+    | '(' expression ')'              # ParensExpr
+    | ID                              # VariableExpr
+    | INT                             # IntLiteral
+    | FLOAT                           # FloatLiteral
+    | BOOL                            # BoolLiteral
+    | STRING                          # StringLiteral
+    | IPADDR                          # IPAddressLiteral
+    | MACADDR                         # MacAddressLiteral
+    | listLiteral                     # ListLiteralExpr
+    | cidrLiteral                     # CIDRLiteralExpr
+    | objectInitializer               # ObjectInitializerExpr
+    | fieldAccess                     # FieldAccessExpr
+    | functionCall                    # FunctionCallExpr
+    | listIndexAccess                 # ListIndexAccessExpr
     ;
 
 listLiteral
@@ -233,6 +230,7 @@ PLUS: '+';
 MINUS: '-';
 MUL: '*';
 DIV: '/';
+CARET: '^';
 
 // Comparison operators
 EQ: '==';

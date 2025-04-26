@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
+from typing import ClassVar
 
 from interpreter.errors import NetLangRuntimeError
 
 
 class NetLangObject(ABC):
-    allowed_fields: set[str] = set()
+    allowed_fields: ClassVar[set[str]] = set()
 
     @classmethod
     @abstractmethod

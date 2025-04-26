@@ -1,9 +1,11 @@
 import re
 import random
-
+from typing import ClassVar
 
 class MACAddress:
-    _active = set()
+    active_addresses: ClassVar[set[str]] = set()
+    mac: str
+
     def __init__(self, mac: str):
         # Sprawdzenie poprawności MAC-a (np. A0:BA:E6:E3:FD:E1)
         if not re.match(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$', mac):
@@ -23,17 +25,17 @@ class MACAddress:
 
             mac_str = ":".join(f"{b:02X}" for b in mac_bytes)
 
-            if mac_str not in cls._active:
+            if mac_str not in cls.active_addresses:
                 return MACAddress(mac_str)
 
     @classmethod
     def register(cls, mac):
-        cls._active.add(mac.upper())
+        cls.active_addresses.add(mac.upper())
 
     @classmethod
     def unregister(cls, mac):
-        cls._active.discard(mac.upper())
+        cls.active_addresses.discard(mac.upper())
 
     @classmethod
     def is_registered(cls, mac):
-        return mac in cls._active
+        return mac in cls.active_addresses

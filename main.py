@@ -7,6 +7,9 @@ from interpreter import Interpreter
 from interpreter.logging import log
 from rich.text import Text
 
+from interpreter.variables import VariableCollectorListener
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python3 main.py <file.netlang>")
@@ -28,7 +31,12 @@ def main():
         parser.addErrorListener(NetLangErrorListener())
 
         tree = parser.program()
-        interpreter = Interpreter()
+
+        collector = VariableCollectorListener()
+        walker = ParseTreeWalker()
+        walker.walk(collector, tree)
+
+        interpreter = Interpreter(collector.variables)
         interpreter.visit(tree)
     except NetLangRuntimeError as e:
         log(f"[bold red]Runtime Error:[/bold red]", e)

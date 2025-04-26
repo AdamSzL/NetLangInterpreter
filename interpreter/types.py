@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from model.CIDR import CIDR
 from model.CopperEthernetPort import CopperEthernetPort
 from model.Host import Host
@@ -34,12 +36,12 @@ def is_known_type(type_str: str) -> bool:
         return is_known_type(inner)
     return type_str in type_map.keys()
 
-def check_type(declared_type, value):
+def check_type(declared_type: str, value: Any) -> bool:
     if declared_type.startswith("[") and declared_type.endswith("]"):
         if not isinstance(value, list):
             return False
-        element_type = declared_type[1:-1]
-        return all(check_type(element_type, v) for v in value)
+        element_type_str = declared_type[1:-1]
+        return all(check_type(element_type_str, v) for v in cast(list[Any], value))
 
     expected_type = type_map.get(declared_type)
     if expected_type:

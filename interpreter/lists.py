@@ -1,6 +1,12 @@
-from interpreter.errors import NetLangRuntimeError
+from generated.NetLangParser import NetLangParser
+from .errors import NetLangRuntimeError
 
-def visitAddToListStatement(self, ctx):
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .interpreter import Interpreter
+
+def visitAddToListStatement(self: "Interpreter", ctx: NetLangParser.AddToListStatementContext):
     value = self.visit(ctx.expression())
     target_list = self.visit(ctx.fieldAccess())
 
@@ -15,7 +21,7 @@ def visitAddToListStatement(self, ctx):
     return value
 
 
-def visitRemoveFromListStatement(self, ctx):
+def visitRemoveFromListStatement(self: "Interpreter", ctx: NetLangParser.RemoveFromListStatementContext):
     value = self.visit(ctx.expression())
     target_list = self.visit(ctx.fieldAccess())
 
@@ -37,14 +43,14 @@ def visitRemoveFromListStatement(self, ctx):
     return value
 
 
-def visitListLiteral(self, ctx):
+def visitListLiteral(self: "Interpreter", ctx: NetLangParser.ListLiteralContext):
     elements = []
     if ctx.expressionList():
         for expr in ctx.expressionList().expression():
             elements.append(self.visit(expr))
     return elements
 
-def visitListIndexAccess(self, ctx):
+def visitListIndexAccess(self: "Interpreter", ctx: NetLangParser.ListIndexAccessContext):
     list_name = ctx.ID().getText()
     index = self.visit(ctx.expression())
 
@@ -60,7 +66,7 @@ def visitListIndexAccess(self, ctx):
     except IndexError:
         raise NetLangRuntimeError(f"Index {index} out of range for list {list_name}", ctx)
 
-def visitListIndexAssignment(self, ctx):
+def visitListIndexAssignment(self: "Interpreter", ctx: NetLangParser.ListIndexAssignmentContext):
     list_access = ctx.listIndexAccess()
     list_name = list_access.ID().getText()
     index = self.visit(list_access.expression())
