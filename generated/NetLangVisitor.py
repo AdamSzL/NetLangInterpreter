@@ -149,128 +149,53 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#MulExpr.
-    def visitMulExpr(self, ctx:NetLangParser.MulExprContext):
+    # Visit a parse tree produced by NetLangParser#expression.
+    def visitExpression(self, ctx:NetLangParser.ExpressionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#AndExpr.
-    def visitAndExpr(self, ctx:NetLangParser.AndExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#MacAddressLiteral.
-    def visitMacAddressLiteral(self, ctx:NetLangParser.MacAddressLiteralContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#PowExpr.
-    def visitPowExpr(self, ctx:NetLangParser.PowExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#LessEqualExpr.
-    def visitLessEqualExpr(self, ctx:NetLangParser.LessEqualExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#EqualsExpr.
-    def visitEqualsExpr(self, ctx:NetLangParser.EqualsExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#BoolLiteral.
-    def visitBoolLiteral(self, ctx:NetLangParser.BoolLiteralContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#ListLiteralExpr.
-    def visitListLiteralExpr(self, ctx:NetLangParser.ListLiteralExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#IntLiteral.
-    def visitIntLiteral(self, ctx:NetLangParser.IntLiteralContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#FieldAccessExpr.
-    def visitFieldAccessExpr(self, ctx:NetLangParser.FieldAccessExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#NotExpr.
-    def visitNotExpr(self, ctx:NetLangParser.NotExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#LessThanExpr.
-    def visitLessThanExpr(self, ctx:NetLangParser.LessThanExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#NotEqualsExpr.
-    def visitNotEqualsExpr(self, ctx:NetLangParser.NotEqualsExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#ObjectInitializerExpr.
-    def visitObjectInitializerExpr(self, ctx:NetLangParser.ObjectInitializerExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#GreaterThanExpr.
-    def visitGreaterThanExpr(self, ctx:NetLangParser.GreaterThanExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#FloatLiteral.
-    def visitFloatLiteral(self, ctx:NetLangParser.FloatLiteralContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#SubExpr.
-    def visitSubExpr(self, ctx:NetLangParser.SubExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#GreaterEqualExpr.
-    def visitGreaterEqualExpr(self, ctx:NetLangParser.GreaterEqualExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#AddExpr.
-    def visitAddExpr(self, ctx:NetLangParser.AddExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#ListIndexAccessExpr.
-    def visitListIndexAccessExpr(self, ctx:NetLangParser.ListIndexAccessExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#CIDRLiteralExpr.
-    def visitCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#OrExpr.
+    # Visit a parse tree produced by NetLangParser#orExpr.
     def visitOrExpr(self, ctx:NetLangParser.OrExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#DivExpr.
-    def visitDivExpr(self, ctx:NetLangParser.DivExprContext):
+    # Visit a parse tree produced by NetLangParser#andExpr.
+    def visitAndExpr(self, ctx:NetLangParser.AndExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#FunctionCallExpr.
-    def visitFunctionCallExpr(self, ctx:NetLangParser.FunctionCallExprContext):
+    # Visit a parse tree produced by NetLangParser#notExpr.
+    def visitNotExpr(self, ctx:NetLangParser.NotExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#StringLiteral.
-    def visitStringLiteral(self, ctx:NetLangParser.StringLiteralContext):
+    # Visit a parse tree produced by NetLangParser#comparisonExpr.
+    def visitComparisonExpr(self, ctx:NetLangParser.ComparisonExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#equalityExpr.
+    def visitEqualityExpr(self, ctx:NetLangParser.EqualityExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#addSubExpr.
+    def visitAddSubExpr(self, ctx:NetLangParser.AddSubExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#mulDivExpr.
+    def visitMulDivExpr(self, ctx:NetLangParser.MulDivExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#unaryExpr.
+    def visitUnaryExpr(self, ctx:NetLangParser.UnaryExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#powExpr.
+    def visitPowExpr(self, ctx:NetLangParser.PowExprContext):
         return self.visitChildren(ctx)
 
 
@@ -279,13 +204,68 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by NetLangParser#VariableExpr.
+    def visitVariableExpr(self, ctx:NetLangParser.VariableExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#IntLiteral.
+    def visitIntLiteral(self, ctx:NetLangParser.IntLiteralContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#FloatLiteral.
+    def visitFloatLiteral(self, ctx:NetLangParser.FloatLiteralContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#BoolLiteral.
+    def visitBoolLiteral(self, ctx:NetLangParser.BoolLiteralContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#StringLiteral.
+    def visitStringLiteral(self, ctx:NetLangParser.StringLiteralContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by NetLangParser#IPAddressLiteral.
     def visitIPAddressLiteral(self, ctx:NetLangParser.IPAddressLiteralContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#VariableExpr.
-    def visitVariableExpr(self, ctx:NetLangParser.VariableExprContext):
+    # Visit a parse tree produced by NetLangParser#MacAddressLiteral.
+    def visitMacAddressLiteral(self, ctx:NetLangParser.MacAddressLiteralContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#ListLiteralExpr.
+    def visitListLiteralExpr(self, ctx:NetLangParser.ListLiteralExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#CIDRLiteralExpr.
+    def visitCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#ObjectInitializerExpr.
+    def visitObjectInitializerExpr(self, ctx:NetLangParser.ObjectInitializerExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#FieldAccessExpr.
+    def visitFieldAccessExpr(self, ctx:NetLangParser.FieldAccessExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#FunctionCallExpr.
+    def visitFunctionCallExpr(self, ctx:NetLangParser.FunctionCallExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#ListIndexAccessExpr.
+    def visitListIndexAccessExpr(self, ctx:NetLangParser.ListIndexAccessExprContext):
         return self.visitChildren(ctx)
 
 

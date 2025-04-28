@@ -1,0 +1,12 @@
+print true && true          // true
+print true && false         // false
+print false && true         // false
+print false && false        // false
+
+print true || true          // true
+print true || false         // true
+print false || true         // true
+print false || false        // false
+
+print !true                 // false
+print !false                // true

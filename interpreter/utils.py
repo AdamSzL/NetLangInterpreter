@@ -1,3 +1,8 @@
+from typing import Any
+
+from interpreter.errors import NetLangRuntimeError
+
+
 def get_interface_label(port_id: str, bandwidth: int) -> str:
     if bandwidth == 10:
         prefix = "Ethernet"
@@ -17,3 +22,24 @@ def get_port_by_id(device, port_id):
         if port.portId == port_id:
             return port
     return None
+
+def ensure_numeric(value: Any, ctx, operator: str = None):
+    if type(value) not in (int, float):
+        if operator:
+            raise NetLangRuntimeError(
+                f"Invalid operand for operator '{operator}': got {type(value).__name__}, expected int/float",
+                ctx
+            )
+        else:
+            raise NetLangRuntimeError("Expected numeric value", ctx)
+
+
+def ensure_boolean(value: Any, ctx, operator: str = None):
+    if not isinstance(value, bool):
+        if operator:
+            raise NetLangRuntimeError(
+                f"Invalid operand for operator '{operator}': got {type(value).__name__}, expected bool",
+                ctx
+            )
+        else:
+            raise NetLangRuntimeError("Expected boolean value", ctx)

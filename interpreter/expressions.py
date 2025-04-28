@@ -2,6 +2,7 @@ from typing import Any, cast
 
 from generated.NetLangParser import NetLangParser
 from .errors import NetLangRuntimeError
+from .utils import ensure_numeric
 from .types import type_map
 from model import ConnectorType, Protocol, IPAddress, MACAddress, CIDR
 from model.base import NetLangObject
@@ -9,6 +10,17 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter
+
+def visitAtomExpr(self: "Interpreter", ctx: NetLangParser.AtomExprContext):
+    return self.visitChildren(ctx)
+
+def visitNegateExpr(self, ctx):
+    if ctx.negateExpr():  # jeśli jest negacja (MINUS negateExpr)
+        value = self.visit(ctx.negateExpr())
+        ensure_numeric(value, ctx, operator='-')
+        return -value
+    else:
+        return self.visit(ctx.atomExpr())
 
 def visitIntLiteral(self: "Interpreter", ctx: NetLangParser.IntLiteralContext) -> int:
     return int(ctx.INT().getText())

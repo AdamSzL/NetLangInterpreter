@@ -5,6 +5,7 @@ from model import Connection
 from .variables import visitVariableDeclaration, visitVariableAssignment, visitFieldAssignment, Variable
 from .lists import visitAddToListStatement, visitRemoveFromListStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
 from .expressions import (
+    visitNegateExpr,
     visitIntLiteral,
     visitFloatLiteral,
     visitBoolLiteral,
@@ -22,21 +23,16 @@ from .expressions import (
     visitCidrLiteral,
 )
 from .operators import (
-    visitAddExpr,
-    visitSubExpr,
     visitPowExpr,
-    visitMulExpr,
-    visitDivExpr,
-    visitEqualsExpr,
-    visitNotEqualsExpr,
-    visitLessThanExpr,
-    visitGreaterThanExpr,
-    visitLessEqualExpr,
-    visitGreaterEqualExpr,
+    visitAddSubExpr,
+    visitMulDivExpr,
+    visitEqualityExpr,
+    visitComparisonExpr,
     visitAndExpr,
     visitOrExpr,
     visitNotExpr,
     visitParensExpr,
+    visitUnaryExpr
 )
 from .devices import visitConnectStatement, visitShowInterfacesStatement
 from .visualization import draw_graph
@@ -62,6 +58,7 @@ class Interpreter(NetLangVisitor):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)
         self.visitVariableAssignment = MethodType(visitVariableAssignment, self)
 
+        self.visitNegateExpr = MethodType(visitNegateExpr, self)
         self.visitIntLiteral = MethodType(visitIntLiteral, self)
         self.visitFloatLiteral = MethodType(visitFloatLiteral, self)
         self.visitBoolLiteral = MethodType(visitBoolLiteral, self)
@@ -75,21 +72,16 @@ class Interpreter(NetLangVisitor):
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
         self.visitListIndexAccessExpr = MethodType(visitListIndexAccessExpr, self)
 
-        self.visitAddExpr = MethodType(visitAddExpr, self)
-        self.visitSubExpr = MethodType(visitSubExpr, self)
+        self.visitMulDivExpr = MethodType(visitMulDivExpr, self)
+        self.visitAddSubExpr = MethodType(visitAddSubExpr, self)
+        self.visitEqualityExpr = MethodType(visitEqualityExpr, self)
+        self.visitComparisonExpr = MethodType(visitComparisonExpr, self)
         self.visitPowExpr = MethodType(visitPowExpr, self)
-        self.visitMulExpr = MethodType(visitMulExpr, self)
-        self.visitDivExpr = MethodType(visitDivExpr, self)
-        self.visitEqualsExpr = MethodType(visitEqualsExpr, self)
-        self.visitNotEqualsExpr = MethodType(visitNotEqualsExpr, self)
-        self.visitLessThanExpr = MethodType(visitLessThanExpr, self)
-        self.visitGreaterThanExpr = MethodType(visitGreaterThanExpr, self)
-        self.visitLessEqualExpr = MethodType(visitLessEqualExpr, self)
-        self.visitGreaterEqualExpr = MethodType(visitGreaterEqualExpr, self)
         self.visitAndExpr = MethodType(visitAndExpr, self)
         self.visitOrExpr = MethodType(visitOrExpr, self)
         self.visitNotExpr = MethodType(visitNotExpr, self)
         self.visitParensExpr = MethodType(visitParensExpr, self)
+        self.visitUnaryExpr = MethodType(visitUnaryExpr, self)
 
         self.visitFieldAccess = MethodType(visitFieldAccess, self)
         self.visitObjectInitializer = MethodType(visitObjectInitializer, self)

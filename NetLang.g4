@@ -152,22 +152,49 @@ deviceType
 
 // ----------- Expressions ----------
 expression
-    : expression POW expression       # PowExpr
-    | expression MUL expression       # MulExpr
-    | expression DIV expression       # DivExpr
-    | expression PLUS expression      # AddExpr
-    | expression MINUS expression     # SubExpr
-    | expression LT expression        # LessThanExpr
-    | expression GT expression        # GreaterThanExpr
-    | expression LE expression        # LessEqualExpr
-    | expression GE expression        # GreaterEqualExpr
-    | expression EQ expression        # EqualsExpr
-    | expression NEQ expression       # NotEqualsExpr
-    | NOT expression                  # NotExpr
-    | expression AND expression       # AndExpr
-    | expression OR expression        # OrExpr
-    | NOT expression                  # NotExpr
-    | '(' expression ')'              # ParensExpr
+    : orExpr
+    ;
+
+orExpr
+    : andExpr (OR andExpr)*
+    ;
+
+andExpr
+    : notExpr (AND notExpr)*
+    ;
+
+notExpr
+    : NOT notExpr
+    | comparisonExpr
+    ;
+
+comparisonExpr
+    : equalityExpr ( (LT | GT | LE | GE) equalityExpr )*
+    ;
+
+equalityExpr
+    : addSubExpr ( (EQ | NEQ) addSubExpr )*
+    ;
+
+addSubExpr
+    : mulDivExpr ( (PLUS | MINUS) mulDivExpr )*
+    ;
+
+mulDivExpr
+    : unaryExpr ( (MUL | DIV) unaryExpr)*
+    ;
+
+unaryExpr
+    : MINUS unaryExpr
+    | powExpr
+    ;
+
+powExpr
+    : atomExpr (POW powExpr)?
+    ;
+
+atomExpr
+    : '(' expression ')'              # ParensExpr
     | ID                              # VariableExpr
     | INT                             # IntLiteral
     | FLOAT                           # FloatLiteral
