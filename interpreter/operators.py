@@ -1,6 +1,6 @@
 from generated.NetLangParser import NetLangParser
 from .errors import NetLangRuntimeError
-from .utils import ensure_numeric, ensure_boolean
+from .utils import ensure_numeric, ensure_boolean, ensure_numeric_or_string
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -68,11 +68,17 @@ def visitAddSubExpr(self: "Interpreter", ctx: NetLangParser.AddSubExprContext):
     for i in range(1, len(ctx.mulDivExpr())):
         operator = ctx.getChild(2 * i - 1).getText()
         right = self.visit(ctx.mulDivExpr(i))
-        ensure_numeric(left, ctx, operator)
-        ensure_numeric(right, ctx, operator)
         if operator == '+':
-            left += right
+            ensure_numeric_or_string(left, ctx, operator)
+            ensure_numeric_or_string(right, ctx, operator)
+            if isinstance(left, str) or isinstance(right, str):
+                left = str(left) + str(right)
+            else:
+                left += right
+
         elif operator == '-':
+            ensure_numeric(left, ctx, operator)
+            ensure_numeric(right, ctx, operator)
             left -= right
     return left
 

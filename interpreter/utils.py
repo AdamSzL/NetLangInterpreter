@@ -34,6 +34,17 @@ def ensure_numeric(value: Any, ctx, operator: str = None):
             raise NetLangRuntimeError("Expected numeric value", ctx)
 
 
+def ensure_numeric_or_string(value: Any, ctx, operator: str = None):
+    if type(value) not in (int, float, str):
+        if operator:
+            raise NetLangRuntimeError(
+                f"Invalid operand for operator '{operator}': got {type(value).__name__}, expected int/float/string",
+                ctx
+            )
+        else:
+            raise NetLangRuntimeError("Expected numeric or string value", ctx)
+
+
 def ensure_boolean(value: Any, ctx, operator: str = None):
     if not isinstance(value, bool):
         if operator:
