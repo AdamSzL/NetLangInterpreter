@@ -45,6 +45,9 @@ def check_type(declared_type: str, value: Any) -> bool:
 
     expected_type = type_map.get(declared_type)
     if expected_type:
-        return isinstance(value, expected_type)
+        if expected_type is float:
+            return type(value) is float or type(value) is int
+        else:
+            return type(value) is expected_type
 
     return False
