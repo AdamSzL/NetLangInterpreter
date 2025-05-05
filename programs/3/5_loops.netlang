@@ -1,0 +1,18 @@
+set pow: int <- 0
+repeat while pow < 10 {
+    print 2 ^ pow
+    pow <- pow + 1
+}
+
+print ""
+
+set x: int <- 1
+repeat while x < 10 {
+    if x % 2 == 0 {
+        print x + " is even"
+    }
+    else {
+        print x + " is odd"
+    }
+    x <- x + 1
+}

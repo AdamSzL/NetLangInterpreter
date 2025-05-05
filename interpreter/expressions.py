@@ -43,6 +43,11 @@ def visitVariableExpr(self: "Interpreter", ctx: NetLangParser.VariableExprContex
     if variable_name not in self.variables:
         raise NetLangRuntimeError(f"Undefined variable '{variable_name}'", ctx)
     line = ctx.start.line
+    if line == self.variables[variable_name].line_declared:
+        raise NetLangRuntimeError(
+            message=f"Error: Variable '{variable_name}' cannot be used on the same line it is declared",
+            ctx=ctx
+        )
     if line < self.variables[variable_name].line_declared:
         raise NetLangRuntimeError(
             message=f"Variable '{variable_name}' used before its declaration (declared at line {self.variables[variable_name].line_declared}, used at line {line})",

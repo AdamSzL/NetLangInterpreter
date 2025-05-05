@@ -1,0 +1,43 @@
+if 5 > 3 {
+    print "5 is greater than 3"
+}
+else {
+    print "fail"
+}
+
+if 3.5 < 7.2 {
+    print "3.5 is less than 7.2"
+}
+
+
+set flag: bool <- (true || false) && true
+
+if flag {
+    print "flag is true"
+}
+else {
+    print "flag is false"
+}
+
+if 2 ^ 4 == 8 {
+    print "2 to the power of 4 is equal to 8"
+}
+else {
+    print "2 to the power of 4 is not equal to 8"
+}
+
+set number: int <- 5
+if number % 2 == 0 {
+    print "number is even"
+}
+else {
+    print "number is odd"
+}
+
+set temperature: float <- 25.5
+if temperature >= 20.0 {
+    print "warm"
+}
+else {
+    print "cold"
+}

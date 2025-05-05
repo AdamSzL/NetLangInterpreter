@@ -23,17 +23,6 @@ def get_port_by_id(device, port_id):
             return port
     return None
 
-def ensure_numeric(value: Any, ctx, operator: str = None):
-    if type(value) not in (int, float):
-        if operator:
-            raise NetLangRuntimeError(
-                f"Invalid operand for operator '{operator}': got {type(value).__name__}, expected int/float",
-                ctx
-            )
-        else:
-            raise NetLangRuntimeError("Expected numeric value", ctx)
-
-
 def ensure_numeric_or_string(value: Any, ctx, operator: str = None):
     if type(value) not in (int, float, str):
         if operator:
@@ -45,12 +34,17 @@ def ensure_numeric_or_string(value: Any, ctx, operator: str = None):
             raise NetLangRuntimeError("Expected numeric or string value", ctx)
 
 
-def ensure_boolean(value: Any, ctx, operator: str = None):
+def ensure_boolean(value: Any, ctx, operator: str = None, statement: str = None):
     if not isinstance(value, bool):
         if operator:
             raise NetLangRuntimeError(
                 f"Invalid operand for operator '{operator}': got {type(value).__name__}, expected bool",
                 ctx
+            )
+        elif statement:
+            raise NetLangRuntimeError(
+                message=f"Condition in '{statement}' statement must be a value of type bool (got {type(value).__name__} instead)",
+                ctx=ctx
             )
         else:
             raise NetLangRuntimeError("Expected boolean value", ctx)

@@ -1,0 +1,11 @@
+set x: int <- 7
+set y: int <- 2
+set z: int <- 7 \ 2
+print z
+
+print -7 \ 2
+print 7 \ -2
+print -7 \ -2
+
+print 7 / 2
+print 4 / 5

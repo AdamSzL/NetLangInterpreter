@@ -19,6 +19,7 @@ statement
     | loopStatement
     | functionDeclarationStatement
     | returnStatement
+    | expression
     ;
 
 
@@ -181,11 +182,12 @@ addSubExpr
     ;
 
 mulDivExpr
-    : unaryExpr ( (MUL | DIV) unaryExpr)*
+    : unaryExpr ( (MUL | DIV | FLOORDIV | MOD) unaryExpr)*
     ;
 
 unaryExpr
-    : MINUS unaryExpr
+    : PLUS unaryExpr
+    | MINUS unaryExpr
     | powExpr
     ;
 
@@ -257,7 +259,9 @@ DOT: '.';
 PLUS: '+';
 MINUS: '-';
 MUL: '*';
+FLOORDIV: '\\';
 DIV: '/';
+MOD: '%';
 POW: '^';
 
 // Comparison operators

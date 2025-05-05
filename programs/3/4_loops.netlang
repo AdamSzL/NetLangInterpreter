@@ -1,0 +1,14 @@
+set counter: int <- 3
+
+repeat while counter > 0 {
+    print counter
+    counter <- counter - 1
+}
+
+print ""
+
+set i: int <- 1
+repeat while i < 10 {
+    print i
+    i <- i * 2
+}

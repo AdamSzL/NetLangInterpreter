@@ -1,0 +1,42 @@
+if true {
+    print "if worked"
+}
+else {
+    print "else worked"
+}
+
+
+if false {
+    print "if worked"
+}
+else if true {
+    print "else if worked"
+}
+else {
+    print "else worked"
+}
+
+
+if false {
+    print "if worked"
+}
+else if false {
+    print "else if worked"
+}
+else {
+    print "else worked"
+}
+
+
+if false {
+    print "if worked"
+}
+else if false {
+    print "first else if"
+}
+else if true {
+    print "second else if"
+}
+else {
+    print "else worked"
+}

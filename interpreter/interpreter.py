@@ -35,6 +35,7 @@ from .operators import (
     visitUnaryExpr
 )
 from .devices import visitConnectStatement, visitShowInterfacesStatement
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop
 from .visualization import draw_graph
 from .packets import visitSendPacketStatement, forward_packet
 from types import MethodType
@@ -98,6 +99,8 @@ class Interpreter(NetLangVisitor):
         self.visitListIndexAccess = MethodType(visitListIndexAccess, self)
         self.visitListIndexAssignment = MethodType(visitListIndexAssignment, self)
         self.visitShowInterfacesStatement = MethodType(visitShowInterfacesStatement, self)
+        self.visitIfStatement = MethodType(visitIfStatement, self)
+        self.visitRepeatWhileLoop = MethodType(visitRepeatWhileLoop, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
 
         self.draw_graph = MethodType(draw_graph, self)

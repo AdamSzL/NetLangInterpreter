@@ -95,6 +95,14 @@ def visitMulDivExpr(self: "Interpreter", ctx: NetLangParser.MulDivExprContext):
             if right == 0:
                 raise NetLangRuntimeError(message="Division by zero", ctx=ctx)
             left /= right
+        elif operator == '\\':
+            if right == 0:
+                raise NetLangRuntimeError(message="Division by zero", ctx=ctx)
+            left //= right
+        elif operator == '%':
+            if right == 0:
+                raise NetLangRuntimeError(message="Modulo by zero", ctx=ctx)
+            left %= right
 
     return left
 
@@ -109,6 +117,10 @@ def visitPowExpr(self: "Interpreter", ctx: NetLangParser.PowExprContext):
         return base
 
 def visitUnaryExpr(self: "Interpreter", ctx: NetLangParser.UnaryExprContext):
+    if ctx.PLUS():
+        value = self.visit(ctx.unaryExpr())
+        ensure_numeric(value, ctx, operator='+ (unary)')
+        return value
     if ctx.MINUS():
         value = self.visit(ctx.unaryExpr())
         ensure_numeric(value, ctx, operator='- (unary)')

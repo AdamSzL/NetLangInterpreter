@@ -1,0 +1,6 @@
+if "hello" {
+    print "true"
+}
+else {
+    print "false"
+}
