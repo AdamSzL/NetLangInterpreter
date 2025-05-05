@@ -23,6 +23,16 @@ def get_port_by_id(device, port_id):
             return port
     return None
 
+def ensure_numeric(value: Any, ctx, operator: str = None):
+    if type(value) not in (int, float):
+        if operator:
+            raise NetLangRuntimeError(
+                f"Invalid operand for operator '{operator}': got {type(value).__name__}, expected int/float",
+                ctx
+            )
+        else:
+            raise NetLangRuntimeError("Expected numeric value", ctx)
+
 def ensure_numeric_or_string(value: Any, ctx, operator: str = None):
     if type(value) not in (int, float, str):
         if operator:
