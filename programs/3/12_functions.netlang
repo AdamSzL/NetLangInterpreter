@@ -1,0 +1,3 @@
+define returnWrongType() => int {
+    return "hello"
+}

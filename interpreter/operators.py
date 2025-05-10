@@ -93,15 +93,15 @@ def visitMulDivExpr(self: "Interpreter", ctx: NetLangParser.MulDivExprContext):
             left *= right
         elif operator == '/':
             if right == 0:
-                raise NetLangRuntimeError(message="Division by zero", ctx=ctx)
+                raise NetLangRuntimeError("Division by zero", ctx)
             left /= right
         elif operator == '\\':
             if right == 0:
-                raise NetLangRuntimeError(message="Division by zero", ctx=ctx)
+                raise NetLangRuntimeError("Division by zero", ctx)
             left //= right
         elif operator == '%':
             if right == 0:
-                raise NetLangRuntimeError(message="Modulo by zero", ctx=ctx)
+                raise NetLangRuntimeError("Modulo by zero", ctx)
             left %= right
 
     return left

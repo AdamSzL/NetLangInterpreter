@@ -1,0 +1,5 @@
+define square(n: int) => int {
+    return n * n
+}
+
+square("abc")

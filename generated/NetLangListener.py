@@ -53,12 +53,12 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#removeFromListStatement.
-    def enterRemoveFromListStatement(self, ctx:NetLangParser.RemoveFromListStatementContext):
+    # Enter a parse tree produced by NetLangParser#deleteListElementStatement.
+    def enterDeleteListElementStatement(self, ctx:NetLangParser.DeleteListElementStatementContext):
         pass
 
-    # Exit a parse tree produced by NetLangParser#removeFromListStatement.
-    def exitRemoveFromListStatement(self, ctx:NetLangParser.RemoveFromListStatementContext):
+    # Exit a parse tree produced by NetLangParser#deleteListElementStatement.
+    def exitDeleteListElementStatement(self, ctx:NetLangParser.DeleteListElementStatementContext):
         pass
 
 
@@ -404,6 +404,15 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by NetLangParser#CIDRLiteralExpr.
+    def enterCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#CIDRLiteralExpr.
+    def exitCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
+        pass
+
+
     # Enter a parse tree produced by NetLangParser#IPAddressLiteral.
     def enterIPAddressLiteral(self, ctx:NetLangParser.IPAddressLiteralContext):
         pass
@@ -428,15 +437,6 @@ class NetLangListener(ParseTreeListener):
 
     # Exit a parse tree produced by NetLangParser#ListLiteralExpr.
     def exitListLiteralExpr(self, ctx:NetLangParser.ListLiteralExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#CIDRLiteralExpr.
-    def enterCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#CIDRLiteralExpr.
-    def exitCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
         pass
 
 

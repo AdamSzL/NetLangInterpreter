@@ -21,14 +21,14 @@ class RoutingEntry(NetLangObject):
 
         if not isinstance(destination, CIDR):
             raise NetLangRuntimeError(
-                message="RoutingEntry field 'destination' must be a CIDR object",
-                ctx=ctx
+                "RoutingEntry field 'destination' must be a CIDR object",
+                ctx
             )
 
         if not isinstance(via, str):
             raise NetLangRuntimeError(
-                message="RoutingEntry field 'via' must be a string (portId)",
-                ctx=ctx
+                "RoutingEntry field 'via' must be a string (portId)",
+                ctx
             )
 
         return RoutingEntry(destination, via)

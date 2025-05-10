@@ -30,24 +30,30 @@ class CopperEthernetPort(NetLangObject, Port):
         mtu = data.get("mtu", 1500)
 
         if not isinstance(port_id, str):
-            raise NetLangRuntimeError("CopperEthernetPort must have string portId", ctx=ctx)
+            raise NetLangRuntimeError("CopperEthernetPort must have string portId", ctx)
 
         if ip is not None and not isinstance(ip, CIDR):
-            raise NetLangRuntimeError("Invalid ip for CopperEthernetPort", ctx=ctx)
+            raise NetLangRuntimeError("Invalid ip for CopperEthernetPort", ctx)
 
         if mac is None:
             mac = MACAddress.generate()
         else:
             if not isinstance(mac, MACAddress):
-                raise NetLangRuntimeError("Invalid MAC address", ctx=ctx)
+                raise NetLangRuntimeError("Invalid MAC address", ctx)
             if MACAddress.is_registered(mac.mac):
-                raise NetLangRuntimeError(message=f"MAC address {mac.mac} is already in use", ctx=ctx)
+                raise NetLangRuntimeError(f"MAC address {mac.mac} is already in use", ctx)
             MACAddress.register(mac.mac)
 
         if not isinstance(bandwidth, int):
-            raise NetLangRuntimeError("Bandwidth must be an integer", ctx=ctx)
+            raise NetLangRuntimeError("Bandwidth must be an integer", ctx)
 
         if not isinstance(mtu, int):
-            raise NetLangRuntimeError("MTU must be an integer", ctx=ctx)
+            raise NetLangRuntimeError("MTU must be an integer", ctx)
 
         return cls(port_id, ip, mac, bandwidth, mtu)
+
+    def __hash__(self):
+        return hash(self.mac)
+
+    def __eq__(self, other):
+        return isinstance(other, CopperEthernetPort) and self.mac == other.mac

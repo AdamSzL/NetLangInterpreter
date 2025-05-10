@@ -6,7 +6,7 @@ from .errors import NetLangRuntimeError
 from .types import type_map, is_known_type, check_type
 from model.base import NetLangObject
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter
@@ -18,18 +18,14 @@ class Variable:
     value: Any = None
 
 @dataclass
-class VariableCollectorListener(NetLangListener):
-    variables: dict[str, Variable] = field(default_factory=dict)
+class Function:
+    parameters: list[tuple[str, str]]
+    return_type: Optional[str]
+    body_ctx: Any
 
-    def enterVariableDeclaration(self, ctx: NetLangParser.VariableDeclarationContext):
-        variable_name: str = ctx.ID().getText()
-        variable_type: str = ctx.type_().getText()
-        line: int = ctx.start.line
-
-        if variable_name in self.variables:
-            raise NetLangRuntimeError(f"Redeclaration of variable '{variable_name}' (first declared on line {self.variables[variable_name].line_declared})", ctx)
-
-        self.variables[variable_name] = Variable(variable_type, line)
+@dataclass
+class ReturnValue(Exception):
+    value: Any
 
 def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDeclarationContext):
     name: str = ctx.ID().getText()
@@ -40,14 +36,11 @@ def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDec
         value = type_map[declared_type].from_dict(value, ctx)
 
     if not is_known_type(declared_type):
-        raise NetLangRuntimeError(
-            message=f"Unknown type '{declared_type}'",
-            ctx=ctx
-        )
+        raise NetLangRuntimeError(f"Unknown type '{declared_type}'", ctx)
 
     if not check_type(declared_type, value):
         raise NetLangRuntimeError(
-            f"Type mismatch: cannot assign value {value} ({type(value).__name__}) to variable {name} of type {declared_type}",
+            f"Type mismatch: cannot assign value {value} ({type(value).__name__}) to variable '{name}' of type {declared_type}",
             ctx
         )
 
@@ -64,63 +57,75 @@ def visitVariableAssignment(self: "Interpreter", ctx: NetLangParser.VariableAssi
     expected_type = self.variables[name].type
     if not check_type(expected_type, value):
         raise NetLangRuntimeError(
-            message=f"Type mismatch in assignment to variable '{name}': expected '{expected_type}', got '{type(value).__name__}'",
-            ctx=ctx
+            f"Type mismatch in assignment to variable '{name}': expected '{expected_type}', got '{type(value).__name__}'",
+            ctx
         )
 
     self.variables[name].value = value
 
     return value
 
-def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignmentContext):
-    access = ctx.fieldAccess()
+def visitFunctionCallExpr(self, ctx: NetLangParser.FunctionCallExprContext):
+    return self.visit(ctx.functionCall())
+
+def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContext):
+    function_name = ctx.ID().getText()
+    expr_list = ctx.expressionList()
+    args = [self.visit(expr) for expr in expr_list.expression()] if expr_list else []
+
+    if function_name not in self.variables:
+        raise NetLangRuntimeError(f"Undefined function '{function_name}'", ctx)
+
+    func_var = self.variables[function_name]
+    if not isinstance(func_var.value, Function):
+        raise NetLangRuntimeError(f"'{function_name}' is not callable", ctx)
+
+    function: Function = func_var.value
+    if len(args) != len(function.parameters):
+        raise NetLangRuntimeError(f"Function '{function_name}' expects {len(function.parameters)} arguments, got {len(args)}", ctx)
+
+    for (param_name, param_type), arg_value in zip(function.parameters, args):
+        if not check_type(param_type, arg_value):
+            raise NetLangRuntimeError(
+                f"Type mismatch for parameter '{param_name}' in call to function '{function_name}': "
+                f"expected '{param_type}', got '{type(arg_value).__name__}'",
+                ctx
+            )
+
+    previous_variables = self.variables.copy()
+
+    for (param_name, param_type), value in zip(function.parameters, args):
+        self.variables[param_name] = Variable(type=param_type, line_declared=1, value=value)
+
+    previous_in_function = self.in_function
+    self.in_function = True
+    try:
+        self.visit(function.body_ctx)
+        if function.return_type is not None:
+            raise NetLangRuntimeError(
+                f"Missing return in function '{function_name}' which declares return type '{function.return_type}'",
+                ctx
+            )
+    except ReturnValue as ret:
+        if function.return_type is None:
+            raise NetLangRuntimeError(
+                f"Function '{function_name}' does not declare a return type, but 'return' was used.",
+                ctx
+            )
+        if not check_type(function.return_type, ret.value):
+            raise NetLangRuntimeError(
+                f"Return type mismatch: function '{function_name}' declared to return '{function.return_type}', "
+                f"but got '{type(ret.value).__name__}'",
+                ctx
+            )
+        return ret.value
+    finally:
+        self.variables = previous_variables
+        self.in_function = previous_in_function
+
+def visitReturnStatement(self: "Interpreter", ctx: NetLangParser.ReturnStatementContext):
+    if not self.in_function:
+        raise NetLangRuntimeError("Cannot use 'return' statement outside of a function", ctx)
+
     value = self.visit(ctx.expression())
-
-    # Zacznij od pierwszego ID
-    current = self.variables.get(access.ID(0).getText())
-    if current is None:
-        raise NetLangRuntimeError(f"Variable '{access.ID(0).getText()}' not defined")
-
-    # Przechodzimy po chainie, ale ZATRZYMUJEMY się na przedostatnim
-    for i in range(1, len(access.children) - 2, 2):
-        op = access.getChild(i).getText()
-        operand = access.getChild(i + 1)
-
-        if op == ".":
-            field = operand.getText()
-            if not hasattr(current, field):
-                raise NetLangRuntimeError(f"'{type(current).__name__}' has no field '{field}'")
-            current = getattr(current, field)
-
-        elif op == "<":
-            index = int(self.visit(operand))
-            if not isinstance(current, list):
-                raise NetLangRuntimeError(f"Tried to index non-list object")
-            try:
-                current = current[index]
-            except IndexError:
-                raise NetLangRuntimeError(f"Index {index} out of range")
-
-    # Teraz zostały ostatnie dwa elementy: operator + field/index
-    last_op = access.getChild(-2).getText()
-    last_operand = access.getChild(-1)
-
-    if last_op == ".":
-        field_name = last_operand.getText()
-        if not hasattr(current, field_name):
-            raise NetLangRuntimeError(f"'{type(current).__name__}' has no field '{field_name}'")
-        setattr(current, field_name, value)
-        # print(f"[assign] ...{field_name} ← {value}")
-        return value
-
-    elif last_op == "<":
-        index = int(self.visit(last_operand))
-        if not isinstance(current, list):
-            raise NetLangRuntimeError(f"Tried to index non-list object")
-        if index >= len(current):
-            raise NetLangRuntimeError(f"Index {index} out of range")
-        current[index] = value
-        # print(f"[assign] ...<{index}> ← {value}")
-        return value
-
-    raise NetLangRuntimeError(f"Unsupported assignment operator '{last_op}'")
+    raise ReturnValue(value)

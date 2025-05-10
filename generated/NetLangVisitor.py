@@ -34,8 +34,8 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#removeFromListStatement.
-    def visitRemoveFromListStatement(self, ctx:NetLangParser.RemoveFromListStatementContext):
+    # Visit a parse tree produced by NetLangParser#deleteListElementStatement.
+    def visitDeleteListElementStatement(self, ctx:NetLangParser.DeleteListElementStatementContext):
         return self.visitChildren(ctx)
 
 
@@ -229,6 +229,11 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by NetLangParser#CIDRLiteralExpr.
+    def visitCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by NetLangParser#IPAddressLiteral.
     def visitIPAddressLiteral(self, ctx:NetLangParser.IPAddressLiteralContext):
         return self.visitChildren(ctx)
@@ -241,11 +246,6 @@ class NetLangVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by NetLangParser#ListLiteralExpr.
     def visitListLiteralExpr(self, ctx:NetLangParser.ListLiteralExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#CIDRLiteralExpr.
-    def visitCIDRLiteralExpr(self, ctx:NetLangParser.CIDRLiteralExprContext):
         return self.visitChildren(ctx)
 
 

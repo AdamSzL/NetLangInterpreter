@@ -1,0 +1,16 @@
+repeat 5 times as idx {
+    print idx
+}
+
+print ""
+
+repeat 5 times as index {
+    print index * 2
+}
+
+print ""
+
+set n: int <- 5
+repeat n times as i {
+    print n - i
+}

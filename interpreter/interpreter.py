@@ -2,25 +2,23 @@ from dataclasses import dataclass, field
 
 from generated.NetLangVisitor import NetLangVisitor
 from model import Connection
-from .variables import visitVariableDeclaration, visitVariableAssignment, visitFieldAssignment, Variable
-from .lists import visitAddToListStatement, visitRemoveFromListStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
+from .variables import visitVariableDeclaration, visitVariableAssignment, Variable, visitFunctionCall, visitFunctionCallExpr, visitReturnStatement
+from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment, getListAndIndex
 from .expressions import (
-    visitNegateExpr,
+    visitAtomExpr,
     visitIntLiteral,
     visitFloatLiteral,
     visitBoolLiteral,
     visitStringLiteral,
     visitVariableExpr,
     visitListLiteralExpr,
-    visitIPAddressLiteralExpr,
+    visitIPAddressLiteral,
     visitCIDRLiteralExpr,
-    visitMacAddressLiteralExpr,
-    visitObjectInitializerExpr,
-    visitFieldAccessExpr,
+    visitMacAddressLiteral,
     visitListIndexAccessExpr,
-    visitFieldAccess,
+    visitObjectInitializerExpr,
     visitObjectInitializer,
-    visitCidrLiteral,
+    visitCidrLiteral
 )
 from .operators import (
     visitPowExpr,
@@ -34,8 +32,9 @@ from .operators import (
     visitParensExpr,
     visitUnaryExpr
 )
+from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment
 from .devices import visitConnectStatement, visitShowInterfacesStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop
 from .visualization import draw_graph
 from .packets import visitSendPacketStatement, forward_packet
 from types import MethodType
@@ -55,20 +54,20 @@ class Interpreter(NetLangVisitor):
         else:
             print(value)
 
-    def __init__(self, variables: dict[str, Variable]):
+    def __init__(self, variables: dict[str, Variable], dry_run: bool = False):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)
         self.visitVariableAssignment = MethodType(visitVariableAssignment, self)
 
-        self.visitNegateExpr = MethodType(visitNegateExpr, self)
+        self.visitAtomExpr = MethodType(visitAtomExpr, self)
         self.visitIntLiteral = MethodType(visitIntLiteral, self)
         self.visitFloatLiteral = MethodType(visitFloatLiteral, self)
         self.visitBoolLiteral = MethodType(visitBoolLiteral, self)
         self.visitStringLiteral = MethodType(visitStringLiteral, self)
         self.visitVariableExpr = MethodType(visitVariableExpr, self)
         self.visitListLiteralExpr = MethodType(visitListLiteralExpr, self)
-        self.visitIPAddressLiteralExpr = MethodType(visitIPAddressLiteralExpr, self)
+        self.visitIPAddressLiteral = MethodType(visitIPAddressLiteral, self)
         self.visitCIDRLiteralExpr = MethodType(visitCIDRLiteralExpr, self)
-        self.visitMacAddressLiteralExpr = MethodType(visitMacAddressLiteralExpr, self)
+        self.visitMacAddressLiteral = MethodType(visitMacAddressLiteral, self)
         self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
         self.visitListIndexAccessExpr = MethodType(visitListIndexAccessExpr, self)
@@ -84,27 +83,35 @@ class Interpreter(NetLangVisitor):
         self.visitParensExpr = MethodType(visitParensExpr, self)
         self.visitUnaryExpr = MethodType(visitUnaryExpr, self)
 
+        self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
+        self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
+        self.visitCidrLiteral = MethodType(visitCidrLiteral, self)
         self.visitFieldAccess = MethodType(visitFieldAccess, self)
         self.visitObjectInitializer = MethodType(visitObjectInitializer, self)
-        self.visitCidrLiteral = MethodType(visitCidrLiteral, self)
 
         self.visitConnectStatement = MethodType(visitConnectStatement, self)
         self.visitAddToListStatement = MethodType(visitAddToListStatement, self)
-        self.visitRemoveFromListStatement = MethodType(visitRemoveFromListStatement, self)
+        self.visitDeleteListElementStatement = MethodType(visitDeleteListElementStatement, self)
+        self.getListAndIndex = MethodType(getListAndIndex, self)
         self.visitListLiteral = MethodType(visitListLiteral, self)
-        self.visitCidrLiteral = MethodType(visitCidrLiteral, self)
-        self.visitObjectInitializer = MethodType(visitObjectInitializer, self)
-        self.visitFieldAccess = MethodType(visitFieldAccess, self)
+        self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
+        self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
         self.visitFieldAssignment = MethodType(visitFieldAssignment, self)
         self.visitListIndexAccess = MethodType(visitListIndexAccess, self)
         self.visitListIndexAssignment = MethodType(visitListIndexAssignment, self)
         self.visitShowInterfacesStatement = MethodType(visitShowInterfacesStatement, self)
         self.visitIfStatement = MethodType(visitIfStatement, self)
         self.visitRepeatWhileLoop = MethodType(visitRepeatWhileLoop, self)
+        self.visitRepeatTimesLoop = MethodType(visitRepeatTimesLoop, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
+
+        self.visitFunctionCallExpr = MethodType(visitFunctionCallExpr, self)
+        self.visitFunctionCall = MethodType(visitFunctionCall, self)
+        self.visitReturnStatement = MethodType(visitReturnStatement, self)
 
         self.draw_graph = MethodType(draw_graph, self)
         self.forward_packet = MethodType(forward_packet, self)
 
         self.variables: dict[str, Variable] = variables
         self.connections: list[Connection] = []
+        self.in_function = False

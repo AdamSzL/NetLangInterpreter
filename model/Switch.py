@@ -10,7 +10,7 @@ class Switch(NetLangObject, Device):
     ports: list
 
     @classmethod
-    def from_dict(cls, data: dict, ctx=None):
+    def from_dict(cls, data: dict, ctx):
         cls.check_fields(data, ctx)
 
         name = data.get("name")
@@ -20,7 +20,7 @@ class Switch(NetLangObject, Device):
 
         switch = cls(name, ports)
 
-        cls.validate_logic(name, ports)
+        cls.validate_logic(name, ports, ctx)
 
         for port in ports:
             setattr(switch, port.portId, port)
@@ -28,27 +28,29 @@ class Switch(NetLangObject, Device):
         return switch
 
     @staticmethod
-    def validate_field_types(name, ports, ctx=None):
+    def validate_field_types(name, ports, ctx):
         if not isinstance(name, str):
-            raise NetLangRuntimeError(message="Switch device must have string 'name' field", ctx=ctx)
+            raise NetLangRuntimeError("Switch device must have string 'name' field", ctx)
 
         if not isinstance(ports, list):
-            raise NetLangRuntimeError(message="Switch device must have list of ports in 'ports' field", ctx=ctx)
+            raise NetLangRuntimeError("Switch device must have list of ports in 'ports' field", ctx)
 
     @staticmethod
     def validate_logic(name, ports, ctx=None):
         seen_ids = set()
         for port in ports:
             if port.portId in seen_ids:
-                raise NetLangRuntimeError(message=f"Duplicate portId '{port.portId}' in Switch '{name}'",
-                                          ctx=ctx)
+                raise NetLangRuntimeError(
+                    f"Duplicate portId '{port.portId}' in Switch '{name}'",
+                    ctx
+                )
             if hasattr(port, "ip") and port.ip is not None:
                 raise NetLangRuntimeError(
-                    message=f"Switch port '{port.portId}' must not have an IP address",
-                    ctx=ctx
+                    f"Switch port '{port.portId}' must not have an IP address",
+                    ctx
                 )
             seen_ids.add(port.portId)
 
     def validate(self, ctx=None):
-        self.__class__.validate_field_types(self.name, self.ports, ctx=ctx)
-        self.__class__.validate_logic(self.name, self.ports, ctx=ctx)
+        self.__class__.validate_field_types(self.name, self.ports, ctx)
+        self.__class__.validate_logic(self.name, self.ports, ctx)

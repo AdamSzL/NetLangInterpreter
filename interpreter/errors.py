@@ -1,9 +1,33 @@
 from antlr4.error.ErrorListener import ErrorListener
 
+# class NetLangErrorListener(ErrorListener):
+#     def syntaxError(self, recognizer, offendingSymbol, line: int, column: int, msg: str, e):
+#         raise NetLangSyntaxError(f"[Line {line}, Column {column}]: {msg}")
 
 class NetLangErrorListener(ErrorListener):
-    def syntaxError(self, recognizer, offendingSymbol, line: int, column: int, msg: str, e):
-        raise NetLangSyntaxError(f"[Line {line}, Column {column}]: {msg}")
+    def __init__(self, source_code: str):
+        self.source_lines = source_code.splitlines()
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg: str, e):
+        error_line = self.source_lines[line - 1] if 0 <= line - 1 < len(self.source_lines) else ""
+        pointer_line = " " * column + "^"
+
+        pretty_msg = self._prettify_message(msg)
+
+        raise NetLangSyntaxError(
+            f"Syntax Error at line {line}, column {column}:\n"
+            f"{error_line}\n"
+            f"{pointer_line}\n"
+            f"{pretty_msg}"
+        )
+
+    def _prettify_message(self, raw_msg: str) -> str:
+        print(raw_msg)
+        if "no viable alternative" in raw_msg:
+            return "Invalid or incomplete statement"
+        if "mismatched input" in raw_msg:
+            return "Unexpected token"
+        return "Invalid syntax"
 
 
 class NetLangRuntimeError(Exception):

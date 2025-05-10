@@ -4,10 +4,13 @@ from generated.NetLangLexer import NetLangLexer
 from generated.NetLangParser import NetLangParser
 from interpreter.errors import NetLangErrorListener, NetLangRuntimeError, NetLangSyntaxError
 from interpreter import Interpreter
+from interpreter.listener import VariableCollectorListener
 from interpreter.logging import log
 from rich.text import Text
 
-from interpreter.variables import VariableCollectorListener
+from interpreter.utils import dummy_value_for_type
+from interpreter.variables import Variable, Function
+from interpreter.visitor import TypeCheckingVisitor
 
 
 def main():
@@ -19,16 +22,17 @@ def main():
 
     try:
         with open(filename, "r") as f:
-            input_stream = InputStream(f.read())
+            source_code = f.read()
+            input_stream = InputStream(source_code)
 
         lexer = NetLangLexer(input_stream)
         lexer.removeErrorListeners()
-        lexer.addErrorListener(NetLangErrorListener())
+        lexer.addErrorListener(NetLangErrorListener(source_code))
 
         stream = CommonTokenStream(lexer)
         parser = NetLangParser(stream)
         parser.removeErrorListeners()
-        parser.addErrorListener(NetLangErrorListener())
+        parser.addErrorListener(NetLangErrorListener(source_code))
 
         tree = parser.program()
 
@@ -36,8 +40,14 @@ def main():
         walker = ParseTreeWalker()
         walker.walk(collector, tree)
 
+        type_checker = TypeCheckingVisitor(collector.variables)
+        type_checker.visit(tree)
+
         interpreter = Interpreter(collector.variables)
-        interpreter.visit(tree)
+        for statement in tree.statement():
+            if statement.functionDeclarationStatement():
+                continue
+            interpreter.visit(statement)
     except NetLangRuntimeError as e:
         log(f"[bold red]Runtime Error:[/bold red]", e)
         sys.exit(1)

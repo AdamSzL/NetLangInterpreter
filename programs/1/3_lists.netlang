@@ -8,5 +8,5 @@ print names<3>
 names<0> <- "PC123"
 print names
 
-remove "PC2" from names
+delete names<0>
 print names

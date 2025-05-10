@@ -1,0 +1,17 @@
+set sum: int <- 0
+
+repeat 5 times as i {
+    sum <- sum + i
+}
+
+print sum
+
+
+set names: [string] <- []
+add "PC1" to names
+
+repeat 5 times as idx {
+    add "PC" + idx to names
+}
+
+print names

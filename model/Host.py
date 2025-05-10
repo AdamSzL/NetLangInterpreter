@@ -10,7 +10,7 @@ class Host(NetLangObject, Device):
     ports: list
 
     @classmethod
-    def from_dict(cls, data: dict, ctx=None):
+    def from_dict(cls, data: dict, ctx):
         cls.check_fields(data, ctx)
 
         name = data.get("name")
@@ -20,7 +20,7 @@ class Host(NetLangObject, Device):
 
         host = cls(name, ports)
 
-        cls.validate_logic(name, ports)
+        cls.validate_logic(name, ports, ctx)
 
         for port in ports:
             setattr(host, port.portId, port)
@@ -30,25 +30,27 @@ class Host(NetLangObject, Device):
     @staticmethod
     def validate_field_types(name, ports, ctx=None):
         if not isinstance(name, str):
-            raise NetLangRuntimeError(message="Host device must have string 'name' field", ctx=ctx)
+            raise NetLangRuntimeError("Host device must have string 'name' field", ctx)
 
         if not isinstance(ports, list):
-            raise NetLangRuntimeError(message="Host device must have list of ports in 'ports' field", ctx=ctx)
+            raise NetLangRuntimeError("Host device must have list of ports in 'ports' field", ctx)
 
     @staticmethod
     def validate_logic(name, ports, ctx=None):
         seen_ids = set()
         for port in ports:
             if port.portId in seen_ids:
-                raise NetLangRuntimeError(message=f"Duplicate portId '{port.portId}' in Host '{name}'",
-                                          ctx=ctx)
+                raise NetLangRuntimeError(
+                    f"Duplicate portId '{port.portId}' in Host '{name}'",
+                    ctx
+                )
             if not hasattr(port, "ip") or port.ip is None:
                 raise NetLangRuntimeError(
-                    message=f"Host port '{port.portId}' must have an IP address",
-                    ctx=ctx
+                    f"Host port '{port.portId}' must have an IP address",
+                    ctx
                 )
             seen_ids.add(port.portId)
 
     def validate(self, ctx=None):
-        self.__class__.validate_field_types(self.name, self.ports, ctx=ctx)
-        self.__class__.validate_logic(self.name, self.ports, ctx=ctx)
+        self.__class__.validate_field_types(self.name, self.ports, ctx)
+        self.__class__.validate_logic(self.name, self.ports, ctx)

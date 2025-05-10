@@ -53,8 +53,17 @@ def ensure_boolean(value: Any, ctx, operator: str = None, statement: str = None)
             )
         elif statement:
             raise NetLangRuntimeError(
-                message=f"Condition in '{statement}' statement must be a value of type bool (got {type(value).__name__} instead)",
-                ctx=ctx
+                f"Condition in '{statement}' statement must be a value of type bool (got {type(value).__name__} instead)",
+                ctx
             )
         else:
             raise NetLangRuntimeError("Expected boolean value", ctx)
+
+
+def dummy_value_for_type(type_name: str):
+    return {
+        "int": 0,
+        "string": "",
+        "bool": False,
+        "float": 0.0,
+    }.get(type_name, None)

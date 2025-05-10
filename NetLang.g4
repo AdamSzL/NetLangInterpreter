@@ -8,7 +8,7 @@ statement
     | variableDeclaration
     | variableAssignment
     | addToListStatement
-    | removeFromListStatement
+    | deleteListElementStatement
     | fieldAssignment
     | connectStatement
     | disconnectStatement
@@ -19,7 +19,8 @@ statement
     | loopStatement
     | functionDeclarationStatement
     | returnStatement
-    | expression
+    | functionCall
+//    | expression
     ;
 
 
@@ -33,14 +34,12 @@ variableAssignment
     : ID '<-' expression
     ;
 
-// Add to list
 addToListStatement
     : 'add' expression 'to' fieldAccess
     ;
 
-// Remove from list
-removeFromListStatement
-    : 'remove' expression 'from' fieldAccess
+deleteListElementStatement
+    : 'delete' listIndexAccess
     ;
 
 fieldAssignment
@@ -91,7 +90,7 @@ loopStatement
     ;
 
 repeatTimesLoop
-    : 'repeat' INT 'times' 'as' ID block
+    : 'repeat' expression 'times' 'as' ID block
     ;
 
 repeatWhileLoop
@@ -103,7 +102,7 @@ eachLoop
     ;
 
 functionDeclarationStatement
-    : 'define' ID '(' parameterList? ')' '=>' type block
+    : 'define' ID '(' parameterList? ')' ('=>' type)? block
     ;
 
 parameterList
@@ -202,10 +201,10 @@ atomExpr
     | FLOAT                           # FloatLiteral
     | BOOL                            # BoolLiteral
     | STRING                          # StringLiteral
+    | cidrLiteral                     # CIDRLiteralExpr
     | IPADDR                          # IPAddressLiteral
     | MACADDR                         # MacAddressLiteral
     | listLiteral                     # ListLiteralExpr
-    | cidrLiteral                     # CIDRLiteralExpr
     | objectInitializer               # ObjectInitializerExpr
     | fieldAccess                     # FieldAccessExpr
     | functionCall                    # FunctionCallExpr
@@ -242,7 +241,7 @@ fieldAccess
     ;
 
 functionCall
-    : 'execute' ID 'params' expression
+    : ID '(' expressionList? ')'
     ;
 
 listIndexAccess

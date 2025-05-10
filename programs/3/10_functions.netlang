@@ -1,0 +1,5 @@
+define greet(name: string, age: int) => string {
+    return name + " is " + age
+}
+
+greet("Adam")

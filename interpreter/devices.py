@@ -40,15 +40,15 @@ def visitShowInterfacesStatement(self: "Interpreter", ctx: NetLangParser.ShowInt
     device_name = ctx.ID().getText()
 
     if device_name not in self.variables:
-        raise NetLangRuntimeError(f"Device '{device_name}' not found")
+        raise NetLangRuntimeError(f"Device '{device_name}' not found", ctx)
 
-    device = self.variables[device_name]
+    device = self.variables[device_name].value
 
     if not isinstance(device, (Host, Router, Switch)):
-        raise NetLangRuntimeError(f"'{device_name}' is not a device")
+        raise NetLangRuntimeError(f"'{device_name}' is not a device", ctx)
 
     if not hasattr(device, "ports"):
-        raise NetLangRuntimeError(f"Device '{device_name}' has no ports")
+        raise NetLangRuntimeError(f"Device '{device_name}' has no ports", ctx)
 
     log(f"\n[bold]Interfaces of {device.name}[/bold]\n")
 

@@ -20,34 +20,32 @@ def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketS
 
     if packet_name not in self.variables:
         raise NetLangRuntimeError(
-            message=f"Packet '{packet_name}' is not defined",
-            ctx=ctx
+            f"Packet '{packet_name}' is not defined",
+            ctx
         )
 
-    packet_var = self.variables[packet_name]
+    packet = self.variables[packet_name].value
 
-    if not isinstance(packet_var, Packet):
+    if not isinstance(packet, Packet):
         raise NetLangRuntimeError(
-            message=f"Variable '{packet_name}' is not a Packet",
-            ctx=ctx
+            f"Variable '{packet_name}' is not a Packet",
+            ctx
         )
-
-    packet = cast(Packet, packet_var)
 
     device_name = ctx.fieldAccess().ID(0).getText()
     # trzeba poprawić - nie działa np. dla listy urządzeń
 
     if device_name not in self.variables:
         raise NetLangRuntimeError(
-            message=f"Device '{device_name}' is not defined",
-            ctx=ctx
+            f"Device '{device_name}' is not defined",
+            ctx
         )
 
-    device = self.variables[device_name]
+    device = self.variables[device_name].value
     if not isinstance(device, Host):
         raise NetLangRuntimeError(
-            message="Only hosts can send packets",
-            ctx=ctx
+            "Only hosts can send packets",
+            ctx
         )
 
     port = self.visit(ctx.fieldAccess())
@@ -77,16 +75,16 @@ def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start
         visited_ports.add(port)
 
         for conn in self.connections:
-            if conn.port1 == port.portId and conn.device1 == from_device_name:
-                next_device_name = conn.device2
-                next_port_id = conn.port2
-            elif conn.port2 == port.portId and conn.device2 == from_device_name:
-                next_device_name = conn.device1
-                next_port_id = conn.port1
+            if conn.port1_id == port.portId and conn.device1_id == from_device_name:
+                next_device_name = conn.device2_id
+                next_port_id = conn.port2_id
+            elif conn.port2_id == port.portId and conn.device2_id == from_device_name:
+                next_device_name = conn.device1_id
+                next_port_id = conn.port1_id
             else:
                 continue
 
-            next_device = self.variables.get(next_device_name)
+            next_device = self.variables.get(next_device_name).value
             next_port = get_port_by_id(next_device, next_port_id)
 
             if next_port in visited_ports:

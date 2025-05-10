@@ -1,7 +1,9 @@
 from generated.NetLangParser import NetLangParser
 from typing import TYPE_CHECKING
 
+from .errors import NetLangRuntimeError
 from .utils import ensure_boolean
+from .variables import Variable
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter
@@ -33,6 +35,27 @@ def visitRepeatWhileLoop(self: "Interpreter", ctx: NetLangParser.RepeatWhileLoop
 
         if not condition:
             break
+
+        for stmt in ctx.block().statement():
+            self.visit(stmt)
+
+def visitRepeatTimesLoop(self: "Interpreter", ctx: NetLangParser.RepeatTimesLoopContext):
+    times = self.visit(ctx.expression())
+
+    if not isinstance(times, int):
+        raise NetLangRuntimeError(
+            f"Repeat count must be an integer, got {type(times).__name__}",
+            ctx
+        )
+
+    index_var_name = ctx.ID().getText()
+
+    for i in range(times):
+        self.variables[index_var_name] = Variable(
+            type="int",
+            line_declared=-1,
+            value=i
+        )
 
         for stmt in ctx.block().statement():
             self.visit(stmt)

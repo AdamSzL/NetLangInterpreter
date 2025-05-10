@@ -40,30 +40,37 @@ class OpticalEthernetPort(NetLangObject, Port):
         connector = data.get("connector", ConnectorType.LC)
 
         if not isinstance(portId, str):
-            raise NetLangRuntimeError("OpticalEthernetPort must have string portId", ctx=ctx)
+            raise NetLangRuntimeError("OpticalEthernetPort must have string portId", ctx)
 
         if ip is not None and not isinstance(ip, CIDR):
-            raise NetLangRuntimeError("Invalid ip for OpticalEthernetPort", ctx=ctx)
+            raise NetLangRuntimeError("Invalid ip for OpticalEthernetPort", ctx)
 
         if mac is None:
             mac = MACAddress.generate()
         else:
             if not isinstance(mac, MACAddress):
-                raise NetLangRuntimeError("Invalid MAC address", ctx=ctx)
+                raise NetLangRuntimeError("Invalid MAC address", ctx)
             if MACAddress.is_registered(mac.mac):
-                raise NetLangRuntimeError(message=f"MAC address {mac.mac} is already in use", ctx=ctx)
+                raise NetLangRuntimeError(f"MAC address {mac.mac} is already in use", ctx)
             MACAddress.register(mac.mac)
 
         if not isinstance(bandwidth, int):
-            raise NetLangRuntimeError("Bandwidth must be an integer", ctx=ctx)
+            raise NetLangRuntimeError("Bandwidth must be an integer", ctx)
 
         if not isinstance(wavelength, int):
-            raise NetLangRuntimeError("Wavelength must be an integer", ctx=ctx)
+            raise NetLangRuntimeError("Wavelength must be an integer", ctx)
 
         if not isinstance(connector, ConnectorType):
             raise NetLangRuntimeError(
-                message="Invalid connector type",
-                ctx=ctx
+                "Invalid connector type",
+                ctx
             )
 
         return cls(portId, ip, mac, bandwidth, wavelength, mtu, connector)
+
+
+    def __hash__(self):
+        return hash(self.mac)
+
+    def __eq__(self, other):
+        return isinstance(other, OpticalEthernetPort) and self.mac == other.mac

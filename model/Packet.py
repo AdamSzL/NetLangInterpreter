@@ -33,20 +33,20 @@ class Packet(NetLangObject):
 
         if not isinstance(payload, str):
             raise NetLangRuntimeError(
-                message="Packet payload must be a string",
-                ctx=ctx
+                "Packet payload must be a string",
+                ctx
             )
 
         if not isinstance(protocol, Protocol):
             raise NetLangRuntimeError(
-                message="Packet protocol must be a Protocol enum",
-                ctx=ctx
+                "Packet protocol must be a Protocol enum",
+                ctx
             )
 
         if not isinstance(size, int):
             raise NetLangRuntimeError(
-                message="Packet size must be an integer",
-                ctx=ctx
+                "Packet size must be an integer",
+                ctx
             )
 
         return cls(payload, protocol, size)
