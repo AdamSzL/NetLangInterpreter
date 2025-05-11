@@ -1,0 +1,4 @@
+Syntax Error: Syntax Error at line 1, column 0:
+2 + 3
+^
+Unexpected token

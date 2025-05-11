@@ -26,26 +26,13 @@ def visitConnectStatement(self: "Interpreter", ctx: NetLangParser.ConnectStateme
     dev2_id = ctx.fieldAccess(1).ID(0).getText()
     port2_id = ctx.fieldAccess(1).ID(1).getText()
 
-    connection = Connection(
-        dev1_id,
-        port1_id,
-        dev2_id,
-        port2_id,
-    )
-    self.connections.append(connection)
+    self.connections.append(Connection(dev1_id, port1_id, dev2_id, port2_id))
 
     print(f"Connected {dev1_id}.{port1_id} <-> {dev2_id}.{port2_id}")
 
 def visitShowInterfacesStatement(self: "Interpreter", ctx: NetLangParser.ShowInterfacesStatementContext):
     device_name = ctx.ID().getText()
-
-    if device_name not in self.variables:
-        raise NetLangRuntimeError(f"Device '{device_name}' not found", ctx)
-
     device = self.variables[device_name].value
-
-    if not isinstance(device, (Host, Router, Switch)):
-        raise NetLangRuntimeError(f"'{device_name}' is not a device", ctx)
 
     if not hasattr(device, "ports"):
         raise NetLangRuntimeError(f"Device '{device_name}' has no ports", ctx)
@@ -68,8 +55,6 @@ def visitShowInterfacesStatement(self: "Interpreter", ctx: NetLangParser.ShowInt
         mac = str(getattr(port, "mac", "-"))
         port_type = type(port).__name__.replace("Port", "")
 
-        # Sprawdzenie czy port jest połączony
-        test = self.connections
         status = "down"
         for conn in self.connections:
             if (conn.device1_id == device_name and conn.port2_id == port_id) or \

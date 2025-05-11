@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from generated.NetLangVisitor import NetLangVisitor
 from shared.model import Connection
-from .variables import visitVariableDeclaration, visitVariableAssignment, Variable
-from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, Function
+from shared.model.Function import Function
+from shared.model.Variable import Variable
+from .variables import visitVariableDeclaration, visitVariableAssignment
+from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment, getListAndIndex
 from .expressions import (
     visitAtomExpr,

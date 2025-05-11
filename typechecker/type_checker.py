@@ -3,10 +3,10 @@ from types import MethodType
 from typing import Optional
 
 from generated.NetLangVisitor import NetLangVisitor
-from interpreter.functions import Function
-from interpreter.variables import Variable
-from .variables import visitVariableDeclaration, visitVariableAssignment, Variable
-from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, Function, check_all_function_bodies, visitFunctionDeclarationStatement
+from shared.model.Function import Function
+from shared.model.Variable import Variable
+from .variables import visitVariableDeclaration, visitVariableAssignment
+from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
 from .expressions import (
     visitAtomExpr,

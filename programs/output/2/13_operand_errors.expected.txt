@@ -1,0 +1,1 @@
+Type Error: [Line 1, Column 6] Invalid operand for operator '>': got string, expected int/float

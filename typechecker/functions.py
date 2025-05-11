@@ -3,22 +3,11 @@ from typing import TYPE_CHECKING, Optional, Any
 
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.model.Variable import Variable
 from shared.utils.types import check_type, are_types_compatible
-from .variables import Variable
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor
-
-@dataclass
-class Function:
-    parameters: list[tuple[str, str]]
-    return_type: Optional[str]
-    line_declared: int
-    body_ctx: Any
-
-@dataclass
-class ReturnValue(Exception):
-    value: Any
 
 def visitFunctionCallExpr(self, ctx: NetLangParser.FunctionCallExprContext):
     return self.visit(ctx.functionCall())

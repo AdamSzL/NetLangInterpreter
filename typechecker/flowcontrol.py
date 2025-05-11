@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Any
 
 from generated.NetLangParser import NetLangParser
-from interpreter.utils import check_bool
-from interpreter.variables import Variable
 from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.model.Variable import Variable
+from typechecker.utils import check_bool
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor

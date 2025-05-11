@@ -97,4 +97,9 @@ def get_field_type(type_name: str, field: str) -> str:
             return "[CopperEthernetPort]"
         if field.startswith("eth"):
             return "CopperEthernetPort"
+    elif type_name == "CopperEthernetPort":
+        if field == "ip":
+            return "IP"
+        if field == "portId":
+            return "string"
     raise NetLangTypeError(f"Unknown field '{field}' for type '{type_name}'")

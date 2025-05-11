@@ -2,19 +2,12 @@ from __future__ import annotations
 
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
-from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from shared.utils.types import is_known_type, check_type, are_types_compatible
+from shared.utils.types import is_known_type, are_types_compatible
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor
-
-@dataclass
-class Variable:
-    type: str
-    line_declared: int
-    value: Any = None
 
 def visitVariableDeclaration(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableDeclarationContext):
     name: str = ctx.ID().getText()

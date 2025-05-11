@@ -23,4 +23,9 @@ set port: CopperEthernetPort <- CopperEthernetPort {
 add entry to router.routingTable
 add port to router.ports
 
-print router.ports
+print router.ports<0>.ip
+print router.ports<1>.ip
+print router.ports<2>.portId
+print router.ports<3>.ip
+
+print router.routingTable<0>.destination

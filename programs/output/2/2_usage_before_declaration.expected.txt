@@ -1,0 +1,1 @@
+Type Error: [Line 1, Column 14] Variable 'y' used before its declaration (declared at line 2, used at line 1)

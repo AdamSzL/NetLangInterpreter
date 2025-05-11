@@ -31,19 +31,6 @@ def visitVariableExpr(self: "Interpreter", ctx: NetLangParser.VariableExprContex
         return ConnectorType[variable_name]
     if variable_name in Protocol.__members__:
         return Protocol[variable_name]
-    if variable_name not in self.variables:
-        raise NetLangRuntimeError(f"Undefined variable '{variable_name}'", ctx)
-    line = ctx.start.line
-    if line == self.variables[variable_name].line_declared:
-        raise NetLangRuntimeError(
-            f"Error: Variable '{variable_name}' cannot be used on the same line it is declared",
-            ctx
-        )
-    if line < self.variables[variable_name].line_declared:
-        raise NetLangRuntimeError(
-            f"Variable '{variable_name}' used before its declaration (declared at line {self.variables[variable_name].line_declared}, used at line {line})",
-            ctx
-        )
     return self.variables[variable_name].value
 
 def visitIPAddressLiteral(self: "Interpreter", ctx: NetLangParser.IPAddressLiteralContext) -> IPAddress:

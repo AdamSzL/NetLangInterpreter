@@ -1,20 +1,31 @@
 import subprocess
 import os
 import difflib
+import sys
 
-TEST_DIR = os.path.join(os.curdir, "programs", "3")
-print(TEST_DIR)
+if len(sys.argv) < 2:
+    print("Usage: python test_runner.py <package_number> [files_to_skip...]")
+    sys.exit(1)
+
+PACKAGE_NUMBER = sys.argv[1]
+SKIP_FILES = set(sys.argv[2:])
+
+SOURCE_DIR = os.path.join("programs", "source", PACKAGE_NUMBER)
+OUTPUT_DIR = os.path.join("programs", "output", PACKAGE_NUMBER)
 
 passed = 0
 failed = 0
 
-for filename in os.listdir(TEST_DIR):
+for filename in os.listdir(SOURCE_DIR):
     if not filename.endswith(".netlang"):
+        continue
+    if filename in SKIP_FILES:
+        print(f"[!] Skipping {filename}")
         continue
 
     basename = filename[:-8]  # usuwa .netlang
-    source_path = os.path.join(TEST_DIR, filename)
-    expected_path = os.path.join(TEST_DIR, basename + ".expected.txt")
+    source_path = os.path.join(SOURCE_DIR, filename)
+    expected_path = os.path.join(OUTPUT_DIR, basename + ".expected.txt")
 
     with open(expected_path, "r", encoding="utf-8") as f:
         expected_output = f.read().strip()

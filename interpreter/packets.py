@@ -15,39 +15,13 @@ if TYPE_CHECKING:
 
 def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketStatementContext):
     packet_name = ctx.ID().getText()
+    device_name = ctx.fieldAccess().ID(0).getText()
+    target_ip = ctx.IPADDR().getText()
 
-    if packet_name not in self.variables:
-        raise NetLangRuntimeError(
-            f"Packet '{packet_name}' is not defined",
-            ctx
-        )
 
     packet = self.variables[packet_name].value
-
-    if not isinstance(packet, Packet):
-        raise NetLangRuntimeError(
-            f"Variable '{packet_name}' is not a Packet",
-            ctx
-        )
-
-    device_name = ctx.fieldAccess().ID(0).getText()
-    # trzeba poprawić - nie działa np. dla listy urządzeń
-
-    if device_name not in self.variables:
-        raise NetLangRuntimeError(
-            f"Device '{device_name}' is not defined",
-            ctx
-        )
-
     device = self.variables[device_name].value
-    if not isinstance(device, Host):
-        raise NetLangRuntimeError(
-            "Only hosts can send packets",
-            ctx
-        )
-
     port = self.visit(ctx.fieldAccess())
-    target_ip = ctx.IPADDR().getText()
 
     body = Text()
     body.append("📤 Sending packet\n", style="bold white")

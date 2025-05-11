@@ -1,7 +1,8 @@
 from generated.NetLangParser import NetLangParser
-from interpreter.utils import check_bool, check_numeric, check_numeric_or_string
 from shared.errors import NetLangRuntimeError, NetLangTypeError
 from typing import TYPE_CHECKING
+
+from typechecker.utils import check_bool, check_numeric
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor

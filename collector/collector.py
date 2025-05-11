@@ -2,8 +2,9 @@ from dataclasses import dataclass, field
 from generated.NetLangListener import NetLangListener
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
-from interpreter.functions import Function
-from interpreter.variables import Variable
+from shared.model.Function import Function
+from shared.model.Variable import Variable
+
 
 @dataclass
 class VariableCollectorListener(NetLangListener):

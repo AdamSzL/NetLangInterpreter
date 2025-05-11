@@ -1,0 +1,4 @@
+Syntax Error: Syntax Error at line 1, column 5:
+setf x: int <- 5
+     ^
+Invalid or incomplete statement
