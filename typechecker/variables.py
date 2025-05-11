@@ -23,6 +23,9 @@ def visitVariableDeclaration(self: "TypeCheckingVisitor", ctx: NetLangParser.Var
     if not is_known_type(declared_type):
         raise NetLangTypeError(f"Unknown type '{declared_type}'", ctx)
 
+    if declared_type == "void":
+        raise NetLangTypeError("Cannot declare variable of type 'void'", ctx)
+
     self.expected_type = declared_type
     try:
         expr_type: str = self.visit(ctx.expression())

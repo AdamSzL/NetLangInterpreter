@@ -50,11 +50,9 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
     for (param_name, param_type), value in zip(function.parameters, args):
         self.variables[param_name] = Variable(type=param_type, line_declared=1, value=value)
 
-    previous_in_function = self.in_function
-    self.in_function = True
     try:
         self.visit(function.body_ctx)
-        if function.return_type is not None:
+        if function.return_type is not None and function.return_type != "void":
             raise NetLangRuntimeError(
                 f"Missing return in function '{function_name}' which declares return type '{function.return_type}'",
                 ctx
@@ -74,11 +72,10 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
         return ret.value
     finally:
         self.variables = previous_variables
-        self.in_function = previous_in_function
 
 def visitReturnStatement(self: "Interpreter", ctx: NetLangParser.ReturnStatementContext):
-    if not self.in_function:
-        raise NetLangRuntimeError("Cannot use 'return' statement outside of a function", ctx)
-
-    value = self.visit(ctx.expression())
-    raise ReturnValue(value)
+    if ctx.expression():
+        value = self.visit(ctx.expression())
+        raise ReturnValue(value)
+    else:
+        raise ReturnValue(None)

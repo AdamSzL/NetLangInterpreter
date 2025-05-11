@@ -55,14 +55,29 @@ def visitReturnStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.ReturnS
         raise NetLangTypeError("Cannot use 'return' statement outside of a function", ctx)
 
     if self.expected_return_type is None:
-        raise NetLangTypeError("Return used in a function that doesn't declare a return type", ctx)
+        raise NetLangTypeError("Return value not allowed in function with no declared return type (assumed 'void')", ctx)
 
-    value_type = self.visit(ctx.expression())
-    if not are_types_compatible(self.expected_return_type, value_type):
-        raise NetLangTypeError(
-            f"Return type mismatch: expected {self.expected_return_type}, got {value_type}",
-            ctx
-        )
+    if ctx.expression():
+        value_type = self.visit(ctx.expression())
+
+        if self.expected_return_type == "void":
+            raise NetLangTypeError(
+                message=f"Return value not allowed in function returning 'void'",
+                ctx=ctx
+            )
+
+        if not are_types_compatible(self.expected_return_type, value_type):
+            raise NetLangTypeError(
+                message=f"Return type mismatch: expected {self.expected_return_type}, got {value_type}",
+                ctx=ctx
+            )
+
+    else:
+        if self.expected_return_type != "void":
+            raise NetLangTypeError(
+                message=f"Return value required in function returning {self.expected_return_type}",
+                ctx=ctx
+            )
 
     self.return_found = True
 
@@ -84,7 +99,7 @@ def check_all_function_bodies(self):
 
         self.in_function_body = False
 
-        if self.expected_return_type and not self.return_found:
+        if self.expected_return_type and not self.return_found and self.expected_return_type != "void":
             raise NetLangTypeError(
                 f"Function '{name}' declares return type '{self.expected_return_type}' but no return was found"
             )

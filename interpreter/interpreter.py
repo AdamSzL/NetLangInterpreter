@@ -51,6 +51,8 @@ class Interpreter(NetLangVisitor):
         value = self.visit(ctx.expression())
         if isinstance(value, bool):
             print("true" if value else "false")
+        elif value is None:
+            print("void")
         else:
             print(value)
 
@@ -116,4 +118,3 @@ class Interpreter(NetLangVisitor):
         self.variables: dict[str, Variable] = variables
         self.functions: dict[str, Function] = functions
         self.connections: list[Connection] = []
-        self.in_function = False

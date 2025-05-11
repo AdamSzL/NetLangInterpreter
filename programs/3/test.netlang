@@ -7,7 +7,7 @@ define isEven(number: int) => bool {
     }
 }
 
-define logInfo(msg: string) {
+define logInfo(msg: string) => void {
     print "INFO: " + msg
 }
 
@@ -16,4 +16,4 @@ repeat 5 times as index {
     print isEven(index)
 }
 
-logInfo("Test started")
+print logInfo("Test started")

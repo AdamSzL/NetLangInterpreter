@@ -114,7 +114,7 @@ parameter
     ;
 
 returnStatement
-    : 'return' expression
+    : 'return' expression?
     ;
 
 listIndexAssignment
@@ -127,6 +127,7 @@ type
     | 'float'
     | 'bool'
     | 'string'
+    | 'void'
     | 'IP'
     | 'MAC'
     | 'Port'

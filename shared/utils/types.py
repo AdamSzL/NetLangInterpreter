@@ -29,6 +29,7 @@ type_map = {
     "Host": Host,
     "Switch": Switch,
     "Router": Router,
+    "void": type(None)
 }
 
 def is_known_type(type_str: str) -> bool:

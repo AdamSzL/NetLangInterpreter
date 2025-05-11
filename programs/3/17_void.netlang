@@ -1,0 +1,6 @@
+define noop() => void {
+    set a: int <- 5
+    print "no operation"
+}
+
+noop()
