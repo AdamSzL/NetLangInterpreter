@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
-from .errors import NetLangRuntimeError
+from shared.errors import NetLangRuntimeError
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter
@@ -16,7 +16,7 @@ def visitFieldAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext)
     if var_name not in self.variables:
         raise NetLangRuntimeError(f"Undefined variable '{var_name}'", ctx)
 
-    current = self.variables.get(var_name)
+    current = self.variables.get(var_name).value
 
     i = 1
     while i < len(ctx.children):
@@ -25,10 +25,10 @@ def visitFieldAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext)
         if operator == ".":
             field_name = ctx.getChild(i + 1).getText()
 
-            if isinstance(current.value, list) and field_name == "size":
-                current = len(current.value)
-            elif hasattr(current.value, field_name):
-                current = getattr(current.value, field_name)
+            if isinstance(current, list) and field_name == "size":
+                current = len(current)
+            elif hasattr(current, field_name):
+                current = getattr(current, field_name)
             else:
                 raise NetLangRuntimeError(
                     f"Object of type {type(current).__name__} has no field '{field_name}'"
@@ -39,12 +39,12 @@ def visitFieldAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext)
         elif operator == "<":
             expression_ctx = ctx.getChild(i + 1)
             index = int(self.visit(expression_ctx))
-            if not isinstance(current.value, list):
+            if not isinstance(current, list):
                 raise NetLangRuntimeError(
                     f"Trying to index non-list object of type {type(current).__name__}"
                 )
             try:
-                current = current.value[index]
+                current = current[index]
             except IndexError:
                 raise NetLangRuntimeError(f"Index {index} out of range")
 

@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from ipaddress import IPv4Network
 
-from interpreter.errors import NetLangRuntimeError
-from model.CIDR import CIDR
-from model.base import NetLangObject
+from shared.errors import NetLangRuntimeError
+from shared.model.CIDR import CIDR
+from shared.model.base import NetLangObject
 
 
 @dataclass

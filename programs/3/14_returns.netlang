@@ -1,7 +1,5 @@
 define missingReturn() => int {
     print "no return here"
-
-    //return 5
 }
 
-//missingReturn()
+missingReturn()

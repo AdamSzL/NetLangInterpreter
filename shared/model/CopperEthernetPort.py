@@ -1,11 +1,11 @@
 from typing import Any
 
-from interpreter.errors import NetLangRuntimeError
-from model.CIDR import CIDR
-from model.MACAddress import MACAddress
-from model.Port import Port
-from model.base import NetLangObject
-from dataclasses import dataclass, field
+from shared.errors import NetLangRuntimeError
+from shared.model.CIDR import CIDR
+from shared.model.MACAddress import MACAddress
+from shared.model.Port import Port
+from shared.model.base import NetLangObject
+from dataclasses import dataclass
 
 
 @dataclass

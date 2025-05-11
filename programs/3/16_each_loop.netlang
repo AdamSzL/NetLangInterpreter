@@ -1,0 +1,6 @@
+set names: [string] <- ["PC1", "PC2", "PC3", "PC4"]
+
+each name from names {
+    set newName: string <- name + name
+    print newName
+}

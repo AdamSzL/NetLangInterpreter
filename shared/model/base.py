@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import ClassVar
 
-from interpreter.errors import NetLangRuntimeError
+from shared.errors import NetLangRuntimeError
 
 
 class NetLangObject(ABC):

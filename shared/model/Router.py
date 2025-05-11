@@ -1,6 +1,6 @@
-from interpreter.errors import NetLangRuntimeError
-from model.Device import Device
-from model.base import NetLangObject
+from shared.errors import NetLangRuntimeError
+from shared.model.Device import Device
+from shared.model.base import NetLangObject
 from dataclasses import dataclass
 
 @dataclass

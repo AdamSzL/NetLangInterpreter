@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import networkx as nx
 
-from model import Host, Router, Switch
+from shared.model import Host, Router, Switch
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

@@ -2,10 +2,10 @@ from rich.table import Table
 from rich.text import Text
 
 from generated.NetLangParser import NetLangParser
-from .errors import NetLangRuntimeError
+from shared.errors import NetLangRuntimeError
 from .utils import get_interface_label
-from .logging import log
-from model import Host, Router, Switch, Connection
+from shared.logging import log
+from shared.model import Host, Router, Switch, Connection
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

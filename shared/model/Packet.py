@@ -1,7 +1,7 @@
 from enum import Enum
 
-from interpreter.errors import NetLangRuntimeError
-from model.base import NetLangObject
+from shared.errors import NetLangRuntimeError
+from shared.model.base import NetLangObject
 
 
 class Protocol(Enum):

@@ -1,9 +1,13 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from types import MethodType
+from typing import Optional
+
 from generated.NetLangVisitor import NetLangVisitor
-from shared.model import Connection
+from interpreter.functions import Function
+from interpreter.variables import Variable
 from .variables import visitVariableDeclaration, visitVariableAssignment, Variable
-from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, Function
-from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment, getListAndIndex
+from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, Function, check_all_function_bodies, visitFunctionDeclarationStatement
+from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
 from .expressions import (
     visitAtomExpr,
     visitIntLiteral,
@@ -35,24 +39,15 @@ from .operators import (
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment
 from .devices import visitConnectStatement, visitShowInterfacesStatement
 from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop, visitEachLoop
-from .visualization import draw_graph
-from .packets import visitSendPacketStatement, forward_packet
+from .packets import visitSendPacketStatement
 from types import MethodType
 
 @dataclass
-class Interpreter(NetLangVisitor):
+class TypeCheckingVisitor(NetLangVisitor):
 
     def visitProgram(self, ctx):
         for stmt in ctx.statement():
             self.visit(stmt)
-        self.draw_graph()
-
-    def visitPrintStatement(self, ctx):
-        value = self.visit(ctx.expression())
-        if isinstance(value, bool):
-            print("true" if value else "false")
-        else:
-            print(value)
 
     def __init__(self, variables: dict[str, Variable], functions: dict[str, Function]):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)
@@ -92,7 +87,6 @@ class Interpreter(NetLangVisitor):
         self.visitConnectStatement = MethodType(visitConnectStatement, self)
         self.visitAddToListStatement = MethodType(visitAddToListStatement, self)
         self.visitDeleteListElementStatement = MethodType(visitDeleteListElementStatement, self)
-        self.getListAndIndex = MethodType(getListAndIndex, self)
         self.visitListLiteral = MethodType(visitListLiteral, self)
         self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
@@ -108,12 +102,13 @@ class Interpreter(NetLangVisitor):
 
         self.visitFunctionCallExpr = MethodType(visitFunctionCallExpr, self)
         self.visitFunctionCall = MethodType(visitFunctionCall, self)
+        self.visitFunctionDeclarationStatement = MethodType(visitFunctionDeclarationStatement, self)
         self.visitReturnStatement = MethodType(visitReturnStatement, self)
-
-        self.draw_graph = MethodType(draw_graph, self)
-        self.forward_packet = MethodType(forward_packet, self)
+        self.check_all_function_bodies = MethodType(check_all_function_bodies, self)
 
         self.variables: dict[str, Variable] = variables
         self.functions: dict[str, Function] = functions
-        self.connections: list[Connection] = []
-        self.in_function = False
+        self.expected_return_type: Optional[str] = None
+        self.return_found: bool = False
+        self.expected_type: Optional[str] = None
+        self.in_function_body = False

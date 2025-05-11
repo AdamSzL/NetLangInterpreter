@@ -1,9 +1,9 @@
 import ipaddress
-from typing import ClassVar, Any, cast
+from typing import cast
 
-from interpreter.errors import NetLangRuntimeError
-from model.IPAddress import IPAddress
-from model.base import NetLangObject
+from shared.errors import NetLangRuntimeError
+from shared.model.IPAddress import IPAddress
+from shared.model.base import NetLangObject
 
 class CIDR(NetLangObject):
     allowed_fields = {"ip", "mask"}

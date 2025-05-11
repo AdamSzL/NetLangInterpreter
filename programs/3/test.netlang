@@ -1,0 +1,19 @@
+define isEven(number: int) => bool {
+    if number % 2 == 0 {
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+define logInfo(msg: string) {
+    print "INFO: " + msg
+}
+
+repeat 5 times as index {
+    print "isEven " + index
+    print isEven(index)
+}
+
+logInfo("Test started")

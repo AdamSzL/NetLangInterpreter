@@ -11,11 +11,11 @@ set router: Router <- {
     ]
 }
 
-set entry: RoutingEntry <- {
+set entry: RoutingEntry <- RoutingEntry {
     destination <- 2.2.2.2/24,
     via <- "eth3"
 }
-set port: CopperEthernetPort <- {
+set port: CopperEthernetPort <- CopperEthernetPort {
     portId <- "eth3",
     ip <- 192.168.4.1/24
 }

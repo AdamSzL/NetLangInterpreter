@@ -1,5 +1,5 @@
 from generated.NetLangParser import NetLangParser
-from .errors import NetLangRuntimeError
+from shared.errors import NetLangRuntimeError
 
 from typing import TYPE_CHECKING
 
@@ -10,9 +10,7 @@ if TYPE_CHECKING:
 
 def visitAddToListStatement(self: "Interpreter", ctx: NetLangParser.AddToListStatementContext):
     value = self.visit(ctx.expression())
-    target_list_var: Variable = self.visit(ctx.fieldAccess())
-
-    target_list = target_list_var.value
+    target_list = self.visit(ctx.fieldAccess())
 
     if not isinstance(target_list, list):
         raise NetLangRuntimeError(
@@ -21,29 +19,7 @@ def visitAddToListStatement(self: "Interpreter", ctx: NetLangParser.AddToListSta
         )
 
     target_list.append(value)
-    # print(f"[add] {value} to {ctx.fieldAccess().getText()}")
     return value
-
-# def visitRemoveFromListStatement(self: "Interpreter", ctx: NetLangParser.RemoveFromListStatementContext):
-#     value = self.visit(ctx.expression())
-#     target_list = self.visit(ctx.fieldAccess())
-#
-#     if not isinstance(target_list.value, list):
-#         raise NetLangRuntimeError(
-#             =f"Target of 'remove' is not a list",
-#             ctx
-#         )
-#
-#     try:
-#         target_list.remove(value)
-#         # print(f"[remove] {value} from {ctx.fieldAccess().getText()}")
-#     except ValueError:
-#         raise NetLangRuntimeError(
-#             f"Value '{value}' not found in list '{ctx.fieldAccess().getText()}'",
-#             ctx
-#         )
-#
-#     return value
 
 def visitDeleteListElementStatement(self: "Interpreter", ctx: NetLangParser.DeleteListElementStatementContext):
     list_index_access_ctx = ctx.listIndexAccess()

@@ -1,15 +1,13 @@
-from typing import cast
-
 from rich.panel import Panel
 from rich.text import Text
 
 from generated.NetLangParser import NetLangParser
-from model import Switch, Router, Host, Packet
+from shared.model import Switch, Router, Host, Packet
 from time import sleep
 
-from .errors import NetLangRuntimeError
+from shared.errors import NetLangRuntimeError
 from .utils import get_port_by_id
-from .logging import log
+from shared.logging import log
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

@@ -1,14 +1,14 @@
 from dataclasses import dataclass, field
-
 from generated.NetLangListener import NetLangListener
 from generated.NetLangParser import NetLangParser
-from interpreter.errors import NetLangRuntimeError
-from interpreter.variables import Variable, Function
-
+from shared.errors import NetLangRuntimeError, NetLangTypeError
+from interpreter.functions import Function
+from interpreter.variables import Variable
 
 @dataclass
 class VariableCollectorListener(NetLangListener):
     variables: dict[str, Variable] = field(default_factory=dict)
+    functions: dict[str, Function] = field(default_factory=dict)
 
     def enterVariableDeclaration(self, ctx: NetLangParser.VariableDeclarationContext):
         variable_name: str = ctx.ID().getText()
@@ -16,17 +16,16 @@ class VariableCollectorListener(NetLangListener):
         line: int = ctx.start.line
 
         if variable_name in self.variables:
-            existing = self.variables[variable_name]
-            if existing.type == "function":
-                raise NetLangRuntimeError(
-                    f"Cannot declare variable '{variable_name}' – function with this name was already declared on line {existing.line_declared}",
-                    ctx
-                )
-            else:
-                raise NetLangRuntimeError(
-                    f"Redeclaration of variable '{variable_name}' (first declared on line {existing.line_declared})",
-                    ctx
-                )
+            raise NetLangTypeError(
+                f"Redeclaration of variable '{variable_name}' (first declared on line {self.variables[variable_name].line_declared})",
+                ctx
+            )
+
+        if variable_name in self.functions:
+            raise NetLangTypeError(
+                f"Cannot declare variable '{variable_name}' – function with this name was already declared on line {self.functions[variable_name].line_declared}",
+                ctx
+            )
 
         self.variables[variable_name] = Variable(variable_type, line)
 
@@ -35,18 +34,17 @@ class VariableCollectorListener(NetLangListener):
         return_type: str = ctx.type_().getText() if ctx.type_() else None
         line: int = ctx.start.line
 
+        if function_name in self.functions:
+            raise NetLangTypeError(
+                f"Redeclaration of function '{function_name}' (first declared on line {self.functions[function_name].line_declared})",
+                ctx
+            )
+
         if function_name in self.variables:
-            existing = self.variables[function_name]
-            if existing.type != "function":
-                raise NetLangRuntimeError(
-                    f"Cannot declare function '{function_name}' – variable with this name was already declared on line {existing.line_declared}",
-                    ctx
-                )
-            else:
-                raise NetLangRuntimeError(
-                    f"Redeclaration of function '{function_name}' (first declared on line {existing.line_declared})",
-                    ctx
-                )
+            raise NetLangTypeError(
+                f"Cannot declare function '{function_name}' – variable with this name was already declared on line {self.variables[function_name].line_declared}",
+                ctx
+            )
 
         parameters = []
 
@@ -60,7 +58,8 @@ class VariableCollectorListener(NetLangListener):
         function = Function(
             parameters=parameters,
             return_type=return_type,
+            line_declared=line,
             body_ctx=ctx.block()
         )
 
-        self.variables[function_name] = Variable("function", line, function)
+        self.functions[function_name] = function

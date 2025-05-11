@@ -1,5 +1,5 @@
 from generated.NetLangParser import NetLangParser
-from .errors import NetLangRuntimeError
+from shared.errors import NetLangRuntimeError
 from .utils import ensure_numeric, ensure_boolean, ensure_numeric_or_string
 from typing import TYPE_CHECKING
 

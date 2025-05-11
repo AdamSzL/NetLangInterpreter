@@ -22,7 +22,6 @@ class NetLangErrorListener(ErrorListener):
         )
 
     def _prettify_message(self, raw_msg: str) -> str:
-        print(raw_msg)
         if "no viable alternative" in raw_msg:
             return "Invalid or incomplete statement"
         if "mismatched input" in raw_msg:
@@ -41,6 +40,16 @@ class NetLangRuntimeError(Exception):
 
 
 class NetLangSyntaxError(Exception):
+    def __init__(self, message: str, ctx=None):
+        if ctx:
+            token = ctx.start
+            line = token.line
+            column = token.column
+            message = f"[Line {line}, Column {column}] {message}"
+        super().__init__(message)
+
+
+class NetLangTypeError(Exception):
     def __init__(self, message: str, ctx=None):
         if ctx:
             token = ctx.start

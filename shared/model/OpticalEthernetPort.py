@@ -1,13 +1,12 @@
 from typing import Any
 
-from interpreter.errors import NetLangRuntimeError
-from model import IPAddress
-from model.MACAddress import MACAddress
-from model.CIDR import CIDR
+from shared.errors import NetLangRuntimeError
+from shared.model.MACAddress import MACAddress
+from shared.model.CIDR import CIDR
 from enum import Enum
 
-from model.Port import Port
-from model.base import NetLangObject
+from shared.model.Port import Port
+from shared.model.base import NetLangObject
 from dataclasses import dataclass
 
 class ConnectorType(Enum):

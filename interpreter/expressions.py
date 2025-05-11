@@ -1,11 +1,10 @@
 from typing import Any, cast
 
 from generated.NetLangParser import NetLangParser
-from .errors import NetLangRuntimeError
-from .utils import ensure_numeric
-from .types import type_map
-from model import ConnectorType, Protocol, IPAddress, MACAddress, CIDR
-from model.base import NetLangObject
+from shared.errors import NetLangRuntimeError
+from shared.utils.types import type_map
+from shared.model import ConnectorType, Protocol, IPAddress, MACAddress, CIDR
+from shared.model.base import NetLangObject
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

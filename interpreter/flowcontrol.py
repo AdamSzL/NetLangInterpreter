@@ -1,7 +1,7 @@
 from generated.NetLangParser import NetLangParser
 from typing import TYPE_CHECKING
 
-from .errors import NetLangRuntimeError
+from shared.errors import NetLangRuntimeError
 from .utils import ensure_boolean
 from .variables import Variable
 
@@ -57,5 +57,23 @@ def visitRepeatTimesLoop(self: "Interpreter", ctx: NetLangParser.RepeatTimesLoop
             value=i
         )
 
+        for stmt in ctx.block().statement():
+            self.visit(stmt)
+
+def visitEachLoop(self: "Interpreter", ctx: NetLangParser.EachLoopContext):
+    loop_var_name = ctx.ID(0).getText()
+    list_var_name = ctx.ID(1).getText()
+
+    if list_var_name not in self.variables:
+        raise NetLangRuntimeError(f"List variable '{list_var_name}' is not defined", ctx)
+
+    list_var = self.variables[list_var_name].value
+    if not isinstance(list_var, list):
+        raise NetLangRuntimeError(f"Variable '{list_var_name}' is not a list", ctx)
+
+    list_type = self.variables[list_var_name].type
+    element_type = list_type[1:-1]
+    for element in list_var:
+        self.variables[loop_var_name] = Variable(element_type, 0, element)
         for stmt in ctx.block().statement():
             self.visit(stmt)

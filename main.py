@@ -1,16 +1,14 @@
 import sys
 from antlr4 import *
+
+from collector.collector import VariableCollectorListener
 from generated.NetLangLexer import NetLangLexer
 from generated.NetLangParser import NetLangParser
-from interpreter.errors import NetLangErrorListener, NetLangRuntimeError, NetLangSyntaxError
+from shared.errors import NetLangErrorListener, NetLangRuntimeError, NetLangSyntaxError, NetLangTypeError
 from interpreter import Interpreter
-from interpreter.listener import VariableCollectorListener
-from interpreter.logging import log
-from rich.text import Text
+from shared.logging import log
 
-from interpreter.utils import dummy_value_for_type
-from interpreter.variables import Variable, Function
-from interpreter.visitor import TypeCheckingVisitor
+from typechecker.type_checker import TypeCheckingVisitor
 
 
 def main():
@@ -40,10 +38,11 @@ def main():
         walker = ParseTreeWalker()
         walker.walk(collector, tree)
 
-        type_checker = TypeCheckingVisitor(collector.variables)
+        type_checker = TypeCheckingVisitor(collector.variables, collector.functions)
         type_checker.visit(tree)
+        type_checker.check_all_function_bodies()
 
-        interpreter = Interpreter(collector.variables)
+        interpreter = Interpreter(collector.variables, collector.functions)
         for statement in tree.statement():
             if statement.functionDeclarationStatement():
                 continue
@@ -53,6 +52,9 @@ def main():
         sys.exit(1)
     except NetLangSyntaxError as e:
         log(f"[bold red]Syntax Error:[/bold red]", e)
+        sys.exit(1)
+    except NetLangTypeError as e:
+        log(f"[bold red]Type Error:[/bold red]", e)
         sys.exit(1)
 
 if __name__ == '__main__':
