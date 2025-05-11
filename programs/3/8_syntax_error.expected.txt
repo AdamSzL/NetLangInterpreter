@@ -1,0 +1,4 @@
+Syntax Error: Syntax Error at line 1, column 7:
+printf "test"
+       ^
+Invalid or incomplete statement

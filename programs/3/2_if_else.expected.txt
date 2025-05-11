@@ -1,0 +1,6 @@
+5 is greater than 3
+3.5 is less than 7.2
+flag is true
+2 to the power of 4 is not equal to 8
+number is odd
+warm

@@ -1,0 +1,1 @@
+Type Error: [Line 5, Column 0] Function 'greet' expects 2 arguments, got 1

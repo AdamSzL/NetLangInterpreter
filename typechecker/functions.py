@@ -48,7 +48,7 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
                 ctx
             )
 
-    return function.return_type or "Void"
+    return function.return_type or "void"
 
 def visitReturnStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.ReturnStatementContext):
     if not self.in_function_body:
