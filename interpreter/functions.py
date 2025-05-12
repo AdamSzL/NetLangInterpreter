@@ -16,18 +16,25 @@ def visitFunctionCallExpr(self, ctx: NetLangParser.FunctionCallExprContext):
 
 def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContext):
     function_name = ctx.ID().getText()
+    call_line = ctx.start.line
     expr_list = ctx.expressionList()
     args = [self.visit(expr) for expr in expr_list.expression()] if expr_list else []
 
     function = self.lookup_function(function_name, ctx)
 
+    self.current_call_line = call_line
     self.push_scope()
     for (param_name, param_type), arg_value in zip(function.parameters, args):
         self.declare_variable(param_name, Variable(param_type, 1, arg_value), ctx)
-    result = self.visit(function.body_ctx)
-    self.pop_scope()
 
-    return result
+    try:
+        self.visit(function.body_ctx)
+        return None
+    except ReturnValue as r:
+        return r.value
+    finally:
+        self.pop_scope()
+        self.current_call_line = None
 
 def visitFunctionDeclarationStatement(self: "Interpreter", ctx: NetLangParser.FunctionDeclarationStatementContext):
     function_name: str = ctx.ID().getText()

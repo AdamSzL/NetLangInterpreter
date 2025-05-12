@@ -15,6 +15,7 @@ def visitFunctionCallExpr(self, ctx: NetLangParser.FunctionCallExprContext):
 
 def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCallContext):
     function_name = ctx.ID().getText()
+    call_line = ctx.start.line
     expr_list = ctx.expressionList()
     arg_types = [self.visit(expr) for expr in expr_list.expression()] if expr_list else []
 
@@ -39,6 +40,10 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
                 f"Type mismatch for parameter '{param_name}': expected {param_type}, got {actual_type}",
                 ctx
             )
+
+    self.current_call_line = call_line
+    self.execute_function_body(function_name, function)
+    self.current_call_line = None
 
     return function.return_type or "void"
 
@@ -106,23 +111,25 @@ def visitFunctionDeclarationStatement(self: "TypeCheckingVisitor", ctx: NetLangP
 def check_all_function_bodies(self: "TypeCheckingVisitor"):
     for scope in self.scopes:
         for name, function in scope.functions.items():
-            self.push_scope()
+            self.disable_line_checks = True
+            self.execute_function_body(name, function)
+            self.disable_line_checks = False
 
-            for param_name, param_type in function.parameters:
-                self.declare_variable(param_name, Variable(param_type, -1), None)
+def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Function):
+    self.push_scope()
+    for param_name, param_type in function.parameters:
+        self.declare_variable(param_name, Variable(param_type, -1), None)
 
-            self.in_function_body = True
-            self.expected_return_type = function.return_type
-            self.return_found = False
+    self.in_function_body = True
+    self.expected_return_type = function.return_type
+    self.return_found = False
+    self.visit(function.body_ctx)
+    self.in_function_body = False
 
-            self.visit(function.body_ctx)
+    if self.expected_return_type and not self.return_found and self.expected_return_type != "void":
+        raise NetLangTypeError(
+            f"Function '{name}' declares return type '{self.expected_return_type}' but no return was found"
+        )
 
-            self.in_function_body = False
-
-            if self.expected_return_type and not self.return_found and self.expected_return_type != "void":
-                raise NetLangTypeError(
-                    f"Function '{name}' declares return type '{self.expected_return_type}' but no return was found"
-                )
-
-            self.expected_return_type = None
-            self.pop_scope()
+    self.expected_return_type = None
+    self.pop_scope()

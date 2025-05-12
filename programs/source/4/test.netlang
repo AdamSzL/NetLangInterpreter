@@ -1,12 +1,12 @@
-
-//createHost()
-
-
-define createHost() => void {
+define createHost(name: string) {
     print "fsfs"
     print x
 }
 
 set x: int <- 5
 
-//createHost()
+print createHost("My")
+
+if false {
+    set x: int <- "fsfs"
+}
