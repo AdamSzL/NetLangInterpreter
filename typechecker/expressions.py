@@ -26,20 +26,9 @@ def visitStringLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.StringLit
 
 def visitVariableExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableExprContext):
     variable_name: str = ctx.ID().getText()
-    if variable_name not in self.variables:
-        raise NetLangTypeError(f"Undefined variable '{variable_name}'", ctx)
-    line = ctx.start.line
-    if line == self.variables[variable_name].line_declared:
-        raise NetLangTypeError(
-            f"Error: Variable '{variable_name}' cannot be used on the same line it is declared",
-            ctx
-        )
-    if line < self.variables[variable_name].line_declared:
-        raise NetLangTypeError(
-            f"Variable '{variable_name}' used before its declaration (declared at line {self.variables[variable_name].line_declared}, used at line {line})",
-            ctx
-        )
-    return self.variables[variable_name].type
+    variable = self.lookup_variable(variable_name, ctx)
+
+    return variable.type
 
 def visitIPAddressLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.IPAddressLiteralContext) -> str:
     return "IP"

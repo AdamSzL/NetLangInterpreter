@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from generated.NetLangVisitor import NetLangVisitor
 from shared.model import Connection
 from shared.model.Function import Function
+from shared.model.Scope import Scope
 from shared.model.Variable import Variable
+from shared.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment
-from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement
+from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, visitFunctionDeclarationStatement
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment, getListAndIndex
 from .expressions import (
     visitAtomExpr,
@@ -42,7 +44,7 @@ from .packets import visitSendPacketStatement, forward_packet
 from types import MethodType
 
 @dataclass
-class Interpreter(NetLangVisitor):
+class Interpreter(NetLangVisitor, ScopedVisitorBase):
 
     def visitProgram(self, ctx):
         for stmt in ctx.statement():
@@ -58,7 +60,7 @@ class Interpreter(NetLangVisitor):
         else:
             print(value)
 
-    def __init__(self, variables: dict[str, Variable], functions: dict[str, Function]):
+    def __init__(self):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)
         self.visitVariableAssignment = MethodType(visitVariableAssignment, self)
 
@@ -110,6 +112,7 @@ class Interpreter(NetLangVisitor):
         self.visitEachLoop = MethodType(visitEachLoop, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
 
+        self.visitFunctionDeclarationStatement = MethodType(visitFunctionDeclarationStatement, self)
         self.visitFunctionCallExpr = MethodType(visitFunctionCallExpr, self)
         self.visitFunctionCall = MethodType(visitFunctionCall, self)
         self.visitReturnStatement = MethodType(visitReturnStatement, self)
@@ -117,6 +120,5 @@ class Interpreter(NetLangVisitor):
         self.draw_graph = MethodType(draw_graph, self)
         self.forward_packet = MethodType(forward_packet, self)
 
-        self.variables: dict[str, Variable] = variables
-        self.functions: dict[str, Function] = functions
+        ScopedVisitorBase.__init__(self)
         self.connections: list[Connection] = []

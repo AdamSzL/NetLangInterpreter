@@ -18,9 +18,8 @@ def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketS
     device_name = ctx.fieldAccess().ID(0).getText()
     target_ip = ctx.IPADDR().getText()
 
-
-    packet = self.variables[packet_name].value
-    device = self.variables[device_name].value
+    packet = self.lookup_variable(packet_name, ctx).value
+    device = self.lookup_variable(device_name, ctx).value
     port = self.visit(ctx.fieldAccess())
 
     body = Text()
@@ -56,7 +55,7 @@ def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start
             else:
                 continue
 
-            next_device = self.variables.get(next_device_name).value
+            next_device = self.lookup_variable(next_device_name, None).value
             next_port = get_port_by_id(next_device, next_port_id)
 
             if next_port in visited_ports:

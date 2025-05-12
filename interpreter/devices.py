@@ -32,7 +32,7 @@ def visitConnectStatement(self: "Interpreter", ctx: NetLangParser.ConnectStateme
 
 def visitShowInterfacesStatement(self: "Interpreter", ctx: NetLangParser.ShowInterfacesStatementContext):
     device_name = ctx.ID().getText()
-    device = self.variables[device_name].value
+    device = self.lookup_variable(device_name, ctx).value
 
     if not hasattr(device, "ports"):
         raise NetLangRuntimeError(f"Device '{device_name}' has no ports", ctx)

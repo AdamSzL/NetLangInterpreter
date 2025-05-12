@@ -12,10 +12,8 @@ def visitFieldAccessExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAc
 
 def visitFieldAccess(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAccessContext):
     var_name = ctx.ID(0).getText()
-    if var_name not in self.variables:
-        raise NetLangTypeError(f"Undefined variable '{var_name}'", ctx)
-
-    current_type = self.variables[var_name].type
+    variable = self.lookup_variable(var_name, ctx)
+    current_type = variable.type
     i = 1
 
     while i < len(ctx.children):

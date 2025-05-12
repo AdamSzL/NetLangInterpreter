@@ -23,11 +23,9 @@ def visitAddToListStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.AddT
 
 def visitDeleteListElementStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.DeleteListElementStatementContext):
     var_name = ctx.listIndexAccess().ID().getText()
+    variable = self.lookup_variable(var_name, ctx)
 
-    if var_name not in self.variables:
-        raise NetLangTypeError(f"Variable '{var_name}' not defined", ctx)
-
-    list_type = self.variables[var_name].type
+    list_type = variable.type
     if not list_type.startswith("[") or not list_type.endswith("]"):
         raise NetLangTypeError("Target of 'delete' must be a list", ctx)
     return None
@@ -58,10 +56,9 @@ def visitListIndexAccess(self: "TypeCheckingVisitor", ctx: NetLangParser.ListInd
     if index_type != "int":
         raise NetLangTypeError("List index must be of type int", ctx)
 
-    if list_name not in self.variables:
-        raise NetLangTypeError(f"Undefined variable '{list_name}'", ctx)
+    variable = self.lookup_variable(list_name, ctx)
+    list_type = variable.type
 
-    list_type = self.variables[list_name].type
     if not list_type.startswith("[") or not list_type.endswith("]"):
         raise NetLangTypeError(f"Variable '{list_name}' is not a list", ctx)
 
@@ -72,10 +69,8 @@ def visitListIndexAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.Lis
     index_type = self.visit(ctx.listIndexAccess().expression())
     value_type = self.visit(ctx.expression())
 
-    if list_name not in self.variables:
-        raise NetLangTypeError(f"Undefined variable '{list_name}'", ctx)
-
-    list_type = self.variables[list_name].type
+    variable = self.lookup_variable(list_name, ctx)
+    list_type = variable.type
 
     if not list_type.startswith("[") or not list_type.endswith("]"):
         raise NetLangTypeError(f"Variable '{list_name}' is not a list", ctx)

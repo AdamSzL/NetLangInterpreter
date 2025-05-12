@@ -4,6 +4,7 @@ from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
 from typing import TYPE_CHECKING, Any
 
+from shared.model.Variable import Variable
 from shared.utils.types import is_known_type, are_types_compatible
 
 if TYPE_CHECKING:
@@ -31,16 +32,16 @@ def visitVariableDeclaration(self: "TypeCheckingVisitor", ctx: NetLangParser.Var
             ctx
         )
 
+    self.declare_variable(name, Variable(declared_type, ctx.start.line), ctx)
     return declared_type
 
 def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableAssignmentContext):
     name = ctx.ID().getText()
     expr_type = self.visit(ctx.expression())
 
-    if name not in self.variables:
-        raise NetLangRuntimeError(f"Undefined variable '{name}'", ctx)
+    variable = self.lookup_variable(name, ctx)
+    expected_type = variable.type
 
-    expected_type = self.variables[name].type
     if not are_types_compatible(expected_type, expr_type):
         raise NetLangTypeError(
             f"Type mismatch in assignment to variable '{name}': expected '{expected_type}', got '{expr_type}'",

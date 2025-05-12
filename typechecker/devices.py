@@ -19,11 +19,9 @@ def visitConnectStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.Connec
 
 def visitShowInterfacesStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.ShowInterfacesStatementContext):
     device_name = ctx.ID().getText()
+    device_var = self.lookup_variable(device_name, ctx)
+    device_type = device_var.type
 
-    if device_name not in self.variables:
-        raise NetLangRuntimeError(f"Device '{device_name}' not defined", ctx)
-
-    device_type = self.variables[device_name].type
     if device_type not in ["Host", "Router", "Switch"]:
         raise NetLangRuntimeError(f"'{device_name}' is not a device", ctx)
 

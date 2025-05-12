@@ -12,11 +12,7 @@ def visitFieldAccessExpr(self: "Interpreter", ctx: NetLangParser.FieldAccessExpr
 def visitFieldAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext):
     # Zacznij od pierwszego identyfikatora (np. "h1")
     var_name = ctx.ID(0).getText()
-
-    if var_name not in self.variables:
-        raise NetLangRuntimeError(f"Undefined variable '{var_name}'", ctx)
-
-    current = self.variables.get(var_name).value
+    current = self.lookup_variable(var_name, ctx).value
 
     i = 1
     while i < len(ctx.children):
@@ -59,12 +55,8 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
     access = ctx.fieldAccess()
     value = self.visit(ctx.expression())
 
-    # Zacznij od pierwszego ID
-    current = self.variables.get(access.ID(0).getText())
-    if current is None:
-        raise NetLangRuntimeError(f"Variable '{access.ID(0).getText()}' not defined")
+    current = self.lookup_variable(access.ID(0).getText(), ctx)
 
-    # Przechodzimy po chainie, ale ZATRZYMUJEMY się na przedostatnim
     for i in range(1, len(access.children) - 2, 2):
         op = access.getChild(i).getText()
         operand = access.getChild(i + 1)
@@ -80,11 +72,10 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
             if not isinstance(current.value, list):
                 raise NetLangRuntimeError(f"Tried to index non-list object")
             try:
-                current = current[index]
+                current = current.value[index]
             except IndexError:
                 raise NetLangRuntimeError(f"Index {index} out of range")
 
-    # Teraz zostały ostatnie dwa elementy: operator + field/index
     last_op = access.getChild(-2).getText()
     last_operand = access.getChild(-1)
 
@@ -101,7 +92,7 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
             raise NetLangRuntimeError(f"Tried to index non-list object")
         if index >= len(current.value):
             raise NetLangRuntimeError(f"Index {index} out of range")
-        current[index] = value
+        current.value[index] = value
         return value
 
     raise NetLangRuntimeError(f"Unsupported assignment operator '{last_op}'")

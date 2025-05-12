@@ -2,6 +2,8 @@ from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError
 from typing import TYPE_CHECKING
 
+from shared.model.Variable import Variable
+
 if TYPE_CHECKING:
     from .interpreter import Interpreter
 
@@ -12,9 +14,9 @@ def visitAddToListStatement(self: "Interpreter", ctx: NetLangParser.AddToListSta
     return value
 
 def visitDeleteListElementStatement(self: "Interpreter", ctx: NetLangParser.DeleteListElementStatementContext):
-    list_name, index = self.getListAndIndex(ctx.listIndexAccess())
+    list_var, index, list_name = self.getListAndIndex(ctx.listIndexAccess())
     try:
-        self.variables[list_name].value.pop(index)
+        del list_var.value[index]
     except IndexError:
         raise NetLangRuntimeError(f"Index {index} out of range for list {list_name}", ctx)
 
@@ -22,33 +24,26 @@ def visitListLiteral(self: "Interpreter", ctx: NetLangParser.ListLiteralContext)
     return [self.visit(expr) for expr in ctx.expressionList().expression()] if ctx.expressionList() else []
 
 def visitListIndexAccess(self: "Interpreter", ctx: NetLangParser.ListIndexAccessContext):
-    list_name, index = self.getListAndIndex(ctx)
+    list_var, index, list_name = self.getListAndIndex(ctx)
     try:
-        return self.variables[list_name].value[index]
+        return list_var.value[index]
     except IndexError:
         raise NetLangRuntimeError(f"Index {index} out of range for list {list_name}", ctx)
 
 def visitListIndexAssignment(self: "Interpreter", ctx: NetLangParser.ListIndexAssignmentContext):
-    list_access = ctx.listIndexAccess()
-    list_name = list_access.ID().getText()
-    index = self.visit(list_access.expression())
+    list_var, index, list_name = self.getListAndIndex(ctx.listIndexAccess())
     value = self.visit(ctx.expression())
 
-    lst = self.variables.get(list_name)
+    try:
+        list_var.value[index] = value
+    except IndexError:
+        raise NetLangRuntimeError(f"Index {index} out of range for list {list_name}", ctx)
 
-    if index >= len(lst.value):
-        raise NetLangRuntimeError(f"Index {index} out of range for list '{list_name}'", ctx)
-
-    lst.value[index] = value
-
-def getListAndIndex(self: "Interpreter", ctx: NetLangParser.ListIndexAccessContext) -> tuple[str, int]:
+def getListAndIndex(self: "Interpreter", ctx: NetLangParser.ListIndexAccessContext) -> tuple[Variable, int, str]:
     list_name = ctx.ID().getText()
     index = self.visit(ctx.expression())
 
-    if list_name not in self.variables:
-        raise NetLangRuntimeError(f"Undefined list {list_name}", ctx)
-
-    list_var = self.variables[list_name]
+    list_var = self.lookup_variable(list_name, ctx)
 
     if not isinstance(list_var.value, list):
         raise NetLangRuntimeError(f"{list_name} is not a list", ctx)
@@ -59,4 +54,4 @@ def getListAndIndex(self: "Interpreter", ctx: NetLangParser.ListIndexAccessConte
             ctx
         )
 
-    return list_name, index
+    return list_var, index, list_name

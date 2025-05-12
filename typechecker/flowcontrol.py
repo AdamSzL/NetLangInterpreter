@@ -13,25 +13,36 @@ def visitIfStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.IfStatement
     condition_type = self.visit(ctx.expression())
     check_bool(condition_type, ctx, statement="if")
 
+    self.push_scope()
+
     for stmt in ctx.block().statement():
         self.visit(stmt)
+
+    self.pop_scope()
 
     for elseif in ctx.elseIfClause():
         elseif_type = self.visit(elseif.expression())
         check_bool(elseif_type, ctx, statement="else-if")
+
+        self.push_scope()
         for stmt in elseif.block().statement():
             self.visit(stmt)
+        self.pop_scope()
 
     if ctx.elseClause():
+        self.push_scope()
         for stmt in ctx.elseClause().block().statement():
             self.visit(stmt)
+        self.pop_scope()
 
 def visitRepeatWhileLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatWhileLoopContext):
     condition_type = self.visit(ctx.expression())
     check_bool(condition_type, ctx, statement="repeat-while")
 
+    self.push_scope()
     for stmt in ctx.block().statement():
         self.visit(stmt)
+    self.pop_scope()
 
 
 def visitRepeatTimesLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatTimesLoopContext):
@@ -43,26 +54,27 @@ def visitRepeatTimesLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatT
         )
 
     index_var_name = ctx.ID().getText()
-    self.variables[index_var_name] = Variable("int", -1, 0)
 
+    self.push_scope()
+    self.declare_variable(index_var_name, Variable("int", -1))
     for stmt in ctx.block().statement():
         self.visit(stmt)
-
-    del self.variables[index_var_name]
+    self.pop_scope()
 
 def visitEachLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.EachLoopContext):
     loop_var = ctx.ID(0).getText()
     list_var = ctx.ID(1).getText()
 
-    if list_var not in self.variables:
-        raise NetLangTypeError(f"Variable '{list_var}' not defined", ctx)
+    variable = self.lookup_variable(list_var, ctx)
+    list_type = variable.type
 
-    list_type = self.variables[list_var].type
     if not list_type.startswith("[") or not list_type.endswith("]"):
         raise NetLangTypeError(f"'{list_var}' is not a list type", ctx)
 
     element_type = list_type[1:-1]
-    self.variables[loop_var] = Variable(element_type, -1, 0)
 
+    self.push_scope()
+    self.declare_variable(loop_var, Variable(element_type, -1))
     for stmt in ctx.block().statement():
         self.visit(stmt)
+    self.pop_scope()

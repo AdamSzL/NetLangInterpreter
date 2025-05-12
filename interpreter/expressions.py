@@ -2,6 +2,7 @@ from typing import Any, cast
 
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError
+from shared.model.Variable import Variable
 from shared.utils.types import type_map
 from shared.model import ConnectorType, Protocol, IPAddress, MACAddress, CIDR
 from shared.model.base import NetLangObject
@@ -31,7 +32,9 @@ def visitVariableExpr(self: "Interpreter", ctx: NetLangParser.VariableExprContex
         return ConnectorType[variable_name]
     if variable_name in Protocol.__members__:
         return Protocol[variable_name]
-    return self.variables[variable_name].value
+
+    variable = self.lookup_variable(variable_name, ctx)
+    return variable.value
 
 def visitIPAddressLiteral(self: "Interpreter", ctx: NetLangParser.IPAddressLiteralContext) -> IPAddress:
     return IPAddress(ctx.IPADDR().getText())
@@ -73,16 +76,13 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
 def visitCidrLiteral(self: "Interpreter", ctx: NetLangParser.CidrLiteralContext):
     if ctx.ID():  # np. [routerIP]/24
         var_name: str = ctx.ID().getText()
-        ip: Any = self.variables.get(var_name)
+        ip_var: Variable = self.lookup_variable(var_name, ctx)
 
-        if var_name not in self.variables:
-            raise NetLangRuntimeError(f"Undefined variable '{var_name}'", ctx)
-
-        if not isinstance(ip.value, IPAddress):
+        if not isinstance(ip_var.value, IPAddress):
             raise NetLangRuntimeError(f"Variable '{var_name}' is not an IP address", ctx)
 
         mask = int(ctx.INT().getText())
-        return CIDR(cast(IPAddress, ip.value), mask)
+        return CIDR(cast(IPAddress, ip_var.value), mask)
 
     else:
         ip: IPAddress = IPAddress(ctx.IPADDR().getText())

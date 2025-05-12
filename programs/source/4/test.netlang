@@ -1,0 +1,12 @@
+
+//createHost()
+
+
+define createHost() => void {
+    print "fsfs"
+    print x
+}
+
+set x: int <- 5
+
+//createHost()

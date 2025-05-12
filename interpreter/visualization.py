@@ -18,12 +18,12 @@ def draw_graph(self: "Interpreter"):
     images = {k: Image.open(fname) for k, fname in icons.items()}
 
     G = nx.Graph()
-    for name, value in self.variables.items():
-        if isinstance(value, Host):
+    for name, variable in self.scopes[0].variables.items():
+        if isinstance(variable.value, Host):
             G.add_node(name, image=images["host"])
-        elif isinstance(value, Router):
+        elif isinstance(variable.value, Router):
             G.add_node(name, image=images["router"])
-        elif isinstance(value, Switch):
+        elif isinstance(variable.value, Switch):
             G.add_node(name, image=images["switch"])
 
     if G.number_of_nodes() == 0:
@@ -74,7 +74,7 @@ def draw_graph(self: "Interpreter"):
         a = plt.axes([xa - icon_center, ya - icon_center, icon_size, icon_size])
         a.imshow(G.nodes[n]["image"])
         a.axis("off")
-        label = self.variables[n].name
+        label = self.scopes[0].variables[n].value.name
         a.text(
             0.5, -0.01,
             label,

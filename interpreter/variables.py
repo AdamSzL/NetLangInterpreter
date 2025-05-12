@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from generated.NetLangParser import NetLangParser
+from shared.model.Variable import Variable
 from shared.model.base import NetLangObject
 from shared.errors import NetLangRuntimeError
 from shared.utils.types import type_map, check_type
@@ -23,19 +24,20 @@ def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDec
             ctx
         )
 
-    self.variables[name].value = value
+    self.declare_variable(name, Variable(declared_type, ctx.start.line, value=value), ctx)
     return value
 
 def visitVariableAssignment(self: "Interpreter", ctx: NetLangParser.VariableAssignmentContext):
     name = ctx.ID().getText()
     value = self.visit(ctx.expression())
 
-    expected_type = self.variables[name].type
+    variable = self.lookup_variable(name, ctx)
+    expected_type = variable.type
     if not check_type(expected_type, value):
         raise NetLangRuntimeError(
             f"Type mismatch in assignment to variable '{name}': expected '{expected_type}', got '{type(value).__name__}'",
             ctx
         )
 
-    self.variables[name].value = value
+    variable.value = value
     return value

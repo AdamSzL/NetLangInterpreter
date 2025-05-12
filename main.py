@@ -1,12 +1,12 @@
 import sys
 from antlr4 import *
 
-from collector.collector import VariableCollectorListener
 from generated.NetLangLexer import NetLangLexer
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangErrorListener, NetLangRuntimeError, NetLangSyntaxError, NetLangTypeError
 from interpreter import Interpreter
 from shared.logging import log
+from shared.model.Scope import Scope
 
 from typechecker.type_checker import TypeCheckingVisitor
 
@@ -34,18 +34,12 @@ def main():
 
         tree = parser.program()
 
-        collector = VariableCollectorListener()
-        walker = ParseTreeWalker()
-        walker.walk(collector, tree)
-
-        type_checker = TypeCheckingVisitor(collector.variables, collector.functions)
+        type_checker = TypeCheckingVisitor()
         type_checker.visit(tree)
         type_checker.check_all_function_bodies()
 
-        interpreter = Interpreter(collector.variables, collector.functions)
+        interpreter = Interpreter()
         for statement in tree.statement():
-            if statement.functionDeclarationStatement():
-                continue
             interpreter.visit(statement)
     except NetLangRuntimeError as e:
         log(f"[bold red]Runtime Error:[/bold red]", e)

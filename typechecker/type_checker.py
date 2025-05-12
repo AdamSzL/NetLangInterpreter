@@ -2,9 +2,12 @@ from dataclasses import dataclass, field
 from types import MethodType
 from typing import Optional
 
+from generated.NetLangParser import NetLangParser
 from generated.NetLangVisitor import NetLangVisitor
 from shared.model.Function import Function
+from shared.model.Scope import Scope
 from shared.model.Variable import Variable
+from shared.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
@@ -43,13 +46,16 @@ from .packets import visitSendPacketStatement
 from types import MethodType
 
 @dataclass
-class TypeCheckingVisitor(NetLangVisitor):
+class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
 
     def visitProgram(self, ctx):
         for stmt in ctx.statement():
             self.visit(stmt)
 
-    def __init__(self, variables: dict[str, Variable], functions: dict[str, Function]):
+    def visitPrintStatement(self, ctx:NetLangParser.PrintStatementContext):
+        self.visit(ctx.expression())
+
+    def __init__(self):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)
         self.visitVariableAssignment = MethodType(visitVariableAssignment, self)
 
@@ -106,8 +112,7 @@ class TypeCheckingVisitor(NetLangVisitor):
         self.visitReturnStatement = MethodType(visitReturnStatement, self)
         self.check_all_function_bodies = MethodType(check_all_function_bodies, self)
 
-        self.variables: dict[str, Variable] = variables
-        self.functions: dict[str, Function] = functions
+        ScopedVisitorBase.__init__(self)
         self.expected_return_type: Optional[str] = None
         self.return_found: bool = False
         self.expected_type: Optional[str] = None
