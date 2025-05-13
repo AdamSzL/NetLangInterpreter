@@ -1,0 +1,9 @@
+define doSomethingIfOdd(number: int) {
+    if number % 2 == 0 {
+        return
+    }
+    print "number is odd"
+}
+
+doSomethingIfOdd(4)
+doSomethingIfOdd(5)

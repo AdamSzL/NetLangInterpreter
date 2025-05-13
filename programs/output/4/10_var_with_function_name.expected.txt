@@ -1,0 +1,1 @@
+Type Error: [Line 5, Column 0] Cannot declare variable 'printX' – function with this name was already declared on line 1

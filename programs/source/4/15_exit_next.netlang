@@ -1,0 +1,25 @@
+repeat 5 times as i {
+    if i == 2 {
+        next
+    }
+    print i
+}
+
+repeat 5 times as i {
+    if i == 3 {
+        exit
+    }
+    print i
+}
+
+set i: int <- 0
+repeat while i < 6 {
+    i <- i + 1
+    if i == 2 {
+        next
+    }
+    if i == 5 {
+        exit
+    }
+    print i
+}

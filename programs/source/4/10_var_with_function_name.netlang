@@ -1,0 +1,5 @@
+define printX() => void {
+    print "X"
+}
+
+set printX: int <- 10

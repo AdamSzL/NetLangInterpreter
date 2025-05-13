@@ -1,0 +1,5 @@
+define myFunction(number: int) => void {
+    set number: int <- 5
+}
+
+myFunction(5)

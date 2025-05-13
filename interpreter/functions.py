@@ -22,8 +22,16 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
 
     function = self.lookup_function(function_name, ctx)
 
+    if self.call_depth >= self.max_call_depth:
+        raise NetLangRuntimeError(
+            "Stack overflow — possible infinite recursion",
+            ctx
+        )
+
+    self.call_depth += 1
     self.current_call_line = call_line
     self.push_scope()
+
     for (param_name, param_type), arg_value in zip(function.parameters, args):
         self.declare_variable(param_name, Variable(param_type, 1, arg_value), ctx)
 
@@ -35,6 +43,7 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
     finally:
         self.pop_scope()
         self.current_call_line = None
+        self.call_depth -= 1
 
 def visitFunctionDeclarationStatement(self: "Interpreter", ctx: NetLangParser.FunctionDeclarationStatementContext):
     function_name: str = ctx.ID().getText()

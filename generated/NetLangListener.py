@@ -233,6 +233,24 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by NetLangParser#breakStatement.
+    def enterBreakStatement(self, ctx:NetLangParser.BreakStatementContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#breakStatement.
+    def exitBreakStatement(self, ctx:NetLangParser.BreakStatementContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#continueStatement.
+    def enterContinueStatement(self, ctx:NetLangParser.ContinueStatementContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#continueStatement.
+    def exitContinueStatement(self, ctx:NetLangParser.ContinueStatementContext):
+        pass
+
+
     # Enter a parse tree produced by NetLangParser#type.
     def enterType(self, ctx:NetLangParser.TypeContext):
         pass

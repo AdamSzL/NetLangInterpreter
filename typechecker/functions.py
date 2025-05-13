@@ -42,7 +42,10 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
             )
 
     self.current_call_line = call_line
-    self.execute_function_body(function_name, function)
+    if function_name not in self.currently_checking_functions:
+        self.currently_checking_functions.add(function_name)
+        self.execute_function_body(function_name, function)
+        self.currently_checking_functions.remove(function_name)
     self.current_call_line = None
 
     return function.return_type or "void"
@@ -111,14 +114,18 @@ def visitFunctionDeclarationStatement(self: "TypeCheckingVisitor", ctx: NetLangP
 def check_all_function_bodies(self: "TypeCheckingVisitor"):
     for scope in self.scopes:
         for name, function in scope.functions.items():
+            if name in self.currently_checking_functions:
+                continue
+            self.currently_checking_functions.add(name)
             self.disable_line_checks = True
             self.execute_function_body(name, function)
             self.disable_line_checks = False
+            self.currently_checking_functions.remove(name)
 
 def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Function):
     self.push_scope()
     for param_name, param_type in function.parameters:
-        self.declare_variable(param_name, Variable(param_type, -1), None)
+        self.declare_variable(param_name, Variable(param_type, function.line_declared), None)
 
     self.in_function_body = True
     self.expected_return_type = function.return_type

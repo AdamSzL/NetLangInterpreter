@@ -134,6 +134,16 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by NetLangParser#breakStatement.
+    def visitBreakStatement(self, ctx:NetLangParser.BreakStatementContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#continueStatement.
+    def visitContinueStatement(self, ctx:NetLangParser.ContinueStatementContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by NetLangParser#type.
     def visitType(self, ctx:NetLangParser.TypeContext):
         return self.visitChildren(ctx)

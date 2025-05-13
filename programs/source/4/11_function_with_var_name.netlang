@@ -1,0 +1,5 @@
+set test: int <- 5
+
+define test() => void {
+    print "hello from test"
+}

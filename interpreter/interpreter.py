@@ -38,7 +38,7 @@ from .operators import (
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment
 from .devices import visitConnectStatement, visitShowInterfacesStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop, visitEachLoop
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop, visitEachLoop, visitBreakStatement, visitContinueStatement
 from .visualization import draw_graph
 from .packets import visitSendPacketStatement, forward_packet
 from types import MethodType
@@ -111,6 +111,8 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitRepeatTimesLoop = MethodType(visitRepeatTimesLoop, self)
         self.visitEachLoop = MethodType(visitEachLoop, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
+        self.visitBreakStatement = MethodType(visitBreakStatement, self)
+        self.visitContinueStatement = MethodType(visitContinueStatement, self)
 
         self.visitFunctionDeclarationStatement = MethodType(visitFunctionDeclarationStatement, self)
         self.visitFunctionCallExpr = MethodType(visitFunctionCallExpr, self)
@@ -122,3 +124,5 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
 
         ScopedVisitorBase.__init__(self)
         self.connections: list[Connection] = []
+        self.call_depth = 0
+        self.max_call_depth = 100

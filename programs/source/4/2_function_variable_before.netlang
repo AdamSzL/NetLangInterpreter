@@ -5,8 +5,4 @@ define createHost(name: string) {
 
 set x: int <- 5
 
-print createHost("My")
-
-if false {
-    set x: int <- "fsfs"
-}
+createHost("My")

@@ -20,6 +20,8 @@ statement
     | functionDeclarationStatement
     | returnStatement
     | functionCall
+    | breakStatement
+    | continueStatement
 //    | expression
     ;
 
@@ -119,6 +121,14 @@ returnStatement
 
 listIndexAssignment
     : listIndexAccess ASSIGN expression
+    ;
+
+breakStatement
+    : EXIT
+    ;
+
+continueStatement
+    : NEXT
     ;
 
 // ----------- Types ----------
@@ -250,6 +260,10 @@ listIndexAccess
     ;
 
 // ----------- Lexical Rules ----------
+
+EXIT: 'exit';
+NEXT: 'next';
+
 ASSIGN: '<-';
 COLON: ':';
 COMMA: ',';

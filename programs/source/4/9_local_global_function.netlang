@@ -1,0 +1,9 @@
+set x: int <- 3
+
+define myFunction() {
+    set x: int <- 10
+    print x
+}
+
+myFunction()
+print x

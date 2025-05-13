@@ -35,9 +35,9 @@ def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketS
     packet.src = port.ip
     packet.dst = target_ip
 
-    self.forward_packet(packet, device_name, port)
+    self.forward_packet(packet, device_name, port, ctx)
 
-def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start_port):
+def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start_port, ctx: NetLangParser.SendPacketStatementContext):
     visited_ports = set()
     queue = [(start_port, start_device)]  # (port, from_device_name)
 
@@ -55,7 +55,7 @@ def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start
             else:
                 continue
 
-            next_device = self.lookup_variable(next_device_name, None).value
+            next_device = self.lookup_variable(next_device_name, ctx).value
             next_port = get_port_by_id(next_device, next_port_id)
 
             if next_port in visited_ports:

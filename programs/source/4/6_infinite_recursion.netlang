@@ -1,0 +1,5 @@
+define recurse(n: int) {
+    recurse(n + 1)
+}
+
+recurse(0)

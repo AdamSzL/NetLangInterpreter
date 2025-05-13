@@ -1,0 +1,7 @@
+define test() => void {
+    print "test"
+}
+
+define test(x: int) => int {
+    return x
+}

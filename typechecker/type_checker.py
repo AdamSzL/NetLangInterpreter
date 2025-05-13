@@ -41,7 +41,7 @@ from .operators import (
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment
 from .devices import visitConnectStatement, visitShowInterfacesStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop, visitEachLoop
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop, visitEachLoop, visitBreakStatement, visitContinueStatement
 from .packets import visitSendPacketStatement
 from types import MethodType
 
@@ -105,6 +105,8 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitRepeatTimesLoop = MethodType(visitRepeatTimesLoop, self)
         self.visitEachLoop = MethodType(visitEachLoop, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
+        self.visitBreakStatement = MethodType(visitBreakStatement, self)
+        self.visitContinueStatement = MethodType(visitContinueStatement, self)
 
         self.visitFunctionCallExpr = MethodType(visitFunctionCallExpr, self)
         self.visitFunctionCall = MethodType(visitFunctionCall, self)
@@ -118,3 +120,5 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.return_found: bool = False
         self.expected_type: Optional[str] = None
         self.in_function_body = False
+        self.currently_checking_functions: set[str] = set()
+        self.in_loop = False

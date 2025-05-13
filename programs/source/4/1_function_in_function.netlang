@@ -1,0 +1,10 @@
+define outerFunction() {
+    define innerFunction() {
+        print "hello from inner"
+    }
+    print "hello from outer"
+    innerFunction()
+    innerFunction()
+}
+
+outerFunction()

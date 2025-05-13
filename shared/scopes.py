@@ -29,7 +29,7 @@ class ScopedVisitorBase:
             )
         if name in self.scopes[-1].functions:
             raise NetLangTypeError(
-                f"Cannot declare variable '{name}' – function with this name was already declared on line {self.scopes[-1].variables[name].line_declared}",
+                f"Cannot declare variable '{name}' – function with this name was already declared on line {self.scopes[-1].functions[name].line_declared}",
                 ctx
             )
         self.scopes[-1].variables[name] = variable

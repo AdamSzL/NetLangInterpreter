@@ -1,0 +1,23 @@
+set names: [string] <- ["A", "B", "C", "D"]
+
+each name from names {
+    if name == "B" {
+        next
+    }
+    if name == "C" {
+        exit
+    }
+    print name
+}
+
+repeat 3 times as i {
+    repeat 3 times as j {
+        if j == 1 {
+            next
+        }
+        if j == 2 && i == 1 {
+            exit
+        }
+        print i * 10 + j
+    }
+}

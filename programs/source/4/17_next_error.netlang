@@ -1,0 +1,8 @@
+set x: int <- 5
+
+if false {
+    next
+}
+else if true {
+    print "hello"
+}
