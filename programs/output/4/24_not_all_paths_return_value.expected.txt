@@ -1,0 +1,1 @@
+Type Error: Function 'f' declares return type 'int' but not all control paths return a value

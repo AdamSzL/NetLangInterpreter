@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
 from shared.model.Variable import Variable
+from shared.utils.types import are_types_compatible
 from typechecker.utils import check_bool
 
 if TYPE_CHECKING:
@@ -18,11 +19,13 @@ def visitIfStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.IfStatement
     condition_type = self.visit(ctx.expression())
     check_bool(condition_type, ctx, statement="if")
 
+    return_types = []
+
     self.push_scope()
 
     try:
-        for stmt in ctx.block().statement():
-            self.visit(stmt)
+        ret = self.block_returns_type(ctx.block())
+        return_types.append(ret)
     finally:
         self.pop_scope()
 
@@ -32,18 +35,26 @@ def visitIfStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.IfStatement
 
         self.push_scope()
         try:
-            for stmt in elseif.block().statement():
-                self.visit(stmt)
+            ret = self.block_returns_type(elseif.block())
+            return_types.append(ret)
         finally:
             self.pop_scope()
 
     if ctx.elseClause():
         self.push_scope()
         try:
-            for stmt in ctx.elseClause().block().statement():
-                self.visit(stmt)
+            ret = self.block_returns_type(ctx.elseClause().block())
+            return_types.append(ret)
         finally:
             self.pop_scope()
+    else:
+        return_types.append(None)
+
+    if all(rt is not None for rt in return_types):
+        first = return_types[0]
+        if all(are_types_compatible(first, rt) for rt in return_types):
+            return first
+    return None
 
 def visitRepeatWhileLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatWhileLoopContext):
     condition_type = self.visit(ctx.expression())

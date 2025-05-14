@@ -9,7 +9,7 @@ from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment
-from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement, execute_function_body
+from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement, execute_function_body, block_returns_type
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
 from .expressions import (
     visitAtomExpr,
@@ -114,6 +114,7 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitReturnStatement = MethodType(visitReturnStatement, self)
         self.check_all_function_bodies = MethodType(check_all_function_bodies, self)
         self.execute_function_body = MethodType(execute_function_body, self)
+        self.block_returns_type = MethodType(block_returns_type, self)
 
         ScopedVisitorBase.__init__(self)
         self.expected_return_type: Optional[str] = None

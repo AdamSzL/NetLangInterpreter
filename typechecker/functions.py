@@ -72,12 +72,16 @@ def visitReturnStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.ReturnS
                 ctx=ctx
             )
 
+        return value_type
+
     else:
         if self.expected_return_type != "void":
             raise NetLangTypeError(
                 message=f"Return value required in function returning {self.expected_return_type}",
                 ctx=ctx
             )
+
+        return "void"
 
     self.return_found = True
 
@@ -129,14 +133,19 @@ def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Func
 
     self.in_function_body = True
     self.expected_return_type = function.return_type
-    self.return_found = False
-    self.visit(function.body_ctx)
+    return_type = self.block_returns_type(function.body_ctx)
     self.in_function_body = False
-
-    if self.expected_return_type and not self.return_found and self.expected_return_type != "void":
-        raise NetLangTypeError(
-            f"Function '{name}' declares return type '{self.expected_return_type}' but no return was found"
-        )
-
     self.expected_return_type = None
     self.pop_scope()
+
+    if function.return_type != "void" and return_type is None:
+        raise NetLangTypeError(
+            f"Function '{name}' declares return type '{function.return_type}' but not all control paths return a value"
+        )
+
+def block_returns_type(self, block_ctx) -> Optional[str]:
+    for stmt in block_ctx.statement():
+        return_type = self.visit(stmt)
+        if return_type is not None:
+            return return_type
+    return None
