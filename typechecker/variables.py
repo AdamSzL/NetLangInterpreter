@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
 from typing import TYPE_CHECKING, Any
 
 from shared.model.Variable import Variable
@@ -39,8 +39,15 @@ def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.Vari
     name = ctx.ID().getText()
     expr_type = self.visit(ctx.expression())
 
-    variable = self.lookup_variable(name, ctx)
-    expected_type = variable.type
+    try:
+        variable = self.lookup_variable(name, ctx)
+        expected_type = variable.type
+    except UndefinedVariableError:
+        try:
+            _ = self.lookup_function(name, ctx)
+            raise NetLangTypeError(f"Cannot assign to function '{name}'", ctx)
+        except UndefinedFunctionError:
+            raise NetLangTypeError(f"Undefined variable '{name}'", ctx)
 
     if not are_types_compatible(expected_type, expr_type):
         raise NetLangTypeError(

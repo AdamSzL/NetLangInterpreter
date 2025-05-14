@@ -60,8 +60,12 @@ def visitEqualityExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.EqualityEx
         operator = ctx.getChild(2 * i - 1).getText()
         right_type = self.visit(ctx.addSubExpr(i))
 
+        numeric_types = {"int", "float"}
         if left_type != right_type:
-            raise NetLangTypeError(f"Cannot compare {left_type} and {right_type}", ctx)
+            if {left_type, right_type}.issubset(numeric_types):
+                pass
+            else:
+                raise NetLangTypeError(f"Cannot compare {left_type} and {right_type}", ctx)
 
     return "bool"
 

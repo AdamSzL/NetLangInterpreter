@@ -57,3 +57,7 @@ class NetLangTypeError(Exception):
             column = token.column
             message = f"[Line {line}, Column {column}] {message}"
         super().__init__(message)
+
+class UndefinedVariableError(NetLangTypeError): pass
+
+class UndefinedFunctionError(NetLangTypeError): pass

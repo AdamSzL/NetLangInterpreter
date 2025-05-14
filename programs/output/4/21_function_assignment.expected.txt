@@ -1,0 +1,1 @@
+Type Error: [Line 5, Column 0] Cannot assign to function 'printHelloWorld'

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Any
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
 from shared.model.Function import Function
 from shared.model.Variable import Variable
 from shared.utils.types import check_type, are_types_compatible, is_known_type
@@ -21,11 +21,11 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
 
     try:
         function = self.lookup_function(function_name, ctx)
-    except NetLangTypeError:
+    except UndefinedFunctionError:
         try:
             _ = self.lookup_variable(function_name, ctx)
             raise NetLangTypeError(f"Variable '{function_name}' is not callable", ctx)
-        except NetLangTypeError:
+        except UndefinedVariableError:
             raise NetLangTypeError(f"Undefined function '{function_name}'", ctx)
 
     if len(arg_types) != len(function.parameters):

@@ -1,0 +1,5 @@
+define printHelloWorld() {
+    print "hello"
+}
+
+printHelloWorld <- 5

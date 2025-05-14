@@ -1,0 +1,6 @@
+set x: bool <- true
+set y: bool <- !(true || false)
+
+print x == y
+print !x == y
+print x != y

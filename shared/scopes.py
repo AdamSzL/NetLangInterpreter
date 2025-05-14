@@ -1,7 +1,7 @@
 from dataclasses import field, dataclass
 
 from generated.NetLangVisitor import NetLangVisitor
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedVariableError, UndefinedFunctionError
 from typing import TYPE_CHECKING, Any, Optional
 
 from shared.model.Function import Function
@@ -71,10 +71,10 @@ class ScopedVisitorBase:
                             ctx
                         )
                 return scope.variables[name]
-        raise NetLangTypeError(f"Undefined variable '{name}'", ctx)
+        raise UndefinedVariableError(f"Undefined variable '{name}'", ctx)
 
     def lookup_function(self, name: str, ctx) -> Function:
         for scope in reversed(self.scopes):
             if name in scope.functions:
                 return scope.functions[name]
-        raise NetLangTypeError(f"Undefined function '{name}'", ctx)
+        raise UndefinedFunctionError(f"Undefined function '{name}'", ctx)
