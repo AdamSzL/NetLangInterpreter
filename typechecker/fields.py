@@ -11,9 +11,7 @@ def visitFieldAccessExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAc
     return self.visit(ctx.fieldAccess())
 
 def visitFieldAccess(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAccessContext):
-    var_name = ctx.ID(0).getText()
-    variable = self.lookup_variable(var_name, ctx)
-    current_type = variable.type
+    current_type = self.visit(ctx.scopedIdentifier())
     i = 1
 
     while i < len(ctx.children):

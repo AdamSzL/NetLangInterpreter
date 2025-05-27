@@ -21,18 +21,24 @@ def visitConnectStatement(self: "Interpreter", ctx: NetLangParser.ConnectStateme
     port1.connectedTo = port2
     port2.connectedTo = port1
 
-    dev1_id = ctx.fieldAccess(0).ID(0).getText()
-    port1_id = ctx.fieldAccess(0).ID(1).getText()
-    dev2_id = ctx.fieldAccess(1).ID(0).getText()
-    port2_id = ctx.fieldAccess(1).ID(1).getText()
+    dev1_scope, dev1_var = self.visit(ctx.fieldAccess(0).scopedIdentifier())
+    dev2_scope, dev2_var = self.visit(ctx.fieldAccess(1).scopedIdentifier())
+
+    dev1_id = dev1_scope.variables[dev1_var].value.name
+    dev2_id = dev2_scope.variables[dev2_var].value.name
+
+    port1_id = ctx.fieldAccess(0).ID(0).getText()
+    port2_id = ctx.fieldAccess(1).ID(0).getText()
 
     self.connections.append(Connection(dev1_id, port1_id, dev2_id, port2_id))
 
     print(f"Connected {dev1_id}.{port1_id} <-> {dev2_id}.{port2_id}")
 
 def visitShowInterfacesStatement(self: "Interpreter", ctx: NetLangParser.ShowInterfacesStatementContext):
-    device_name = ctx.ID().getText()
-    device = self.lookup_variable(device_name, ctx).value
+    scoped_ctx = ctx.scopedIdentifier()
+    device_name = scoped_ctx.ID().getText()
+    scope, var_name = self.visit(scoped_ctx)
+    device = scope.variables[var_name].value
 
     if not hasattr(device, "ports"):
         raise NetLangRuntimeError(f"Device '{device_name}' has no ports", ctx)

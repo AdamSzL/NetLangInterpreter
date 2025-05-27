@@ -22,10 +22,9 @@ def visitAddToListStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.AddT
     return None
 
 def visitDeleteListElementStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.DeleteListElementStatementContext):
-    var_name = ctx.listIndexAccess().ID().getText()
-    variable = self.lookup_variable(var_name, ctx)
+    scoped_ctx = ctx.listIndexAccess().scopedIdentifier()
+    list_type = self.visit(scoped_ctx)
 
-    list_type = variable.type
     if not list_type.startswith("[") or not list_type.endswith("]"):
         raise NetLangTypeError("Target of 'delete' must be a list", ctx)
     return None
@@ -50,30 +49,29 @@ def visitListLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.ListLiteral
     return f"[{first_type}]"
 
 def visitListIndexAccess(self: "TypeCheckingVisitor", ctx: NetLangParser.ListIndexAccessContext):
-    list_name = ctx.ID().getText()
-    index_type = self.visit(ctx.expression())
+    scoped_ctx = ctx.scopedIdentifier()
+    list_type = self.visit(scoped_ctx)
+    var_name = scoped_ctx.ID().getText()
 
+    index_type = self.visit(ctx.expression())
     if index_type != "int":
         raise NetLangTypeError("List index must be of type int", ctx)
 
-    variable = self.lookup_variable(list_name, ctx)
-    list_type = variable.type
-
     if not list_type.startswith("[") or not list_type.endswith("]"):
-        raise NetLangTypeError(f"Variable '{list_name}' is not a list", ctx)
+        raise NetLangTypeError(f"Variable '{var_name}' is not a list", ctx)
 
     return list_type[1:-1]
 
 def visitListIndexAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.ListIndexAssignmentContext):
-    list_name = ctx.listIndexAccess().ID().getText()
+    scoped_ctx = ctx.listIndexAccess().scopedIdentifier()
+    list_type = self.visit(scoped_ctx)
+
     index_type = self.visit(ctx.listIndexAccess().expression())
     value_type = self.visit(ctx.expression())
-
-    variable = self.lookup_variable(list_name, ctx)
-    list_type = variable.type
+    var_name = scoped_ctx.ID().getText()
 
     if not list_type.startswith("[") or not list_type.endswith("]"):
-        raise NetLangTypeError(f"Variable '{list_name}' is not a list", ctx)
+        raise NetLangTypeError(f"Variable '{var_name}' is not a list", ctx)
 
     if index_type != "int":
         raise NetLangTypeError("List index must be of type int", ctx)
@@ -81,7 +79,7 @@ def visitListIndexAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.Lis
     element_type = list_type[1:-1]
     if not are_types_compatible(element_type, value_type):
         raise NetLangTypeError(
-            f"Cannot assign {value_type} to element of type {element_type} in list '{list_name}'",
+            f"Cannot assign {value_type} to element of type {element_type} in list '{var_name}'",
             ctx
         )
 

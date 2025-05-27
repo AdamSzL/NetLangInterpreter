@@ -70,10 +70,12 @@ def visitRepeatTimesLoop(self: "Interpreter", ctx: NetLangParser.RepeatTimesLoop
             self.pop_scope()
 
 def visitEachLoop(self: "Interpreter", ctx: NetLangParser.EachLoopContext):
-    loop_var_name: str = ctx.ID(0).getText()
-    list_var_name: str = ctx.ID(1).getText()
+    loop_var_name: str = ctx.ID().getText()
+    scoped_ctx = ctx.scopedIdentifier()
 
-    list_var: Variable = self.lookup_variable(list_var_name, ctx)
+    scope, var_name = self.visit(scoped_ctx)
+    list_var = scope.variables[var_name]
+
     element_type: str = list_var.type[1:-1]
 
     for element in list_var.value:

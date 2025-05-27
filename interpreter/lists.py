@@ -40,10 +40,9 @@ def visitListIndexAssignment(self: "Interpreter", ctx: NetLangParser.ListIndexAs
         raise NetLangRuntimeError(f"Index {index} out of range for list {list_name}", ctx)
 
 def getListAndIndex(self: "Interpreter", ctx: NetLangParser.ListIndexAccessContext) -> tuple[Variable, int, str]:
-    list_name = ctx.ID().getText()
+    scope, list_name = self.visit(ctx.scopedIdentifier())
+    list_var = scope.variables[list_name]
     index = self.visit(ctx.expression())
-
-    list_var = self.lookup_variable(list_name, ctx)
 
     if not isinstance(list_var.value, list):
         raise NetLangRuntimeError(f"{list_name} is not a list", ctx)

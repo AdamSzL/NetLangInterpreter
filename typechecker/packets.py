@@ -8,23 +8,40 @@ if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor
 
 def visitSendPacketStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.SendPacketStatementContext):
-    packet_name: str = ctx.ID().getText()
+    packet_ctx = ctx.scopedIdentifier()
+    port_ctx = ctx.fieldAccess()
 
-    packet_var: Variable = self.lookup_variable(packet_name, ctx)
-    if packet_var.type != "Packet":
+    packet_name = packet_ctx.ID().getText()
+
+    self.scoped_identifier_expectation = "variable"
+    try:
+        packet_type = self.visit(packet_ctx)
+    finally:
+        self.scoped_identifier_expectation = None
+
+    if packet_type != "Packet":
         raise NetLangTypeError(
-            f"Variable '{packet_name}' must be of type Packet, got {packet_var.type}",
-            ctx
+            message=f"Variable '{packet_name}' must be of type Packet, got {packet_type}",
+            ctx=ctx
         )
 
-    device_name: str = ctx.fieldAccess().ID(0).getText()
-    device_var: Variable = self.lookup_variable(device_name, ctx)
+    self.scoped_identifier_expectation = "variable"
+    try:
+        device_var_type = self.visit(port_ctx.scopedIdentifier())
+    finally:
+        self.scoped_identifier_expectation = None
 
-    if device_var.type != "Host":
-        raise NetLangTypeError("Only hosts can send packets", ctx)
+    if device_var_type != "Host":
+        raise NetLangTypeError(
+            message="Only hosts can send packets",
+            ctx=ctx
+        )
 
-    port_type = self.visit(ctx.fieldAccess())
+    port_type = self.visit(port_ctx)
     if not port_type.endswith("Port"):
-        raise NetLangTypeError(f"Packet can only be sent from a port, got {port_type} instead")
+        raise NetLangTypeError(
+            message=f"Packet can only be sent from a port, got {port_type} instead",
+            ctx=ctx
+        )
 
     return None

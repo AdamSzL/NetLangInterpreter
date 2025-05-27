@@ -1,5 +1,5 @@
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedVariableError, UndefinedFunctionError
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -18,11 +18,32 @@ def visitConnectStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.Connec
     return None
 
 def visitShowInterfacesStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.ShowInterfacesStatementContext):
-    device_name = ctx.ID().getText()
-    device_var = self.lookup_variable(device_name, ctx)
-    device_type = device_var.type
+    scoped_ctx = ctx.scopedIdentifier()
+    device_name = scoped_ctx.ID().getText()
+
+    self.scoped_identifier_expectation = "variable"
+    try:
+        device_type = self.visit(scoped_ctx)
+    except UndefinedVariableError:
+        self.scoped_identifier_expectation = "function"
+        try:
+            self.visit(scoped_ctx)
+            raise NetLangTypeError(
+                message=f"Cannot show interfaces of function '{device_name}'",
+                ctx=ctx
+            )
+        except UndefinedFunctionError:
+            raise NetLangTypeError(
+                message=f"Undefined variable '{device_name}'",
+                ctx=ctx
+            )
+    finally:
+        self.scoped_identifier_expectation = None
 
     if device_type not in ["Host", "Router", "Switch"]:
-        raise NetLangRuntimeError(f"'{device_name}' is not a device", ctx)
+        raise NetLangTypeError(
+            message=f"'{device_name}' is not a device",
+            ctx=ctx
+        )
 
     return None

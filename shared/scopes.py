@@ -1,5 +1,6 @@
 from dataclasses import field, dataclass
 
+from generated.NetLangParser import NetLangParser
 from generated.NetLangVisitor import NetLangVisitor
 from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedVariableError, UndefinedFunctionError
 from typing import TYPE_CHECKING, Any, Optional
@@ -47,34 +48,34 @@ class ScopedVisitorBase:
             )
         self.scopes[-1].functions[name] = function
 
-
-    def lookup_variable(self, name: str, ctx) -> Variable:
-        for scope in reversed(self.scopes):
-            if name in scope.variables:
-                variable = scope.variables[name]
-                was_function_call_used = self.current_call_line is not None
-                are_line_checks_disabled = getattr(self, "disable_line_checks", False)
-                if was_function_call_used or not are_line_checks_disabled:
-                    if was_function_call_used:
-                        use_line = self.current_call_line
-                    else:
-                        use_line = ctx.start.line
-
-                    if use_line == variable.line_declared:
-                        raise NetLangTypeError(
-                            f"Error: Variable '{name}' cannot be used on the same line it is declared",
-                            ctx
-                        )
-                    if use_line < variable.line_declared:
-                        raise NetLangTypeError(
-                            f"Variable '{name}' used before its declaration (declared at line {variable.line_declared}, used at line {use_line})",
-                            ctx
-                        )
-                return scope.variables[name]
-        raise UndefinedVariableError(f"Undefined variable '{name}'", ctx)
-
-    def lookup_function(self, name: str, ctx) -> Function:
-        for scope in reversed(self.scopes):
-            if name in scope.functions:
-                return scope.functions[name]
-        raise UndefinedFunctionError(f"Undefined function '{name}'", ctx)
+    # TODO: if needed, restore line-checking logic (currently dropped for simplicity)
+    # def lookup_variable(self, name: str, ctx) -> Variable:
+    #     for scope in reversed(self.scopes):
+    #         if name in scope.variables:
+    #             variable = scope.variables[name]
+    #             was_function_call_used = self.current_call_line is not None
+    #             are_line_checks_disabled = getattr(self, "disable_line_checks", False)
+    #             if was_function_call_used or not are_line_checks_disabled:
+    #                 if was_function_call_used:
+    #                     use_line = self.current_call_line
+    #                 else:
+    #                     use_line = ctx.start.line
+    #
+    #                 if use_line == variable.line_declared:
+    #                     raise NetLangTypeError(
+    #                         f"Error: Variable '{name}' cannot be used on the same line it is declared",
+    #                         ctx
+    #                     )
+    #                 if use_line < variable.line_declared:
+    #                     raise NetLangTypeError(
+    #                         f"Variable '{name}' used before its declaration (declared at line {variable.line_declared}, used at line {use_line})",
+    #                         ctx
+    #                     )
+    #             return scope.variables[name]
+    #     raise UndefinedVariableError(f"Undefined variable '{name}'", ctx)
+    #
+    # def lookup_function(self, name: str, ctx) -> Function:
+    #     for scope in reversed(self.scopes):
+    #         if name in scope.functions:
+    #             return scope.functions[name]
+    #     raise UndefinedFunctionError(f"Undefined function '{name}'", ctx)

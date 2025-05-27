@@ -5,7 +5,7 @@ from shared.model.Function import Function
 from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.scopes import ScopedVisitorBase
-from .variables import visitVariableDeclaration, visitVariableAssignment
+from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, visitFunctionDeclarationStatement
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment, getListAndIndex
 from .expressions import (
@@ -118,6 +118,7 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitFunctionCallExpr = MethodType(visitFunctionCallExpr, self)
         self.visitFunctionCall = MethodType(visitFunctionCall, self)
         self.visitReturnStatement = MethodType(visitReturnStatement, self)
+        self.visitScopedIdentifier = MethodType(visitScopedIdentifier, self)
 
         self.draw_graph = MethodType(draw_graph, self)
         self.forward_packet = MethodType(forward_packet, self)

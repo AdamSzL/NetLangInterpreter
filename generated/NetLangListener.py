@@ -1,4 +1,4 @@
-# Generated from ./NetLang.g4 by ANTLR 4.13.2
+# Generated from NetLang.g4 by ANTLR 4.13.2
 from antlr4 import *
 if "." in __name__:
     from .NetLangParser import NetLangParser
@@ -365,6 +365,24 @@ class NetLangListener(ParseTreeListener):
 
     # Exit a parse tree produced by NetLangParser#powExpr.
     def exitPowExpr(self, ctx:NetLangParser.PowExprContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#scopedIdentifier.
+    def enterScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#scopedIdentifier.
+    def exitScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#scopePrefix.
+    def enterScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#scopePrefix.
+    def exitScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
         pass
 
 

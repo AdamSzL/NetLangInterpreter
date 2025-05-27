@@ -14,12 +14,15 @@ if TYPE_CHECKING:
     from .interpreter import Interpreter
 
 def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketStatementContext):
-    packet_name = ctx.ID().getText()
-    device_name = ctx.fieldAccess().ID(0).getText()
+    scoped_ctx = ctx.scopedIdentifier()
     target_ip = ctx.IPADDR().getText()
 
-    packet = self.lookup_variable(packet_name, ctx).value
-    device = self.lookup_variable(device_name, ctx).value
+    packet_scope, packet_name = self.visit(scoped_ctx)
+    packet = packet_scope.variables[packet_name].value
+
+    device_scope, device_name = self.visit(ctx.fieldAccess().scopedIdentifier())
+    device = device_scope.variables[device_name].value
+
     port = self.visit(ctx.fieldAccess())
 
     body = Text()

@@ -14,19 +14,34 @@ def visitFunctionCallExpr(self, ctx: NetLangParser.FunctionCallExprContext):
     return self.visit(ctx.functionCall())
 
 def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCallContext):
-    function_name = ctx.ID().getText()
+    scoped_ctx = ctx.scopedIdentifier()
+    function_name = scoped_ctx.ID().getText()
+
+    expr_list_ctx = ctx.expressionList()
     call_line = ctx.start.line
-    expr_list = ctx.expressionList()
-    arg_types = [self.visit(expr) for expr in expr_list.expression()] if expr_list else []
+    arg_types = [self.visit(expr) for expr in expr_list_ctx.expression()] if expr_list_ctx else []
+
+    self.current_call_line = call_line
+    self.scoped_identifier_expectation = "function"
 
     try:
-        function = self.lookup_function(function_name, ctx)
+        function: Function = self.visit(scoped_ctx)
     except UndefinedFunctionError:
+        self.scoped_identifier_expectation = "variable"
         try:
-            _ = self.lookup_variable(function_name, ctx)
-            raise NetLangTypeError(f"Variable '{function_name}' is not callable", ctx)
+            _ = self.visit(scoped_ctx)
+            raise NetLangTypeError(
+                message=f"Variable '{function_name}' is not callable",
+                ctx=ctx
+            )
         except UndefinedVariableError:
-            raise NetLangTypeError(f"Undefined function '{function_name}'", ctx)
+            raise NetLangTypeError(
+                message=f"Undefined function '{function_name}'",
+                ctx=ctx
+            )
+    finally:
+        self.scoped_identifier_expectation = None
+        self.current_call_line = None
 
     if len(arg_types) != len(function.parameters):
         raise NetLangTypeError(
@@ -44,7 +59,7 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
     self.current_call_line = call_line
     if function_name not in self.currently_checking_functions:
         self.currently_checking_functions.add(function_name)
-        self.execute_function_body(function_name, function)
+        self.execute_function_body(function_name, function, ctx)
         self.currently_checking_functions.remove(function_name)
     self.current_call_line = None
 
@@ -83,8 +98,6 @@ def visitReturnStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.ReturnS
 
         return "void"
 
-    self.return_found = True
-
 def visitFunctionDeclarationStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionDeclarationStatementContext):
     function_name: str = ctx.ID().getText()
     return_type: str = ctx.type_().getText() if ctx.type_() else "void"
@@ -122,14 +135,14 @@ def check_all_function_bodies(self: "TypeCheckingVisitor"):
                 continue
             self.currently_checking_functions.add(name)
             self.disable_line_checks = True
-            self.execute_function_body(name, function)
+            self.execute_function_body(name, function, None)
             self.disable_line_checks = False
             self.currently_checking_functions.remove(name)
 
-def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Function):
+def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Function, ctx):
     self.push_scope()
     for param_name, param_type in function.parameters:
-        self.declare_variable(param_name, Variable(param_type, function.line_declared), None)
+        self.declare_variable(param_name, Variable(param_type, function.line_declared), ctx)
 
     self.in_function_body = True
     self.expected_return_type = function.return_type
@@ -144,8 +157,9 @@ def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Func
         )
 
 def block_returns_type(self, block_ctx) -> Optional[str]:
+    found_return_type = None
     for stmt in block_ctx.statement():
         return_type = self.visit(stmt)
-        if return_type is not None:
-            return return_type
-    return None
+        if return_type is not None and return_type != "void" and found_return_type is None:
+            found_return_type = return_type
+    return found_return_type

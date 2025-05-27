@@ -27,14 +27,15 @@ def visitStringLiteral(self: "Interpreter", ctx: NetLangParser.StringLiteralCont
     return str(ctx.STRING().getText().strip('"'))
 
 def visitVariableExpr(self: "Interpreter", ctx: NetLangParser.VariableExprContext):
-    variable_name: str = ctx.ID().getText()
-    if variable_name in ConnectorType.__members__:
-        return ConnectorType[variable_name]
-    if variable_name in Protocol.__members__:
-        return Protocol[variable_name]
+    name = ctx.scopedIdentifier().ID().getText()
 
-    variable = self.lookup_variable(variable_name, ctx)
-    return variable.value
+    if name in ConnectorType.__members__:
+        return ConnectorType[name]
+    if name in Protocol.__members__:
+        return Protocol[name]
+
+    scope, var_name = self.visit(ctx.scopedIdentifier())
+    return scope.variables[var_name].value
 
 def visitIPAddressLiteral(self: "Interpreter", ctx: NetLangParser.IPAddressLiteralContext) -> IPAddress:
     return IPAddress(ctx.IPADDR().getText())
@@ -74,9 +75,10 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
     return obj
 
 def visitCidrLiteral(self: "Interpreter", ctx: NetLangParser.CidrLiteralContext):
-    if ctx.ID():  # np. [routerIP]/24
-        var_name: str = ctx.ID().getText()
-        ip_var: Variable = self.lookup_variable(var_name, ctx)
+    scoped_ctx = ctx.scopedIdentifier()
+    if scoped_ctx:
+        scope, var_name = self.visit(scoped_ctx)
+        ip_var: Variable = scope.variables[var_name]
 
         if not isinstance(ip_var.value, IPAddress):
             raise NetLangRuntimeError(f"Variable '{var_name}' is not an IP address", ctx)

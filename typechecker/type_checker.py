@@ -8,7 +8,7 @@ from shared.model.Function import Function
 from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.scopes import ScopedVisitorBase
-from .variables import visitVariableDeclaration, visitVariableAssignment
+from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier, _resolve_identifier_in_scope
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement, execute_function_body, block_returns_type
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
 from .expressions import (
@@ -116,8 +116,12 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.execute_function_body = MethodType(execute_function_body, self)
         self.block_returns_type = MethodType(block_returns_type, self)
 
+        self._resolve_identifier_in_scope = MethodType(_resolve_identifier_in_scope, self)
+        self.visitScopedIdentifier = MethodType(visitScopedIdentifier, self)
+
         ScopedVisitorBase.__init__(self)
         self.expected_return_type: Optional[str] = None
+        self.scoped_identifier_expectation: Optional[str] = None
         self.return_found: bool = False
         self.expected_type: Optional[str] = None
         self.in_function_body = False

@@ -10,9 +10,8 @@ def visitFieldAccessExpr(self: "Interpreter", ctx: NetLangParser.FieldAccessExpr
     return self.visit(ctx.fieldAccess())
 
 def visitFieldAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext):
-    # Zacznij od pierwszego identyfikatora (np. "h1")
-    var_name = ctx.ID(0).getText()
-    current = self.lookup_variable(var_name, ctx).value
+    scope, var_name = self.visit(ctx.scopedIdentifier())
+    current = scope.variables[var_name].value
 
     i = 1
     while i < len(ctx.children):
@@ -55,7 +54,8 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
     access = ctx.fieldAccess()
     value = self.visit(ctx.expression())
 
-    current = self.lookup_variable(access.ID(0).getText(), ctx)
+    scope, var_name = self.visit(access.scopedIdentifier())
+    current = scope.variables[var_name]
 
     for i in range(1, len(access.children) - 2, 2):
         op = access.getChild(i).getText()

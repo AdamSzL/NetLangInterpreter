@@ -89,23 +89,30 @@ def visitRepeatTimesLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatT
     self.in_loop = old_flag
 
 def visitEachLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.EachLoopContext):
-    loop_var = ctx.ID(0).getText()
-    list_var = ctx.ID(1).getText()
+    loop_var = ctx.ID().getText()
+    scoped_ctx = ctx.scopedIdentifier()
+    list_var_name = scoped_ctx.ID().getText()
 
-    variable = self.lookup_variable(list_var, ctx)
-    list_type = variable.type
+    self.scoped_identifier_expectation = "variable"
+    try:
+        list_type = self.visit(scoped_ctx)
+    finally:
+        self.scoped_identifier_expectation = None
 
     if not list_type.startswith("[") or not list_type.endswith("]"):
-        raise NetLangTypeError(f"'{list_var}' is not a list type", ctx)
+        raise NetLangTypeError(f"'{list_var_name}' is not a list type", ctx)
 
     element_type = list_type[1:-1]
 
     old_flag = self.in_loop
     self.in_loop = True
+
     self.push_scope()
     self.declare_variable(loop_var, Variable(element_type, ctx.start.line), ctx)
+
     for stmt in ctx.block().statement():
         self.visit(stmt)
+
     self.pop_scope()
     self.in_loop = old_flag
 

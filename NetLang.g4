@@ -33,7 +33,7 @@ variableDeclaration
 
 // ----------- Variable Assignment ----------
 variableAssignment
-    : ID '<-' expression
+    : scopedIdentifier '<-' expression
     ;
 
 addToListStatement
@@ -53,16 +53,16 @@ connectStatement
     ;
 
 disconnectStatement
-    : 'disconnect' (fieldAccess 'from' fieldAccess | ID)
+    : 'disconnect' (fieldAccess 'from' fieldAccess | scopedIdentifier)
     ;
 
 showInterfacesStatement
-    : 'show' 'interfaces' 'of' ID
+    : 'show' 'interfaces' 'of' scopedIdentifier
     ;
 
 sendPacketStatement
-    : 'send' ID 'from' fieldAccess 'to' IPADDR
-    | 'send' 'from' fieldAccess 'to' IPADDR 'with' objectInitializer
+    : 'send' scopedIdentifier 'from' fieldAccess 'to' IPADDR
+//    | 'send' 'from' fieldAccess 'to' IPADDR 'with' objectInitializer
     ;
 
 ifStatement
@@ -100,7 +100,7 @@ repeatWhileLoop
     ;
 
 eachLoop
-    : 'each' ID 'from' ID block
+    : 'each' ID 'from' scopedIdentifier block
     ;
 
 functionDeclarationStatement
@@ -205,9 +205,18 @@ powExpr
     : atomExpr (POW powExpr)?
     ;
 
+scopedIdentifier
+    : scopePrefix? ID
+    ;
+
+scopePrefix
+    : '^'+
+    | '~'
+    ;
+
 atomExpr
     : '(' expression ')'              # ParensExpr
-    | ID                              # VariableExpr
+    | scopedIdentifier                # VariableExpr
     | INT                             # IntLiteral
     | FLOAT                           # FloatLiteral
     | BOOL                            # BoolLiteral
@@ -231,7 +240,7 @@ expressionList
     ;
 
 cidrLiteral
-    : '[' ID ']' '/' INT
+    : '[' scopedIdentifier ']' '/' INT
     |  IPADDR '/' INT
     ;
 
@@ -248,15 +257,15 @@ objectField
     ;
 
 fieldAccess
-    : ID ('.' ID | '<' expression '>')*
+    : scopedIdentifier ('.' ID | '<' expression '>')*
     ;
 
 functionCall
-    : ID '(' expressionList? ')'
+    : scopedIdentifier '(' expressionList? ')'
     ;
 
 listIndexAccess
-    : ID '<' expression '>'
+    : scopedIdentifier '<' expression '>'
     ;
 
 // ----------- Lexical Rules ----------

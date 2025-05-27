@@ -1,0 +1,8 @@
+define foo(x: int, y: int) {
+
+}
+
+define bar(a: float, b: float) => float {
+    foo(2, 3)
+    foo()
+}

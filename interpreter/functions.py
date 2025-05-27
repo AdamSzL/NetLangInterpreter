@@ -5,6 +5,7 @@ from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError
 from shared.model.Function import Function
 from shared.model.ReturnValue import ReturnValue
+from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.utils.types import check_type
 
@@ -15,12 +16,14 @@ def visitFunctionCallExpr(self, ctx: NetLangParser.FunctionCallExprContext):
     return self.visit(ctx.functionCall())
 
 def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContext):
-    function_name = ctx.ID().getText()
+    scoped_ctx = ctx.scopedIdentifier()
+    expr_list_ctx = ctx.expressionList()
     call_line = ctx.start.line
-    expr_list = ctx.expressionList()
-    args = [self.visit(expr) for expr in expr_list.expression()] if expr_list else []
 
-    function = self.lookup_function(function_name, ctx)
+    args = [self.visit(expr) for expr in expr_list_ctx.expression()] if expr_list_ctx else []
+
+    function_scope, function_name = self.visit(scoped_ctx)
+    function = function_scope.functions[function_name]
 
     if self.call_depth >= self.max_call_depth:
         raise NetLangRuntimeError(

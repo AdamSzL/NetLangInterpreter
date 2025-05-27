@@ -1,4 +1,4 @@
-# Generated from ./NetLang.g4 by ANTLR 4.13.2
+# Generated from NetLang.g4 by ANTLR 4.13.2
 from antlr4 import *
 if "." in __name__:
     from .NetLangParser import NetLangParser
@@ -206,6 +206,16 @@ class NetLangVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by NetLangParser#powExpr.
     def visitPowExpr(self, ctx:NetLangParser.PowExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#scopedIdentifier.
+    def visitScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#scopePrefix.
+    def visitScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
         return self.visitChildren(ctx)
 
 

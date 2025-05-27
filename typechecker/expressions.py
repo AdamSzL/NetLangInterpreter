@@ -25,10 +25,11 @@ def visitStringLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.StringLit
     return "string"
 
 def visitVariableExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableExprContext):
-    variable_name: str = ctx.ID().getText()
-    variable = self.lookup_variable(variable_name, ctx)
-
-    return variable.type
+    self.scoped_identifier_expectation = "variable"
+    try:
+        return self.visit(ctx.scopedIdentifier())
+    finally:
+        self.scoped_identifier_expectation = None
 
 def visitIPAddressLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.IPAddressLiteralContext) -> str:
     return "IP"
