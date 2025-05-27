@@ -1,10 +1,14 @@
-set packet: Packet <- {
+/*set packet: Packet <- {
     payload <- "Hello!",
     protocol <- ICMP,
     size <- 1000
 }
-/*
+
 connect host.eth0 to nextHost.eth1
 
 send packet from host.eth0 to 192.168.1.5
 */
+
+each item from [1, 2, 3] {
+    print item
+}

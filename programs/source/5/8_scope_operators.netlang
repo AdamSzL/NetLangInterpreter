@@ -1,0 +1,17 @@
+set x: int <- 10
+
+define demo() => void {
+    set x: int <- 20
+    print x
+    print ~x
+}
+
+demo()
+
+set a: int <- 100
+
+if true {
+    set a: int <- 200
+    print a
+    print ^a
+}

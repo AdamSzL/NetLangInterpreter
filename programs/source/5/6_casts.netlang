@@ -1,0 +1,4 @@
+print " " as bool
+print "0" as int
+print "0.0" as float
+print "" as bool

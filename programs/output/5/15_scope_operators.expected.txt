@@ -1,0 +1,1 @@
+Type Error: [Line 5, Column 14] Undefined variable 'global'

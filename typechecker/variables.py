@@ -75,7 +75,7 @@ def visitScopedIdentifier(self: "TypeCheckingVisitor", ctx: NetLangParser.Scoped
             levels_up = len(prefix)
             target_index = current_index - levels_up
             if target_index < 0:
-                raise NetLangTypeError(f"Too many '^' levels when accessing identifier '{var_name}'")
+                raise NetLangTypeError(f"Too many '^' levels when accessing identifier '{var_name}'", ctx)
         elif prefix == '~':
             target_index = 0
         else:

@@ -1,0 +1,10 @@
+set global: int <- 5
+
+define test() {
+    define inner() {
+        print ^global
+    }
+    inner()
+}
+
+test()

@@ -1,0 +1,1 @@
+Type Error: [Line 6, Column 18] Too many '^' levels when accessing identifier 'z'

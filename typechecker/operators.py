@@ -94,10 +94,10 @@ def visitAddSubExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.AddSubExprCo
     return result_type
 
 def visitMulDivExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.MulDivExprContext):
-    result_type = self.visit(ctx.unaryExpr(0))
-    for i in range(1, len(ctx.unaryExpr())):
+    result_type = self.visit(ctx.castExpr(0))
+    for i in range(1, len(ctx.castExpr())):
         operator = ctx.getChild(2 * i - 1).getText()
-        right_type = self.visit(ctx.unaryExpr(i))
+        right_type = self.visit(ctx.castExpr(i))
 
         if operator == "%":
             if result_type == "int" and right_type == "int":
@@ -136,6 +136,29 @@ def visitPowExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.PowExprContext)
         return "int" if base_type == "int" and exponent_type == "int" else "float"
     else:
         return base_type
+
+def visitCastExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.CastExprContext):
+    expr_type = self.visit(ctx.unaryExpr())
+
+    if ctx.type_():
+        target_type = ctx.type_().getText()
+
+        if expr_type == target_type:
+            return target_type
+
+        allowed_casts = {
+            "int": ["float", "string", "bool"],
+            "float": ["int", "string", "bool"],
+            "bool": ["int", "float", "string"],
+            "string": ["int", "float", "bool"]
+        }
+
+        if expr_type in allowed_casts and target_type in allowed_casts[expr_type]:
+            return target_type
+        else:
+            raise NetLangTypeError(f"Cannot cast from type '{expr_type}' to target type '{target_type}'", ctx)
+
+    return expr_type
 
 def visitUnaryExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.UnaryExprContext):
     if ctx.PLUS():

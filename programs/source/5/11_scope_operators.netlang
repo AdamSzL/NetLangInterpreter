@@ -1,0 +1,9 @@
+set z: int <- 7
+
+repeat 1 times as a {
+    repeat 1 times as b {
+        repeat 1 times as c {
+            print ^^^^z
+        }
+    }
+}

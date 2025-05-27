@@ -1,0 +1,4 @@
+Local log:1
+Global log:1
+Local log:2
+Global log:2

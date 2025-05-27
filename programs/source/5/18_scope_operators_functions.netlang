@@ -1,0 +1,12 @@
+define log(x: int) => void {
+    print "Global log:" + x
+}
+
+each i from [1, 2] {
+    define log(x: int) => void {
+        print "Local log:" + x
+    }
+
+    log(i)
+    ~log(i)
+}

@@ -71,16 +71,17 @@ def visitRepeatTimesLoop(self: "Interpreter", ctx: NetLangParser.RepeatTimesLoop
 
 def visitEachLoop(self: "Interpreter", ctx: NetLangParser.EachLoopContext):
     loop_var_name: str = ctx.ID().getText()
-    scoped_ctx = ctx.scopedIdentifier()
+    iterable = self.visit(ctx.expression())
 
-    scope, var_name = self.visit(scoped_ctx)
-    list_var = scope.variables[var_name]
+    if not isinstance(iterable, list):
+        raise NetLangRuntimeError(
+            f"Value in 'each' must be a list, got {type(iterable).__name__}",
+            ctx
+        )
 
-    element_type: str = list_var.type[1:-1]
-
-    for element in list_var.value:
+    for element in iterable:
         self.push_scope()
-        self.declare_variable(loop_var_name, Variable(element_type, ctx.start.line, element), ctx)
+        self.declare_variable(loop_var_name, Variable(type(element).__name__, ctx.start.line, element), ctx)
         try:
             for stmt in ctx.block().statement():
                 try:

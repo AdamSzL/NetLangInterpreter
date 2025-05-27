@@ -1,0 +1,23 @@
+define printMsg() => void {
+    print "Global message"
+}
+
+define outer() => void {
+    define printMsg() => void {
+        print "Outer message"
+    }
+
+    define inner() => void {
+        define printMsg() => void {
+            print "Inner message"
+        }
+
+        printMsg()
+        ^printMsg()
+        ~printMsg()
+    }
+
+    inner()
+}
+
+outer()

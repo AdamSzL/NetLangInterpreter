@@ -1,0 +1,11 @@
+set x: int <- 1
+
+repeat 1 times as i {
+    set x: int <- 2
+    repeat 1 times as j {
+        set x: int <- 3
+        print x
+        print ^x
+        print ^^x
+    }
+}

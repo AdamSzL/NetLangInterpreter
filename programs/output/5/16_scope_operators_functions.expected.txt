@@ -1,0 +1,3 @@
+Inner message
+Outer message
+Global message

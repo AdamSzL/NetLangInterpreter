@@ -1,0 +1,14 @@
+set values: [int] <- [1, 2, 3]
+
+each v from values {
+    print v
+    print ^values
+}
+
+set multiplier: int <- 3
+
+define triple(x: int) => int {
+    return x * ^multiplier
+}
+
+print triple(10)

@@ -1,0 +1,12 @@
+define announce() => void {
+    print "Global announce"
+}
+
+if true {
+    define announce() => void {
+        print "Scoped announce"
+    }
+
+    announce()
+    ~announce()
+}

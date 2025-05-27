@@ -1,0 +1,9 @@
+123.0
+3
+true
+42
+false
+true
+true
+false
+true

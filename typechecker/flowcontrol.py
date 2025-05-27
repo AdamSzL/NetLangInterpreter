@@ -90,17 +90,10 @@ def visitRepeatTimesLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatT
 
 def visitEachLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.EachLoopContext):
     loop_var = ctx.ID().getText()
-    scoped_ctx = ctx.scopedIdentifier()
-    list_var_name = scoped_ctx.ID().getText()
-
-    self.scoped_identifier_expectation = "variable"
-    try:
-        list_type = self.visit(scoped_ctx)
-    finally:
-        self.scoped_identifier_expectation = None
+    list_type = self.visit(ctx.expression())
 
     if not list_type.startswith("[") or not list_type.endswith("]"):
-        raise NetLangTypeError(f"'{list_var_name}' is not a list type", ctx)
+        raise NetLangTypeError(f"Expression in 'each' must be a list, got {list_type}", ctx)
 
     element_type = list_type[1:-1]
 

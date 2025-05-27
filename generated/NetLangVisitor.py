@@ -144,6 +144,16 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by NetLangParser#scopedIdentifier.
+    def visitScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#scopePrefix.
+    def visitScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by NetLangParser#type.
     def visitType(self, ctx:NetLangParser.TypeContext):
         return self.visitChildren(ctx)
@@ -199,6 +209,11 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by NetLangParser#castExpr.
+    def visitCastExpr(self, ctx:NetLangParser.CastExprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by NetLangParser#unaryExpr.
     def visitUnaryExpr(self, ctx:NetLangParser.UnaryExprContext):
         return self.visitChildren(ctx)
@@ -206,16 +221,6 @@ class NetLangVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by NetLangParser#powExpr.
     def visitPowExpr(self, ctx:NetLangParser.PowExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#scopedIdentifier.
-    def visitScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#scopePrefix.
-    def visitScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
         return self.visitChildren(ctx)
 
 

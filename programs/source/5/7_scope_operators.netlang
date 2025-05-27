@@ -1,0 +1,8 @@
+set globalVar: int <- 5
+
+define showGlobal() => void {
+    print ^globalVar
+    print ~globalVar
+}
+
+showGlobal()

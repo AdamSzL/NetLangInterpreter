@@ -34,6 +34,7 @@ from .operators import (
     visitOrExpr,
     visitNotExpr,
     visitParensExpr,
+    visitCastExpr,
     visitUnaryExpr
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment
@@ -87,6 +88,7 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitOrExpr = MethodType(visitOrExpr, self)
         self.visitNotExpr = MethodType(visitNotExpr, self)
         self.visitParensExpr = MethodType(visitParensExpr, self)
+        self.visitCastExpr = MethodType(visitCastExpr, self)
         self.visitUnaryExpr = MethodType(visitUnaryExpr, self)
 
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)

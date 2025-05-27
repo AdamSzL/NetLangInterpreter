@@ -1,0 +1,11 @@
+define outer() => void {
+    set outerVar: int <- 9
+
+    define inner() => void {
+        print ^outerVar
+    }
+
+    inner()
+}
+
+outer()

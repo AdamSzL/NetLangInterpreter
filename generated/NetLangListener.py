@@ -251,6 +251,24 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by NetLangParser#scopedIdentifier.
+    def enterScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#scopedIdentifier.
+    def exitScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#scopePrefix.
+    def enterScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#scopePrefix.
+    def exitScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
+        pass
+
+
     # Enter a parse tree produced by NetLangParser#type.
     def enterType(self, ctx:NetLangParser.TypeContext):
         pass
@@ -350,6 +368,15 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by NetLangParser#castExpr.
+    def enterCastExpr(self, ctx:NetLangParser.CastExprContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#castExpr.
+    def exitCastExpr(self, ctx:NetLangParser.CastExprContext):
+        pass
+
+
     # Enter a parse tree produced by NetLangParser#unaryExpr.
     def enterUnaryExpr(self, ctx:NetLangParser.UnaryExprContext):
         pass
@@ -365,24 +392,6 @@ class NetLangListener(ParseTreeListener):
 
     # Exit a parse tree produced by NetLangParser#powExpr.
     def exitPowExpr(self, ctx:NetLangParser.PowExprContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#scopedIdentifier.
-    def enterScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#scopedIdentifier.
-    def exitScopedIdentifier(self, ctx:NetLangParser.ScopedIdentifierContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#scopePrefix.
-    def enterScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#scopePrefix.
-    def exitScopePrefix(self, ctx:NetLangParser.ScopePrefixContext):
         pass
 
 

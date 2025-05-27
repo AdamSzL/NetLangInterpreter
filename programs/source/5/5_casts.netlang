@@ -1,0 +1,17 @@
+print 1 + 2.5 as int
+print (1 + 2.5) as int
+print -(true as int)
+
+set x: int <- "5" as int
+print x
+
+set y: string <- 1.1 as string
+print y
+
+set z: bool <- "test" as bool
+print z
+
+set a: int <- 5
+print -a as float
+
+print true || 0 as bool

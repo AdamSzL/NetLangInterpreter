@@ -1,0 +1,13 @@
+set base: int <- 42
+
+define nestedLoop() => void {
+    set base: int <- 100
+    repeat 1 times as i {
+        set base: int <- 200
+        print base
+        print ^base
+        print ~base
+    }
+}
+
+nestedLoop()

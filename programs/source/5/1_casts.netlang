@@ -1,0 +1,21 @@
+set x: float <- 123 as float
+print x
+
+set y: int <- 3.14 as int
+if y == 3 {
+    print y
+}
+
+set z: string <- true as string
+if z == "true" {
+    print z
+}
+
+print "42" as int
+print 0 as bool
+print 5 as bool
+
+print "false" as bool
+print "" as bool
+
+print 1.0 as string == "1.0"

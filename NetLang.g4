@@ -100,7 +100,7 @@ repeatWhileLoop
     ;
 
 eachLoop
-    : 'each' ID 'from' scopedIdentifier block
+    : 'each' ID 'from' expression block
     ;
 
 functionDeclarationStatement
@@ -129,6 +129,15 @@ breakStatement
 
 continueStatement
     : NEXT
+    ;
+
+scopedIdentifier
+    : scopePrefix? ID
+    ;
+
+scopePrefix
+    : '^'+
+    | '~'
     ;
 
 // ----------- Types ----------
@@ -192,7 +201,11 @@ addSubExpr
     ;
 
 mulDivExpr
-    : unaryExpr ( (MUL | DIV | FLOORDIV | MOD) unaryExpr)*
+    : castExpr ( (MUL | DIV | FLOORDIV | MOD) castExpr)*
+    ;
+
+castExpr
+    : unaryExpr ('as' type)?
     ;
 
 unaryExpr
@@ -203,15 +216,6 @@ unaryExpr
 
 powExpr
     : atomExpr (POW powExpr)?
-    ;
-
-scopedIdentifier
-    : scopePrefix? ID
-    ;
-
-scopePrefix
-    : '^'+
-    | '~'
     ;
 
 atomExpr

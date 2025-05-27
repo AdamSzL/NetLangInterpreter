@@ -83,10 +83,10 @@ def visitAddSubExpr(self: "Interpreter", ctx: NetLangParser.AddSubExprContext):
     return left
 
 def visitMulDivExpr(self: "Interpreter", ctx: NetLangParser.MulDivExprContext):
-    left = self.visit(ctx.unaryExpr(0))
-    for i in range(1, len(ctx.unaryExpr())):
+    left = self.visit(ctx.castExpr(0))
+    for i in range(1, len(ctx.castExpr())):
         operator = ctx.getChild(2 * i - 1).getText()
-        right = self.visit(ctx.unaryExpr(i))
+        right = self.visit(ctx.castExpr(i))
         ensure_numeric(left, ctx, operator)
         ensure_numeric(right, ctx, operator)
         if operator == '*':
@@ -115,6 +115,36 @@ def visitPowExpr(self: "Interpreter", ctx: NetLangParser.PowExprContext):
         return base ** exponent
     else:
         return base
+
+def visitCastExpr(self: "Interpreter", ctx: NetLangParser.CastExprContext):
+    value = self.visit(ctx.unaryExpr())
+
+    if ctx.type_():
+        target_type = ctx.type_().getText()
+
+        try:
+            if target_type == "int":
+                return int(value)
+            elif target_type == "float":
+                return float(value)
+            elif target_type == "bool":
+                return bool(value)
+            elif target_type == "string":
+                if isinstance(value, bool):
+                    return "true" if value else "false"
+                return str(value)
+            else:
+                raise NetLangRuntimeError(
+                    f"Unsupported cast to type '{target_type}'",
+                    ctx
+                )
+        except Exception:
+            raise NetLangRuntimeError(
+                f"Cannot convert value '{value}' of type '{type(value).__name__}' to target type '{target_type}'",
+                ctx
+            )
+
+    return value
 
 def visitUnaryExpr(self: "Interpreter", ctx: NetLangParser.UnaryExprContext):
     if ctx.PLUS():
