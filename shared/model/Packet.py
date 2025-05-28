@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 
 from shared.errors import NetLangRuntimeError
@@ -9,47 +10,16 @@ class Protocol(Enum):
     UDP = "UDP"
     ICMP = "ICMP"
 
-
+@dataclass
 class Packet(NetLangObject):
-    allowed_fields = {"payload", "protocol", "size"}
-
-    def __init__(
-        self,
-        payload: str,
-        protocol: str = Protocol.ICMP,
-        size: int = 500
-    ):
-        self.payload = payload
-        self.protocol = protocol
-        self.size = size
+    payload: str
+    protocol: str = Protocol.ICMP
+    size: int = 500
 
     @classmethod
-    def from_dict(cls, data: dict, ctx=None):
-        cls.check_fields(data, ctx)
-
+    def from_dict(cls, data: dict, ctx):
         payload = data.get("payload")
         protocol = data.get("protocol")
         size = data.get("size")
 
-        if not isinstance(payload, str):
-            raise NetLangRuntimeError(
-                "Packet payload must be a string",
-                ctx
-            )
-
-        if not isinstance(protocol, Protocol):
-            raise NetLangRuntimeError(
-                "Packet protocol must be a Protocol enum",
-                ctx
-            )
-
-        if not isinstance(size, int):
-            raise NetLangRuntimeError(
-                "Packet size must be an integer",
-                ctx
-            )
-
         return cls(payload, protocol, size)
-
-    def __repr__(self):
-        return f'Packet("{self.payload}", {self.protocol.name}, {self.size}B)'

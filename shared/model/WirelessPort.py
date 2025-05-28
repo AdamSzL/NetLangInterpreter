@@ -9,8 +9,6 @@ from dataclasses import dataclass
 
 @dataclass
 class WirelessPort(NetLangObject, Port):
-    allowed_fields = {"portId", "ip", "mac", "bandwidth", "mtu", "frequency"}
-
     portId: str
     ip: CIDR
     mac: MACAddress
@@ -21,8 +19,6 @@ class WirelessPort(NetLangObject, Port):
 
     @classmethod
     def from_dict(cls, data: dict, ctx=None):
-        cls.check_fields(data, ctx)
-
         portId = data.get("portId")
         ip = data.get("ip")
         mac = data.get("mac")
@@ -30,29 +26,12 @@ class WirelessPort(NetLangObject, Port):
         mtu = data.get("mtu", 1500)
         frequency = data.get("frequency", 2.4)
 
-        if not isinstance(portId, str):
-            raise NetLangRuntimeError("WirelessPort must have string portId", ctx)
-
-        if ip is not None and not isinstance(ip, CIDR):
-            raise NetLangRuntimeError("Invalid IP for WirelessPort", ctx)
-
         if mac is None:
             mac = MACAddress.generate()
         else:
-            if not isinstance(mac, MACAddress):
-                raise NetLangRuntimeError("Invalid MAC address", ctx)
             if MACAddress.is_registered(mac.mac):
                 raise NetLangRuntimeError(f"MAC address {mac.mac} is already in use", ctx)
             MACAddress.register(mac.mac)
-
-        if not isinstance(bandwidth, int):
-            raise NetLangRuntimeError("Bandwidth must be an integer", ctx)
-
-        if not isinstance(mtu, int):
-            raise NetLangRuntimeError("MTU must be an integer", ctx)
-
-        if not isinstance(frequency, float):
-            raise NetLangRuntimeError("Frequency must be a float", ctx)
 
         return cls(portId, ip, mac, bandwidth, mtu, frequency)
 

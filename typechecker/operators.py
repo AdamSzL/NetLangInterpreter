@@ -2,6 +2,7 @@ from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
 from typing import TYPE_CHECKING
 
+from shared.utils.types import are_types_compatible, is_subtype
 from typechecker.utils import check_bool, check_numeric
 
 if TYPE_CHECKING:
@@ -155,8 +156,11 @@ def visitCastExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.CastExprContex
 
         if expr_type in allowed_casts and target_type in allowed_casts[expr_type]:
             return target_type
-        else:
-            raise NetLangTypeError(f"Cannot cast from type '{expr_type}' to target type '{target_type}'", ctx)
+
+        if is_subtype(target_type, expr_type):
+            return target_type
+
+        raise NetLangTypeError(f"Cannot cast from type '{expr_type}' to target type '{target_type}'", ctx)
 
     return expr_type
 

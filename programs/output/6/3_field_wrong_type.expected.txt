@@ -1,0 +1,1 @@
+Type Error: [Line 4, Column 4] Type mismatch in field 'mac': expected 'MAC', got 'string'

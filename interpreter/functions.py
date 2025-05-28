@@ -7,7 +7,6 @@ from shared.model.Function import Function
 from shared.model.ReturnValue import ReturnValue
 from shared.model.Scope import Scope
 from shared.model.Variable import Variable
-from shared.utils.types import check_type
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter

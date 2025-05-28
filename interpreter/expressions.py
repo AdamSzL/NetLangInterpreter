@@ -62,16 +62,13 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
         name = field.ID().getText()
         value = self.visit(field.expression())
         obj[name] = value
+
     if ctx.objectType():
         type_name = ctx.objectType().getText()
-        if type_name in type_map and issubclass(type_map[type_name], NetLangObject):
-            obj_from_dict = type_map[type_name].from_dict(obj, ctx)
-            return obj_from_dict
-        else:
-            raise NetLangRuntimeError(
-                f"Unknown object type '{type_name}'",
-                ctx
-            )
+        return type_map[type_name].from_dict(obj, ctx)
+    elif ctx.deviceType():
+        type_name = ctx.deviceType().getText()
+        return type_map[type_name].from_dict(obj, ctx)
     return obj
 
 def visitCidrLiteral(self: "Interpreter", ctx: NetLangParser.CidrLiteralContext):

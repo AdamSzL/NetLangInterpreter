@@ -5,18 +5,13 @@ from dataclasses import dataclass
 
 @dataclass
 class Switch(NetLangObject, Device):
-    allowed_fields = {"name", "ports"}
     name: str
     ports: list
 
     @classmethod
     def from_dict(cls, data: dict, ctx):
-        cls.check_fields(data, ctx)
-
         name = data.get("name")
         ports = data.get("ports", [])
-
-        cls.validate_field_types(name, ports, ctx)
 
         switch = cls(name, ports)
 
@@ -28,15 +23,7 @@ class Switch(NetLangObject, Device):
         return switch
 
     @staticmethod
-    def validate_field_types(name, ports, ctx):
-        if not isinstance(name, str):
-            raise NetLangRuntimeError("Switch device must have string 'name' field", ctx)
-
-        if not isinstance(ports, list):
-            raise NetLangRuntimeError("Switch device must have list of ports in 'ports' field", ctx)
-
-    @staticmethod
-    def validate_logic(name, ports, ctx=None):
+    def validate_logic(name, ports, ctx):
         seen_ids = set()
         for port in ports:
             if port.portId in seen_ids:
@@ -50,7 +37,3 @@ class Switch(NetLangObject, Device):
                     ctx
                 )
             seen_ids.add(port.portId)
-
-    def validate(self, ctx=None):
-        self.__class__.validate_field_types(self.name, self.ports, ctx)
-        self.__class__.validate_logic(self.name, self.ports, ctx)

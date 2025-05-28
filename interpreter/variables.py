@@ -5,7 +5,7 @@ from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.model.base import NetLangObject
 from shared.errors import NetLangRuntimeError
-from shared.utils.types import type_map, check_type
+from shared.utils.types import type_map
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -19,12 +19,6 @@ def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDec
     if isinstance(value, dict) and declared_type in type_map and issubclass(type_map[declared_type], NetLangObject):
         value = type_map[declared_type].from_dict(value, ctx)
 
-    if not check_type(declared_type, value):
-        raise NetLangRuntimeError(
-            f"Type mismatch: cannot assign {type(value).__name__} to variable '{name}' of type {declared_type}",
-            ctx
-        )
-
     self.declare_variable(name, Variable(declared_type, ctx.start.line, value=value), ctx)
     return value
 
@@ -32,15 +26,7 @@ def visitVariableAssignment(self: "Interpreter", ctx: NetLangParser.VariableAssi
     scope, var_name = self.visit(ctx.scopedIdentifier())
     value = self.visit(ctx.expression())
 
-    variable = scope.variables[var_name]
-    expected_type = variable.type
-    if not check_type(expected_type, value):
-        raise NetLangRuntimeError(
-            f"Type mismatch in assignment to variable '{var_name}': expected '{expected_type}', got '{type(value).__name__}'",
-            ctx
-        )
-
-    variable.value = value
+    scope.variables[var_name].value = value
     return value
 
 def visitScopedIdentifier(self: "Interpreter", ctx: NetLangParser.ScopedIdentifierContext) -> (Scope, str):

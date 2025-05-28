@@ -2,9 +2,11 @@ from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangTypeError, NetLangRuntimeError
-from shared.model import CIDR
+from shared.model import CIDR, ConnectorType, Protocol
 from shared.model.base import NetLangObject
-from shared.utils.types import type_map
+from shared.utils.types import type_map, type_field_map, are_types_compatible, abstract_types
+
+import difflib
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor
@@ -25,6 +27,13 @@ def visitStringLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.StringLit
     return "string"
 
 def visitVariableExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableExprContext):
+    name = ctx.scopedIdentifier().ID().getText()
+
+    if name in ConnectorType.__members__:
+        return "string"
+    if name in Protocol.__members__:
+        return "string"
+
     self.scoped_identifier_expectation = "variable"
     try:
         return self.visit(ctx.scopedIdentifier())
@@ -53,21 +62,77 @@ def visitListIndexAccessExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.Lis
 def visitObjectInitializer(self: "TypeCheckingVisitor", ctx: NetLangParser.ObjectInitializerContext):
     if not ctx.objectType() and not ctx.deviceType():
         if self.expected_type:
-            return self.expected_type
-        raise NetLangTypeError("Missing object type in initializer", ctx)
-
-    if ctx.objectType():
+            type_name = self.expected_type
+        else:
+            raise NetLangTypeError("Missing object type in initializer", ctx)
+    elif ctx.objectType():
         type_name = ctx.objectType().getText()
-        if type_name not in type_map:
-            raise NetLangTypeError(f"Unknown object type '{type_name}'", ctx)
-
-        return type_name
     elif ctx.deviceType():
         type_name = ctx.deviceType().getText()
-        if type_name not in type_map:
-            raise NetLangTypeError(f"Unknown device type '{type_name}'", ctx)
+    else:
+        raise NetLangTypeError("Invalid initializer", ctx)
 
-        return type_name
+    if type_name in abstract_types:
+        raise NetLangTypeError(
+            f"Cannot instantiate abstract type '{type_name}'",
+            ctx
+        )
+
+    field_def = type_field_map[type_name]
+    required_fields = field_def.get("required", {})
+    optional_fields = field_def.get("optional", {})
+    expected_fields = {**required_fields, **optional_fields}
+
+    seen_fields = set()
+    given_fields = set()
+
+    if ctx.objectFieldList():
+        for fieldCtx in ctx.objectFieldList().objectField():
+            field_name = fieldCtx.ID().getText()
+
+            if field_name in seen_fields:
+                raise NetLangTypeError(
+                    f"Field '{field_name}' is specified more than once in initializer of type '{type_name}'",
+                    fieldCtx
+                )
+            seen_fields.add(field_name)
+            given_fields.add(field_name)
+
+            if field_name not in expected_fields:
+                available_fields = list(expected_fields.keys())
+                suggestions = difflib.get_close_matches(field_name, available_fields, n=1, cutoff=0.7)
+
+                if suggestions:
+                    message = (
+                        f"Field '{field_name}' not allowed in type '{type_name}'. "
+                        f"Did you mean '{suggestions[0]}'?"
+                    )
+                else:
+                    fields_list = ", ".join(available_fields)
+                    message = (
+                        f"Field '{field_name}' not allowed in type '{type_name}'. "
+                        f"Available fields: {fields_list}."
+                    )
+
+                raise NetLangTypeError(message, fieldCtx)
+
+            expected_field_type = expected_fields[field_name]
+            actual_field_type = self.visit(fieldCtx.expression())
+
+            if not are_types_compatible(expected_field_type, actual_field_type):
+                raise NetLangTypeError(
+                    f"Type mismatch in field '{field_name}': expected '{expected_field_type}', got '{actual_field_type}'",
+                    fieldCtx
+                )
+
+    missing_required = set(required_fields.keys()) - given_fields
+    if missing_required:
+        raise NetLangTypeError(
+            f"Missing required fields for type '{type_name}': {', '.join(sorted(missing_required))}",
+            ctx
+        )
+
+    return type_name
 
 def visitCidrLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.CidrLiteralContext):
     return "CIDR"

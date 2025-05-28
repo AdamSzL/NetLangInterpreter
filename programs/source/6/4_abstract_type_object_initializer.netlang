@@ -1,0 +1,3 @@
+set ports: CopperEthernetPort <- Port {
+    portId <- "eth0"
+}

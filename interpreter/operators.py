@@ -1,5 +1,6 @@
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError
+from shared.utils.types import type_map, are_types_compatible, is_subtype
 from .utils import ensure_numeric, ensure_boolean, ensure_numeric_or_string
 from typing import TYPE_CHECKING
 
@@ -133,6 +134,10 @@ def visitCastExpr(self: "Interpreter", ctx: NetLangParser.CastExprContext):
                 if isinstance(value, bool):
                     return "true" if value else "false"
                 return str(value)
+            elif target_type in type_map and isinstance(value, type_map[target_type]):
+                return value
+            elif target_type in type_map and is_subtype(value.__class__.__name__, target_type):
+                return value
             else:
                 raise NetLangRuntimeError(
                     f"Unsupported cast to type '{target_type}'",

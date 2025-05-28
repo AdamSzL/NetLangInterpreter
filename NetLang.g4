@@ -149,7 +149,6 @@ type
     | 'void'
     | 'IP'
     | 'MAC'
-    | 'Port'
     | '[' type ']'
     | objectType
     | deviceType
@@ -162,6 +161,7 @@ objectType
     | 'WirelessPort'
     | 'RoutingEntry'
     | 'Packet'
+    | 'Port'
     ;
 
 deviceType

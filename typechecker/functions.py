@@ -5,7 +5,7 @@ from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
 from shared.model.Function import Function
 from shared.model.Variable import Variable
-from shared.utils.types import check_type, are_types_compatible, is_known_type
+from shared.utils.types import are_types_compatible, is_known_type
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor

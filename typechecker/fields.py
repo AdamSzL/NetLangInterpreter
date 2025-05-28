@@ -2,7 +2,7 @@ from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
 from typing import TYPE_CHECKING
 
-from shared.utils.types import get_field_type, are_types_compatible
+from shared.utils.types import get_field_type, are_types_compatible, type_field_map
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor
@@ -23,7 +23,7 @@ def visitFieldAccess(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAccess
             if current_type.startswith("[") and current_type.endswith("]") and field_name == "size":
                 current_type = "int"
             else:
-                current_type = get_field_type(current_type, field_name)
+                current_type = get_field_type(current_type, field_name, ctx)
 
             i += 2
 

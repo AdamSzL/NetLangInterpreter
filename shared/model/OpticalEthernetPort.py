@@ -15,8 +15,6 @@ class ConnectorType(Enum):
 
 @dataclass
 class OpticalEthernetPort(NetLangObject, Port):
-    allowed_fields = {"portId", "ip", "mac", "bandwidth", "wavelength", "mtu", "connector"}
-
     portId: str
     ip: CIDR
     mac: MACAddress
@@ -27,9 +25,7 @@ class OpticalEthernetPort(NetLangObject, Port):
     connectedTo: Any = None
 
     @classmethod
-    def from_dict(cls, data: dict, ctx=None):
-        cls.check_fields(data, ctx)
-
+    def from_dict(cls, data: dict, ctx):
         portId = data.get("portId")
         ip = data.get("ip")
         mac = data.get("mac")
@@ -38,32 +34,12 @@ class OpticalEthernetPort(NetLangObject, Port):
         mtu = data.get("mtu", 1500)
         connector = data.get("connector", ConnectorType.LC)
 
-        if not isinstance(portId, str):
-            raise NetLangRuntimeError("OpticalEthernetPort must have string portId", ctx)
-
-        if ip is not None and not isinstance(ip, CIDR):
-            raise NetLangRuntimeError("Invalid ip for OpticalEthernetPort", ctx)
-
         if mac is None:
             mac = MACAddress.generate()
         else:
-            if not isinstance(mac, MACAddress):
-                raise NetLangRuntimeError("Invalid MAC address", ctx)
             if MACAddress.is_registered(mac.mac):
                 raise NetLangRuntimeError(f"MAC address {mac.mac} is already in use", ctx)
             MACAddress.register(mac.mac)
-
-        if not isinstance(bandwidth, int):
-            raise NetLangRuntimeError("Bandwidth must be an integer", ctx)
-
-        if not isinstance(wavelength, int):
-            raise NetLangRuntimeError("Wavelength must be an integer", ctx)
-
-        if not isinstance(connector, ConnectorType):
-            raise NetLangRuntimeError(
-                "Invalid connector type",
-                ctx
-            )
 
         return cls(portId, ip, mac, bandwidth, wavelength, mtu, connector)
 

@@ -1,8 +1,8 @@
-from typing import Any, cast
+from typing import Any, cast, Optional
 
 from shared.errors import NetLangTypeError
 from shared.model.CIDR import CIDR
-from shared.model import CopperEthernetPort
+from shared.model import CopperEthernetPort, Port
 from shared.model.Host import Host
 from shared.model import IPAddress
 from shared.model import MACAddress
@@ -24,6 +24,7 @@ type_map = {
     "CopperEthernetPort": CopperEthernetPort,
     "OpticalEthernetPort": OpticalEthernetPort,
     "WirelessPort": WirelessPort,
+    "Port": Port,
     "RoutingEntry": RoutingEntry,
     "Packet": Packet,
     "Host": Host,
@@ -32,27 +33,127 @@ type_map = {
     "void": type(None)
 }
 
+type_field_map = {
+    "CopperEthernetPort": {
+        "required": {
+            "portId": "string"
+        },
+        "optional": {
+            "ip": "CIDR",
+            "mac": "MAC",
+            "bandwidth": "int",
+            "mtu": "int"
+        },
+        "readonly": {}
+    },
+    "OpticalEthernetPort": {
+        "required": {
+            "portId": "string"
+        },
+        "optional": {
+            "ip": "CIDR",
+            "mac": "MAC",
+            "bandwidth": "int",
+            "wavelength": "int",
+            "mtu": "int",
+            "connector": "string"
+        },
+        "readonly": {}
+    },
+    "WirelessPort": {
+        "required": {
+            "portId": "string"
+        },
+        "optional": {
+            "ip": "CIDR",
+            "mac": "MAC",
+            "bandwidth": "int",
+            "mtu": "int",
+            "frequency": "float"
+        },
+        "readonly": {}
+    },
+    "Port": {
+        "required": {
+            "portId": "string"
+        },
+        "optional": {
+            "ip": "CIDR",
+            "mac": "MAC",
+            "bandwidth": "int",
+            "mtu": "int"
+        },
+        "readonly": {}
+    },
+    "CIDR": {
+        "required": {
+            "ip": "IP",
+            "mask": "int"
+        },
+        "optional": {},
+        "readonly": {
+            "network": "CIDR",
+            "broadcast": "CIDR"
+        }
+    },
+    "Host": {
+        "required": {
+            "name": "string",
+            "ports": "[Port]"
+        },
+        "optional": {},
+        "readonly": {}
+    },
+    "Switch": {
+        "required": {
+            "name": "string",
+            "ports": "[Port]"
+        },
+        "optional": {},
+        "readonly": {}
+    },
+    "Router": {
+        "required": {
+            "name": "string",
+            "ports": "[Port]",
+            "routingTable": "[RoutingEntry]"
+        },
+        "optional": {},
+        "readonly": {}
+    },
+    "RoutingEntry": {
+        "required": {
+            "destination": "CIDR",
+            "via": "string"
+        },
+        "optional": {},
+        "readonly": {}
+    },
+    "Packet": {
+        "required": {
+            "payload": "string",
+            "protocol": "string",
+            "size": "int"
+        },
+        "optional": {},
+        "readonly": {}
+    }
+}
+
+type_hierarchy = {
+    "CopperEthernetPort": "Port",
+    "OpticalEthernetPort": "Port",
+    "WirelessPort": "Port",
+    "int": "float",
+}
+
+abstract_types = {"Port"}
+
 def is_known_type(type_str: str) -> bool:
     if type_str.startswith("[") and type_str.endswith("]"):
         inner = type_str[1:-1].strip()
         return is_known_type(inner)
     return type_str in type_map.keys()
-
-def check_type(declared_type: str, value: Any) -> bool:
-    if declared_type.startswith("[") and declared_type.endswith("]"):
-        if not isinstance(value, list):
-            return False
-        element_type_str = declared_type[1:-1]
-        return all(check_type(element_type_str, v) for v in cast(list[Any], value))
-
-    expected_type = type_map.get(declared_type)
-    if expected_type:
-        if expected_type is float:
-            return type(value) is float or type(value) is int
-        else:
-            return type(value) is expected_type
-
-    return False
 
 def are_types_compatible(expected: str, actual: str) -> bool:
     if expected.startswith("[") and expected.endswith("]"):
@@ -62,44 +163,63 @@ def are_types_compatible(expected: str, actual: str) -> bool:
         actual_elem_type = actual[1:-1]
         return are_types_compatible(expected_elem_type, actual_elem_type)
 
-    if expected == "float" and actual == "int":
-        return True
+    current = actual
+    while current in type_hierarchy:
+        if type_hierarchy[current] == expected:
+            return True
+        current = type_hierarchy[current]
 
     return expected == actual
 
-def get_field_type(type_name: str, field: str) -> str:
-    if type_name == "Host":
-        if field == "ports":
-            return "[CopperEthernetPort]"
-        if field.startswith("eth"):
-            return "CopperEthernetPort"
-    elif type_name == "RoutingEntry":
-        if field == "destination":
-            return "CIDR"
-    elif type_name == "CIDR":
-        if field == "broadcast":
-            return "IP"
-        elif field == "network":
-            return "IP"
-        elif field == "ip":
-            return "IP"
-        elif field == "mask":
-            return "int"
-    elif type_name == "Router":
-        if field == "routingTable":
-            return "[RoutingEntry]"
-        if field == "ports":
-            return "[CopperEthernetPort]"
-        if field.startswith("eth"):
-            return "CopperEthernetPort"
-    elif type_name == "Switch":
-        if field == "ports":
-            return "[CopperEthernetPort]"
-        if field.startswith("eth"):
-            return "CopperEthernetPort"
-    elif type_name == "CopperEthernetPort":
-        if field == "ip":
-            return "IP"
-        if field == "portId":
-            return "string"
-    raise NetLangTypeError(f"Unknown field '{field}' for type '{type_name}'")
+def is_subtype(sub: str, super: str) -> bool:
+    current = sub
+    while current in type_hierarchy:
+        if type_hierarchy[current] == super:
+            return True
+        current = type_hierarchy[current]
+    return sub == super
+
+def get_all_supertypes(t: str) -> list[str]:
+    supertypes = [t]
+    while t in type_hierarchy:
+        t = type_hierarchy[t]
+        supertypes.append(t)
+    return supertypes
+
+def find_common_supertype(types: list[str]) -> Optional[str]:
+    if not types:
+        return None
+    if len(types) == 1:
+        return types[0]
+
+    supertypes_sets = [set(get_all_supertypes(t)) for t in types]
+    common = set.intersection(*supertypes_sets)
+
+    if not common:
+        return None
+
+    for candidate in get_all_supertypes(types[0]):
+        if candidate in common:
+            return candidate
+
+    return None
+
+
+def get_field_type(type_name: str, field_name: str, ctx) -> str:
+    current = type_name
+
+    while True:
+        field_sets = type_field_map.get(current)
+        if field_sets:
+            for section in ["required", "optional", "readonly"]:
+                if field_name in field_sets.get(section, {}):
+                    return field_sets[section][field_name]
+        if current in type_hierarchy:
+            current = type_hierarchy[current]
+        else:
+            break
+
+    raise NetLangTypeError(
+        f"Unknown field '{field_name}' for type '{type_name}'",
+        ctx
+    )

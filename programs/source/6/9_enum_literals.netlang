@@ -1,0 +1,6 @@
+set port: OpticalEthernetPort <- {
+    portId <- "eth0",
+    connector <- LC
+}
+
+print port.connector

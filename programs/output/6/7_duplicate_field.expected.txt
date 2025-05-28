@@ -1,0 +1,1 @@
+Type Error: [Line 3, Column 4] Field 'name' is specified more than once in initializer of type 'Host'

@@ -3,7 +3,7 @@ from shared.errors import NetLangRuntimeError, NetLangTypeError
 
 from typing import TYPE_CHECKING
 
-from shared.utils.types import are_types_compatible
+from shared.utils.types import are_types_compatible, find_common_supertype
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor
@@ -41,12 +41,14 @@ def visitListLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.ListLiteral
             return self.expected_type
         raise NetLangTypeError("Cannot infer type of empty list", ctx)
 
-    first_type = element_types[0]
-    for t in element_types:
-        if t != first_type:
-            raise NetLangTypeError(f"List contains mixed element types: {first_type} and {t}", ctx)
+    common_type = find_common_supertype(element_types)
+    if not common_type:
+        raise NetLangTypeError(
+            f"List contains incompatible element types: {', '.join(set(element_types))}",
+            ctx
+        )
 
-    return f"[{first_type}]"
+    return f"[{common_type}]"
 
 def visitListIndexAccess(self: "TypeCheckingVisitor", ctx: NetLangParser.ListIndexAccessContext):
     scoped_ctx = ctx.scopedIdentifier()

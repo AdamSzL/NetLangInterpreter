@@ -5,20 +5,15 @@ from dataclasses import dataclass
 
 @dataclass
 class Router(NetLangObject, Device):
-    allowed_fields = {"name", "ports", "routingTable"}
     name: str
     ports: list
     routingTable: list
 
     @classmethod
     def from_dict(cls, data: dict, ctx):
-        cls.check_fields(data, ctx)
-
         name = data.get("name")
         ports = data.get("ports", [])
         routingTable = data.get("routingTable", [])
-
-        cls.validate_field_types(name, ports, routingTable, ctx)
 
         router = cls(name, ports, routingTable)
 
@@ -30,18 +25,7 @@ class Router(NetLangObject, Device):
         return router
 
     @staticmethod
-    def validate_field_types(name, ports, routingTable, ctx):
-        if not isinstance(name, str):
-            raise NetLangRuntimeError("Router device must have string 'name' field", ctx)
-
-        if not isinstance(ports, list):
-            raise NetLangRuntimeError("Router device must have list of ports in 'ports' field", ctx)
-
-        if not isinstance(routingTable, list):
-            raise NetLangRuntimeError("Router device must have list of routing table in 'routingTable' field", ctx)
-
-    @staticmethod
-    def validate_logic(name, ports, routingTable, ctx=None):
+    def validate_logic(name, ports, routingTable, ctx):
         seen_ids = set()
         for port in ports:
             if port.portId in seen_ids:
@@ -63,7 +47,3 @@ class Router(NetLangObject, Device):
                     f"RoutingEntry refers to unknown portId '{entry.via}' in Router '{name}'",
                     ctx
                 )
-
-    def validate(self, ctx=None):
-        self.__class__.validate_field_types(self.name, self.ports, self.routingTable, ctx)
-        self.__class__.validate_logic(self.name, self.ports, self.routingTable, ctx)

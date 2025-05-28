@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,78,470,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,78,469,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
@@ -33,38 +33,38 @@ def serializedATN():
         1,23,1,23,3,23,265,8,23,1,24,1,24,1,24,1,24,1,25,1,25,1,26,1,26,
         1,27,3,27,276,8,27,1,27,1,27,1,28,4,28,281,8,28,11,28,12,28,282,
         1,28,3,28,286,8,28,1,29,1,29,1,29,1,29,1,29,1,29,1,29,1,29,1,29,
-        1,29,1,29,1,29,1,29,1,29,3,29,302,8,29,1,30,1,30,1,31,1,31,1,32,
-        1,32,1,33,1,33,1,33,5,33,313,8,33,10,33,12,33,316,9,33,1,34,1,34,
-        1,34,5,34,321,8,34,10,34,12,34,324,9,34,1,35,1,35,1,35,3,35,329,
-        8,35,1,36,1,36,1,36,5,36,334,8,36,10,36,12,36,337,9,36,1,37,1,37,
-        1,37,5,37,342,8,37,10,37,12,37,345,9,37,1,38,1,38,1,38,5,38,350,
-        8,38,10,38,12,38,353,9,38,1,39,1,39,1,39,5,39,358,8,39,10,39,12,
-        39,361,9,39,1,40,1,40,1,40,3,40,366,8,40,1,41,1,41,1,41,1,41,1,41,
-        3,41,373,8,41,1,42,1,42,1,42,3,42,378,8,42,1,43,1,43,1,43,1,43,1,
-        43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,3,
-        43,397,8,43,1,44,1,44,3,44,401,8,44,1,44,1,44,1,45,1,45,1,45,5,45,
-        408,8,45,10,45,12,45,411,9,45,1,46,1,46,1,46,1,46,1,46,1,46,1,46,
-        1,46,1,46,3,46,422,8,46,1,47,1,47,3,47,426,8,47,1,47,1,47,3,47,430,
-        8,47,1,47,1,47,1,48,1,48,1,48,5,48,437,8,48,10,48,12,48,440,9,48,
-        1,49,1,49,1,49,1,49,1,50,1,50,1,50,1,50,1,50,1,50,1,50,5,50,453,
-        8,50,10,50,12,50,456,9,50,1,51,1,51,1,51,3,51,461,8,51,1,51,1,51,
-        1,52,1,52,1,52,1,52,1,52,1,52,0,0,53,0,2,4,6,8,10,12,14,16,18,20,
-        22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,
-        66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,0,
-        6,1,0,38,43,1,0,44,46,1,0,62,65,1,0,60,61,1,0,53,54,1,0,55,58,491,
+        1,29,1,29,1,29,1,29,3,29,301,8,29,1,30,1,30,1,31,1,31,1,32,1,32,
+        1,33,1,33,1,33,5,33,312,8,33,10,33,12,33,315,9,33,1,34,1,34,1,34,
+        5,34,320,8,34,10,34,12,34,323,9,34,1,35,1,35,1,35,3,35,328,8,35,
+        1,36,1,36,1,36,5,36,333,8,36,10,36,12,36,336,9,36,1,37,1,37,1,37,
+        5,37,341,8,37,10,37,12,37,344,9,37,1,38,1,38,1,38,5,38,349,8,38,
+        10,38,12,38,352,9,38,1,39,1,39,1,39,5,39,357,8,39,10,39,12,39,360,
+        9,39,1,40,1,40,1,40,3,40,365,8,40,1,41,1,41,1,41,1,41,1,41,3,41,
+        372,8,41,1,42,1,42,1,42,3,42,377,8,42,1,43,1,43,1,43,1,43,1,43,1,
+        43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,1,43,3,43,396,
+        8,43,1,44,1,44,3,44,400,8,44,1,44,1,44,1,45,1,45,1,45,5,45,407,8,
+        45,10,45,12,45,410,9,45,1,46,1,46,1,46,1,46,1,46,1,46,1,46,1,46,
+        1,46,3,46,421,8,46,1,47,1,47,3,47,425,8,47,1,47,1,47,3,47,429,8,
+        47,1,47,1,47,1,48,1,48,1,48,5,48,436,8,48,10,48,12,48,439,9,48,1,
+        49,1,49,1,49,1,49,1,50,1,50,1,50,1,50,1,50,1,50,1,50,5,50,452,8,
+        50,10,50,12,50,455,9,50,1,51,1,51,1,51,3,51,460,8,51,1,51,1,51,1,
+        52,1,52,1,52,1,52,1,52,1,52,0,0,53,0,2,4,6,8,10,12,14,16,18,20,22,
+        24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,
+        68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,0,6,
+        1,0,37,43,1,0,44,46,1,0,62,65,1,0,60,61,1,0,53,54,1,0,55,58,489,
         0,109,1,0,0,0,2,132,1,0,0,0,4,134,1,0,0,0,6,141,1,0,0,0,8,145,1,
         0,0,0,10,150,1,0,0,0,12,153,1,0,0,0,14,157,1,0,0,0,16,162,1,0,0,
         0,18,170,1,0,0,0,20,175,1,0,0,0,22,182,1,0,0,0,24,194,1,0,0,0,26,
         199,1,0,0,0,28,202,1,0,0,0,30,211,1,0,0,0,32,217,1,0,0,0,34,219,
         1,0,0,0,36,226,1,0,0,0,38,231,1,0,0,0,40,237,1,0,0,0,42,250,1,0,
         0,0,44,258,1,0,0,0,46,262,1,0,0,0,48,266,1,0,0,0,50,270,1,0,0,0,
-        52,272,1,0,0,0,54,275,1,0,0,0,56,285,1,0,0,0,58,301,1,0,0,0,60,303,
-        1,0,0,0,62,305,1,0,0,0,64,307,1,0,0,0,66,309,1,0,0,0,68,317,1,0,
-        0,0,70,328,1,0,0,0,72,330,1,0,0,0,74,338,1,0,0,0,76,346,1,0,0,0,
-        78,354,1,0,0,0,80,362,1,0,0,0,82,372,1,0,0,0,84,374,1,0,0,0,86,396,
-        1,0,0,0,88,398,1,0,0,0,90,404,1,0,0,0,92,421,1,0,0,0,94,425,1,0,
-        0,0,96,433,1,0,0,0,98,441,1,0,0,0,100,445,1,0,0,0,102,457,1,0,0,
-        0,104,464,1,0,0,0,106,108,3,2,1,0,107,106,1,0,0,0,108,111,1,0,0,
+        52,272,1,0,0,0,54,275,1,0,0,0,56,285,1,0,0,0,58,300,1,0,0,0,60,302,
+        1,0,0,0,62,304,1,0,0,0,64,306,1,0,0,0,66,308,1,0,0,0,68,316,1,0,
+        0,0,70,327,1,0,0,0,72,329,1,0,0,0,74,337,1,0,0,0,76,345,1,0,0,0,
+        78,353,1,0,0,0,80,361,1,0,0,0,82,371,1,0,0,0,84,373,1,0,0,0,86,395,
+        1,0,0,0,88,397,1,0,0,0,90,403,1,0,0,0,92,420,1,0,0,0,94,424,1,0,
+        0,0,96,432,1,0,0,0,98,440,1,0,0,0,100,444,1,0,0,0,102,456,1,0,0,
+        0,104,463,1,0,0,0,106,108,3,2,1,0,107,106,1,0,0,0,108,111,1,0,0,
         0,109,107,1,0,0,0,109,110,1,0,0,0,110,112,1,0,0,0,111,109,1,0,0,
         0,112,113,5,0,0,1,113,1,1,0,0,0,114,133,3,48,24,0,115,133,3,4,2,
         0,116,133,3,6,3,0,117,133,3,8,4,0,118,133,3,10,5,0,119,133,3,12,
@@ -118,67 +118,66 @@ def serializedATN():
         1,0,0,0,275,276,1,0,0,0,276,277,1,0,0,0,277,278,5,70,0,0,278,55,
         1,0,0,0,279,281,5,59,0,0,280,279,1,0,0,0,281,282,1,0,0,0,282,280,
         1,0,0,0,282,283,1,0,0,0,283,286,1,0,0,0,284,286,5,27,0,0,285,280,
-        1,0,0,0,285,284,1,0,0,0,286,57,1,0,0,0,287,302,5,28,0,0,288,302,
-        5,29,0,0,289,302,5,30,0,0,290,302,5,31,0,0,291,302,5,32,0,0,292,
-        302,5,33,0,0,293,302,5,34,0,0,294,302,5,35,0,0,295,296,5,36,0,0,
-        296,297,3,58,29,0,297,298,5,37,0,0,298,302,1,0,0,0,299,302,3,60,
-        30,0,300,302,3,62,31,0,301,287,1,0,0,0,301,288,1,0,0,0,301,289,1,
-        0,0,0,301,290,1,0,0,0,301,291,1,0,0,0,301,292,1,0,0,0,301,293,1,
-        0,0,0,301,294,1,0,0,0,301,295,1,0,0,0,301,299,1,0,0,0,301,300,1,
-        0,0,0,302,59,1,0,0,0,303,304,7,0,0,0,304,61,1,0,0,0,305,306,7,1,
-        0,0,306,63,1,0,0,0,307,308,3,66,33,0,308,65,1,0,0,0,309,314,3,68,
-        34,0,310,311,5,67,0,0,311,313,3,68,34,0,312,310,1,0,0,0,313,316,
-        1,0,0,0,314,312,1,0,0,0,314,315,1,0,0,0,315,67,1,0,0,0,316,314,1,
-        0,0,0,317,322,3,70,35,0,318,319,5,66,0,0,319,321,3,70,35,0,320,318,
-        1,0,0,0,321,324,1,0,0,0,322,320,1,0,0,0,322,323,1,0,0,0,323,69,1,
-        0,0,0,324,322,1,0,0,0,325,326,5,68,0,0,326,329,3,70,35,0,327,329,
-        3,72,36,0,328,325,1,0,0,0,328,327,1,0,0,0,329,71,1,0,0,0,330,335,
-        3,74,37,0,331,332,7,2,0,0,332,334,3,74,37,0,333,331,1,0,0,0,334,
-        337,1,0,0,0,335,333,1,0,0,0,335,336,1,0,0,0,336,73,1,0,0,0,337,335,
-        1,0,0,0,338,343,3,76,38,0,339,340,7,3,0,0,340,342,3,76,38,0,341,
-        339,1,0,0,0,342,345,1,0,0,0,343,341,1,0,0,0,343,344,1,0,0,0,344,
-        75,1,0,0,0,345,343,1,0,0,0,346,351,3,78,39,0,347,348,7,4,0,0,348,
-        350,3,78,39,0,349,347,1,0,0,0,350,353,1,0,0,0,351,349,1,0,0,0,351,
-        352,1,0,0,0,352,77,1,0,0,0,353,351,1,0,0,0,354,359,3,80,40,0,355,
-        356,7,5,0,0,356,358,3,80,40,0,357,355,1,0,0,0,358,361,1,0,0,0,359,
-        357,1,0,0,0,359,360,1,0,0,0,360,79,1,0,0,0,361,359,1,0,0,0,362,365,
-        3,82,41,0,363,364,5,19,0,0,364,366,3,58,29,0,365,363,1,0,0,0,365,
-        366,1,0,0,0,366,81,1,0,0,0,367,368,5,53,0,0,368,373,3,82,41,0,369,
-        370,5,54,0,0,370,373,3,82,41,0,371,373,3,84,42,0,372,367,1,0,0,0,
-        372,369,1,0,0,0,372,371,1,0,0,0,373,83,1,0,0,0,374,377,3,86,43,0,
-        375,376,5,59,0,0,376,378,3,84,42,0,377,375,1,0,0,0,377,378,1,0,0,
-        0,378,85,1,0,0,0,379,380,5,23,0,0,380,381,3,64,32,0,381,382,5,24,
-        0,0,382,397,1,0,0,0,383,397,3,54,27,0,384,397,5,71,0,0,385,397,5,
-        72,0,0,386,397,5,69,0,0,387,397,5,73,0,0,388,397,3,92,46,0,389,397,
-        5,74,0,0,390,397,5,75,0,0,391,397,3,88,44,0,392,397,3,94,47,0,393,
-        397,3,100,50,0,394,397,3,102,51,0,395,397,3,104,52,0,396,379,1,0,
-        0,0,396,383,1,0,0,0,396,384,1,0,0,0,396,385,1,0,0,0,396,386,1,0,
-        0,0,396,387,1,0,0,0,396,388,1,0,0,0,396,389,1,0,0,0,396,390,1,0,
-        0,0,396,391,1,0,0,0,396,392,1,0,0,0,396,393,1,0,0,0,396,394,1,0,
-        0,0,396,395,1,0,0,0,397,87,1,0,0,0,398,400,5,36,0,0,399,401,3,90,
-        45,0,400,399,1,0,0,0,400,401,1,0,0,0,401,402,1,0,0,0,402,403,5,37,
-        0,0,403,89,1,0,0,0,404,409,3,64,32,0,405,406,5,51,0,0,406,408,3,
-        64,32,0,407,405,1,0,0,0,408,411,1,0,0,0,409,407,1,0,0,0,409,410,
-        1,0,0,0,410,91,1,0,0,0,411,409,1,0,0,0,412,413,5,36,0,0,413,414,
-        3,54,27,0,414,415,5,37,0,0,415,416,5,57,0,0,416,417,5,71,0,0,417,
-        422,1,0,0,0,418,419,5,74,0,0,419,420,5,57,0,0,420,422,5,71,0,0,421,
-        412,1,0,0,0,421,418,1,0,0,0,422,93,1,0,0,0,423,426,3,60,30,0,424,
-        426,3,62,31,0,425,423,1,0,0,0,425,424,1,0,0,0,425,426,1,0,0,0,426,
-        427,1,0,0,0,427,429,5,14,0,0,428,430,3,96,48,0,429,428,1,0,0,0,429,
-        430,1,0,0,0,430,431,1,0,0,0,431,432,5,15,0,0,432,95,1,0,0,0,433,
-        438,3,98,49,0,434,435,5,51,0,0,435,437,3,98,49,0,436,434,1,0,0,0,
-        437,440,1,0,0,0,438,436,1,0,0,0,438,439,1,0,0,0,439,97,1,0,0,0,440,
-        438,1,0,0,0,441,442,5,70,0,0,442,443,5,49,0,0,443,444,3,64,32,0,
-        444,99,1,0,0,0,445,454,3,54,27,0,446,447,5,52,0,0,447,453,5,70,0,
-        0,448,449,5,62,0,0,449,450,3,64,32,0,450,451,5,63,0,0,451,453,1,
-        0,0,0,452,446,1,0,0,0,452,448,1,0,0,0,453,456,1,0,0,0,454,452,1,
-        0,0,0,454,455,1,0,0,0,455,101,1,0,0,0,456,454,1,0,0,0,457,458,3,
-        54,27,0,458,460,5,23,0,0,459,461,3,90,45,0,460,459,1,0,0,0,460,461,
-        1,0,0,0,461,462,1,0,0,0,462,463,5,24,0,0,463,103,1,0,0,0,464,465,
-        3,54,27,0,465,466,5,62,0,0,466,467,3,64,32,0,467,468,5,63,0,0,468,
-        105,1,0,0,0,35,109,132,168,188,192,206,217,241,246,255,264,275,282,
-        285,301,314,322,328,335,343,351,359,365,372,377,396,400,409,421,
-        425,429,438,452,454,460
+        1,0,0,0,285,284,1,0,0,0,286,57,1,0,0,0,287,301,5,28,0,0,288,301,
+        5,29,0,0,289,301,5,30,0,0,290,301,5,31,0,0,291,301,5,32,0,0,292,
+        301,5,33,0,0,293,301,5,34,0,0,294,295,5,35,0,0,295,296,3,58,29,0,
+        296,297,5,36,0,0,297,301,1,0,0,0,298,301,3,60,30,0,299,301,3,62,
+        31,0,300,287,1,0,0,0,300,288,1,0,0,0,300,289,1,0,0,0,300,290,1,0,
+        0,0,300,291,1,0,0,0,300,292,1,0,0,0,300,293,1,0,0,0,300,294,1,0,
+        0,0,300,298,1,0,0,0,300,299,1,0,0,0,301,59,1,0,0,0,302,303,7,0,0,
+        0,303,61,1,0,0,0,304,305,7,1,0,0,305,63,1,0,0,0,306,307,3,66,33,
+        0,307,65,1,0,0,0,308,313,3,68,34,0,309,310,5,67,0,0,310,312,3,68,
+        34,0,311,309,1,0,0,0,312,315,1,0,0,0,313,311,1,0,0,0,313,314,1,0,
+        0,0,314,67,1,0,0,0,315,313,1,0,0,0,316,321,3,70,35,0,317,318,5,66,
+        0,0,318,320,3,70,35,0,319,317,1,0,0,0,320,323,1,0,0,0,321,319,1,
+        0,0,0,321,322,1,0,0,0,322,69,1,0,0,0,323,321,1,0,0,0,324,325,5,68,
+        0,0,325,328,3,70,35,0,326,328,3,72,36,0,327,324,1,0,0,0,327,326,
+        1,0,0,0,328,71,1,0,0,0,329,334,3,74,37,0,330,331,7,2,0,0,331,333,
+        3,74,37,0,332,330,1,0,0,0,333,336,1,0,0,0,334,332,1,0,0,0,334,335,
+        1,0,0,0,335,73,1,0,0,0,336,334,1,0,0,0,337,342,3,76,38,0,338,339,
+        7,3,0,0,339,341,3,76,38,0,340,338,1,0,0,0,341,344,1,0,0,0,342,340,
+        1,0,0,0,342,343,1,0,0,0,343,75,1,0,0,0,344,342,1,0,0,0,345,350,3,
+        78,39,0,346,347,7,4,0,0,347,349,3,78,39,0,348,346,1,0,0,0,349,352,
+        1,0,0,0,350,348,1,0,0,0,350,351,1,0,0,0,351,77,1,0,0,0,352,350,1,
+        0,0,0,353,358,3,80,40,0,354,355,7,5,0,0,355,357,3,80,40,0,356,354,
+        1,0,0,0,357,360,1,0,0,0,358,356,1,0,0,0,358,359,1,0,0,0,359,79,1,
+        0,0,0,360,358,1,0,0,0,361,364,3,82,41,0,362,363,5,19,0,0,363,365,
+        3,58,29,0,364,362,1,0,0,0,364,365,1,0,0,0,365,81,1,0,0,0,366,367,
+        5,53,0,0,367,372,3,82,41,0,368,369,5,54,0,0,369,372,3,82,41,0,370,
+        372,3,84,42,0,371,366,1,0,0,0,371,368,1,0,0,0,371,370,1,0,0,0,372,
+        83,1,0,0,0,373,376,3,86,43,0,374,375,5,59,0,0,375,377,3,84,42,0,
+        376,374,1,0,0,0,376,377,1,0,0,0,377,85,1,0,0,0,378,379,5,23,0,0,
+        379,380,3,64,32,0,380,381,5,24,0,0,381,396,1,0,0,0,382,396,3,54,
+        27,0,383,396,5,71,0,0,384,396,5,72,0,0,385,396,5,69,0,0,386,396,
+        5,73,0,0,387,396,3,92,46,0,388,396,5,74,0,0,389,396,5,75,0,0,390,
+        396,3,88,44,0,391,396,3,94,47,0,392,396,3,100,50,0,393,396,3,102,
+        51,0,394,396,3,104,52,0,395,378,1,0,0,0,395,382,1,0,0,0,395,383,
+        1,0,0,0,395,384,1,0,0,0,395,385,1,0,0,0,395,386,1,0,0,0,395,387,
+        1,0,0,0,395,388,1,0,0,0,395,389,1,0,0,0,395,390,1,0,0,0,395,391,
+        1,0,0,0,395,392,1,0,0,0,395,393,1,0,0,0,395,394,1,0,0,0,396,87,1,
+        0,0,0,397,399,5,35,0,0,398,400,3,90,45,0,399,398,1,0,0,0,399,400,
+        1,0,0,0,400,401,1,0,0,0,401,402,5,36,0,0,402,89,1,0,0,0,403,408,
+        3,64,32,0,404,405,5,51,0,0,405,407,3,64,32,0,406,404,1,0,0,0,407,
+        410,1,0,0,0,408,406,1,0,0,0,408,409,1,0,0,0,409,91,1,0,0,0,410,408,
+        1,0,0,0,411,412,5,35,0,0,412,413,3,54,27,0,413,414,5,36,0,0,414,
+        415,5,57,0,0,415,416,5,71,0,0,416,421,1,0,0,0,417,418,5,74,0,0,418,
+        419,5,57,0,0,419,421,5,71,0,0,420,411,1,0,0,0,420,417,1,0,0,0,421,
+        93,1,0,0,0,422,425,3,60,30,0,423,425,3,62,31,0,424,422,1,0,0,0,424,
+        423,1,0,0,0,424,425,1,0,0,0,425,426,1,0,0,0,426,428,5,14,0,0,427,
+        429,3,96,48,0,428,427,1,0,0,0,428,429,1,0,0,0,429,430,1,0,0,0,430,
+        431,5,15,0,0,431,95,1,0,0,0,432,437,3,98,49,0,433,434,5,51,0,0,434,
+        436,3,98,49,0,435,433,1,0,0,0,436,439,1,0,0,0,437,435,1,0,0,0,437,
+        438,1,0,0,0,438,97,1,0,0,0,439,437,1,0,0,0,440,441,5,70,0,0,441,
+        442,5,49,0,0,442,443,3,64,32,0,443,99,1,0,0,0,444,453,3,54,27,0,
+        445,446,5,52,0,0,446,452,5,70,0,0,447,448,5,62,0,0,448,449,3,64,
+        32,0,449,450,5,63,0,0,450,452,1,0,0,0,451,445,1,0,0,0,451,447,1,
+        0,0,0,452,455,1,0,0,0,453,451,1,0,0,0,453,454,1,0,0,0,454,101,1,
+        0,0,0,455,453,1,0,0,0,456,457,3,54,27,0,457,459,5,23,0,0,458,460,
+        3,90,45,0,459,458,1,0,0,0,459,460,1,0,0,0,460,461,1,0,0,0,461,462,
+        5,24,0,0,462,103,1,0,0,0,463,464,3,54,27,0,464,465,5,62,0,0,465,
+        466,3,64,32,0,466,467,5,63,0,0,467,105,1,0,0,0,35,109,132,168,188,
+        192,206,217,241,246,255,264,275,282,285,300,313,321,327,334,342,
+        350,358,364,371,376,395,399,408,420,424,428,437,451,453,459
     ]
 
 class NetLangParser ( Parser ):
@@ -197,13 +196,13 @@ class NetLangParser ( Parser ):
                      "'repeat'", "'times'", "'as'", "'while'", "'each'", 
                      "'define'", "'('", "')'", "'=>'", "'return'", "'~'", 
                      "'int'", "'float'", "'bool'", "'string'", "'void'", 
-                     "'IP'", "'MAC'", "'Port'", "'['", "']'", "'CIDR'", 
-                     "'CopperEthernetPort'", "'OpticalEthernetPort'", "'WirelessPort'", 
-                     "'RoutingEntry'", "'Packet'", "'Router'", "'Host'", 
-                     "'Switch'", "'exit'", "'next'", "'<-'", "':'", "','", 
-                     "'.'", "'+'", "'-'", "'*'", "'\\'", "'/'", "'%'", "'^'", 
-                     "'=='", "'!='", "'<'", "'>'", "'<='", "'>='", "'&&'", 
-                     "'||'", "'!'" ]
+                     "'IP'", "'MAC'", "'['", "']'", "'CIDR'", "'CopperEthernetPort'", 
+                     "'OpticalEthernetPort'", "'WirelessPort'", "'RoutingEntry'", 
+                     "'Packet'", "'Port'", "'Router'", "'Host'", "'Switch'", 
+                     "'exit'", "'next'", "'<-'", "':'", "','", "'.'", "'+'", 
+                     "'-'", "'*'", "'\\'", "'/'", "'%'", "'^'", "'=='", 
+                     "'!='", "'<'", "'>'", "'<='", "'>='", "'&&'", "'||'", 
+                     "'!'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
@@ -2388,7 +2387,7 @@ class NetLangParser ( Parser ):
         localctx = NetLangParser.TypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 58, self.RULE_type)
         try:
-            self.state = 301
+            self.state = 300
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [28]:
@@ -2430,24 +2429,19 @@ class NetLangParser ( Parser ):
                 self.enterOuterAlt(localctx, 8)
                 self.state = 294
                 self.match(NetLangParser.T__34)
-                pass
-            elif token in [36]:
-                self.enterOuterAlt(localctx, 9)
                 self.state = 295
-                self.match(NetLangParser.T__35)
-                self.state = 296
                 self.type_()
-                self.state = 297
-                self.match(NetLangParser.T__36)
+                self.state = 296
+                self.match(NetLangParser.T__35)
                 pass
-            elif token in [38, 39, 40, 41, 42, 43]:
-                self.enterOuterAlt(localctx, 10)
-                self.state = 299
+            elif token in [37, 38, 39, 40, 41, 42, 43]:
+                self.enterOuterAlt(localctx, 9)
+                self.state = 298
                 self.objectType()
                 pass
             elif token in [44, 45, 46]:
-                self.enterOuterAlt(localctx, 11)
-                self.state = 300
+                self.enterOuterAlt(localctx, 10)
+                self.state = 299
                 self.deviceType()
                 pass
             else:
@@ -2497,9 +2491,9 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 303
+            self.state = 302
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 17317308137472) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 17454747090944) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -2548,7 +2542,7 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 305
+            self.state = 304
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 123145302310912) != 0)):
                 self._errHandler.recoverInline(self)
@@ -2601,7 +2595,7 @@ class NetLangParser ( Parser ):
         self.enterRule(localctx, 64, self.RULE_expression)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 307
+            self.state = 306
             self.orExpr()
         except RecognitionException as re:
             localctx.exception = re
@@ -2659,17 +2653,17 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 309
+            self.state = 308
             self.andExpr()
-            self.state = 314
+            self.state = 313
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==67:
-                self.state = 310
+                self.state = 309
                 self.match(NetLangParser.OR)
-                self.state = 311
+                self.state = 310
                 self.andExpr()
-                self.state = 316
+                self.state = 315
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -2729,17 +2723,17 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 317
+            self.state = 316
             self.notExpr()
-            self.state = 322
+            self.state = 321
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==66:
-                self.state = 318
+                self.state = 317
                 self.match(NetLangParser.AND)
-                self.state = 319
+                self.state = 318
                 self.notExpr()
-                self.state = 324
+                self.state = 323
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -2795,19 +2789,19 @@ class NetLangParser ( Parser ):
         localctx = NetLangParser.NotExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 70, self.RULE_notExpr)
         try:
-            self.state = 328
+            self.state = 327
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [68]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 325
+                self.state = 324
                 self.match(NetLangParser.NOT)
-                self.state = 326
+                self.state = 325
                 self.notExpr()
                 pass
-            elif token in [14, 23, 27, 36, 38, 39, 40, 41, 42, 43, 44, 45, 46, 53, 54, 59, 69, 70, 71, 72, 73, 74, 75]:
+            elif token in [14, 23, 27, 35, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 53, 54, 59, 69, 70, 71, 72, 73, 74, 75]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 327
+                self.state = 326
                 self.comparisonExpr()
                 pass
             else:
@@ -2887,23 +2881,23 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 330
+            self.state = 329
             self.equalityExpr()
-            self.state = 335
+            self.state = 334
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,18,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
-                    self.state = 331
+                    self.state = 330
                     _la = self._input.LA(1)
                     if not(((((_la - 62)) & ~0x3f) == 0 and ((1 << (_la - 62)) & 15) != 0)):
                         self._errHandler.recoverInline(self)
                     else:
                         self._errHandler.reportMatch(self)
                         self.consume()
-                    self.state = 332
+                    self.state = 331
                     self.equalityExpr() 
-                self.state = 337
+                self.state = 336
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,18,self._ctx)
 
@@ -2969,22 +2963,22 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 338
+            self.state = 337
             self.addSubExpr()
-            self.state = 343
+            self.state = 342
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==60 or _la==61:
-                self.state = 339
+                self.state = 338
                 _la = self._input.LA(1)
                 if not(_la==60 or _la==61):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 340
+                self.state = 339
                 self.addSubExpr()
-                self.state = 345
+                self.state = 344
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -3050,22 +3044,22 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 346
+            self.state = 345
             self.mulDivExpr()
-            self.state = 351
+            self.state = 350
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==53 or _la==54:
-                self.state = 347
+                self.state = 346
                 _la = self._input.LA(1)
                 if not(_la==53 or _la==54):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 348
+                self.state = 347
                 self.mulDivExpr()
-                self.state = 353
+                self.state = 352
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -3143,22 +3137,22 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 354
+            self.state = 353
             self.castExpr()
-            self.state = 359
+            self.state = 358
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & 540431955284459520) != 0):
-                self.state = 355
+                self.state = 354
                 _la = self._input.LA(1)
                 if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 540431955284459520) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 356
+                self.state = 355
                 self.castExpr()
-                self.state = 361
+                self.state = 360
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -3213,15 +3207,15 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 362
+            self.state = 361
             self.unaryExpr()
-            self.state = 365
+            self.state = 364
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==19:
-                self.state = 363
+                self.state = 362
                 self.match(NetLangParser.T__18)
-                self.state = 364
+                self.state = 363
                 self.type_()
 
 
@@ -3280,26 +3274,26 @@ class NetLangParser ( Parser ):
         localctx = NetLangParser.UnaryExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 82, self.RULE_unaryExpr)
         try:
-            self.state = 372
+            self.state = 371
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [53]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 367
+                self.state = 366
                 self.match(NetLangParser.PLUS)
-                self.state = 368
+                self.state = 367
                 self.unaryExpr()
                 pass
             elif token in [54]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 369
+                self.state = 368
                 self.match(NetLangParser.MINUS)
-                self.state = 370
+                self.state = 369
                 self.unaryExpr()
                 pass
-            elif token in [14, 23, 27, 36, 38, 39, 40, 41, 42, 43, 44, 45, 46, 59, 69, 70, 71, 72, 73, 74, 75]:
+            elif token in [14, 23, 27, 35, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 59, 69, 70, 71, 72, 73, 74, 75]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 371
+                self.state = 370
                 self.powExpr()
                 pass
             else:
@@ -3358,15 +3352,15 @@ class NetLangParser ( Parser ):
         self.enterRule(localctx, 84, self.RULE_powExpr)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 374
+            self.state = 373
             self.atomExpr()
-            self.state = 377
+            self.state = 376
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,24,self._ctx)
             if la_ == 1:
-                self.state = 375
+                self.state = 374
                 self.match(NetLangParser.POW)
-                self.state = 376
+                self.state = 375
                 self.powExpr()
 
 
@@ -3746,108 +3740,108 @@ class NetLangParser ( Parser ):
         localctx = NetLangParser.AtomExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 86, self.RULE_atomExpr)
         try:
-            self.state = 396
+            self.state = 395
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,25,self._ctx)
             if la_ == 1:
                 localctx = NetLangParser.ParensExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 379
+                self.state = 378
                 self.match(NetLangParser.T__22)
-                self.state = 380
+                self.state = 379
                 self.expression()
-                self.state = 381
+                self.state = 380
                 self.match(NetLangParser.T__23)
                 pass
 
             elif la_ == 2:
                 localctx = NetLangParser.VariableExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 383
+                self.state = 382
                 self.scopedIdentifier()
                 pass
 
             elif la_ == 3:
                 localctx = NetLangParser.IntLiteralContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 384
+                self.state = 383
                 self.match(NetLangParser.INT)
                 pass
 
             elif la_ == 4:
                 localctx = NetLangParser.FloatLiteralContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
-                self.state = 385
+                self.state = 384
                 self.match(NetLangParser.FLOAT)
                 pass
 
             elif la_ == 5:
                 localctx = NetLangParser.BoolLiteralContext(self, localctx)
                 self.enterOuterAlt(localctx, 5)
-                self.state = 386
+                self.state = 385
                 self.match(NetLangParser.BOOL)
                 pass
 
             elif la_ == 6:
                 localctx = NetLangParser.StringLiteralContext(self, localctx)
                 self.enterOuterAlt(localctx, 6)
-                self.state = 387
+                self.state = 386
                 self.match(NetLangParser.STRING)
                 pass
 
             elif la_ == 7:
                 localctx = NetLangParser.CIDRLiteralExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 7)
-                self.state = 388
+                self.state = 387
                 self.cidrLiteral()
                 pass
 
             elif la_ == 8:
                 localctx = NetLangParser.IPAddressLiteralContext(self, localctx)
                 self.enterOuterAlt(localctx, 8)
-                self.state = 389
+                self.state = 388
                 self.match(NetLangParser.IPADDR)
                 pass
 
             elif la_ == 9:
                 localctx = NetLangParser.MacAddressLiteralContext(self, localctx)
                 self.enterOuterAlt(localctx, 9)
-                self.state = 390
+                self.state = 389
                 self.match(NetLangParser.MACADDR)
                 pass
 
             elif la_ == 10:
                 localctx = NetLangParser.ListLiteralExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 10)
-                self.state = 391
+                self.state = 390
                 self.listLiteral()
                 pass
 
             elif la_ == 11:
                 localctx = NetLangParser.ObjectInitializerExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 11)
-                self.state = 392
+                self.state = 391
                 self.objectInitializer()
                 pass
 
             elif la_ == 12:
                 localctx = NetLangParser.FieldAccessExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 12)
-                self.state = 393
+                self.state = 392
                 self.fieldAccess()
                 pass
 
             elif la_ == 13:
                 localctx = NetLangParser.FunctionCallExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 13)
-                self.state = 394
+                self.state = 393
                 self.functionCall()
                 pass
 
             elif la_ == 14:
                 localctx = NetLangParser.ListIndexAccessExprContext(self, localctx)
                 self.enterOuterAlt(localctx, 14)
-                self.state = 395
+                self.state = 394
                 self.listIndexAccess()
                 pass
 
@@ -3899,18 +3893,18 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 398
-            self.match(NetLangParser.T__35)
-            self.state = 400
+            self.state = 397
+            self.match(NetLangParser.T__34)
+            self.state = 399
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if ((((_la - 14)) & ~0x3f) == 0 and ((1 << (_la - 14)) & 4593708462134796801) != 0):
-                self.state = 399
+            if ((((_la - 14)) & ~0x3f) == 0 and ((1 << (_la - 14)) & 4593708462141088257) != 0):
+                self.state = 398
                 self.expressionList()
 
 
-            self.state = 402
-            self.match(NetLangParser.T__36)
+            self.state = 401
+            self.match(NetLangParser.T__35)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -3967,17 +3961,17 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 404
+            self.state = 403
             self.expression()
-            self.state = 409
+            self.state = 408
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==51:
-                self.state = 405
+                self.state = 404
                 self.match(NetLangParser.COMMA)
-                self.state = 406
+                self.state = 405
                 self.expression()
-                self.state = 411
+                self.state = 410
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -4035,29 +4029,29 @@ class NetLangParser ( Parser ):
         localctx = NetLangParser.CidrLiteralContext(self, self._ctx, self.state)
         self.enterRule(localctx, 92, self.RULE_cidrLiteral)
         try:
-            self.state = 421
+            self.state = 420
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [36]:
+            if token in [35]:
                 self.enterOuterAlt(localctx, 1)
+                self.state = 411
+                self.match(NetLangParser.T__34)
                 self.state = 412
-                self.match(NetLangParser.T__35)
-                self.state = 413
                 self.scopedIdentifier()
+                self.state = 413
+                self.match(NetLangParser.T__35)
                 self.state = 414
-                self.match(NetLangParser.T__36)
-                self.state = 415
                 self.match(NetLangParser.DIV)
-                self.state = 416
+                self.state = 415
                 self.match(NetLangParser.INT)
                 pass
             elif token in [74]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 418
+                self.state = 417
                 self.match(NetLangParser.IPADDR)
-                self.state = 419
+                self.state = 418
                 self.match(NetLangParser.DIV)
-                self.state = 420
+                self.state = 419
                 self.match(NetLangParser.INT)
                 pass
             else:
@@ -4118,32 +4112,32 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 425
+            self.state = 424
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [38, 39, 40, 41, 42, 43]:
-                self.state = 423
+            if token in [37, 38, 39, 40, 41, 42, 43]:
+                self.state = 422
                 self.objectType()
                 pass
             elif token in [44, 45, 46]:
-                self.state = 424
+                self.state = 423
                 self.deviceType()
                 pass
             elif token in [14]:
                 pass
             else:
                 pass
-            self.state = 427
+            self.state = 426
             self.match(NetLangParser.T__13)
-            self.state = 429
+            self.state = 428
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==70:
-                self.state = 428
+                self.state = 427
                 self.objectFieldList()
 
 
-            self.state = 431
+            self.state = 430
             self.match(NetLangParser.T__14)
         except RecognitionException as re:
             localctx.exception = re
@@ -4201,17 +4195,17 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 433
+            self.state = 432
             self.objectField()
-            self.state = 438
+            self.state = 437
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==51:
-                self.state = 434
+                self.state = 433
                 self.match(NetLangParser.COMMA)
-                self.state = 435
+                self.state = 434
                 self.objectField()
-                self.state = 440
+                self.state = 439
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -4267,11 +4261,11 @@ class NetLangParser ( Parser ):
         self.enterRule(localctx, 98, self.RULE_objectField)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 441
+            self.state = 440
             self.match(NetLangParser.ID)
-            self.state = 442
+            self.state = 441
             self.match(NetLangParser.ASSIGN)
-            self.state = 443
+            self.state = 442
             self.expression()
         except RecognitionException as re:
             localctx.exception = re
@@ -4350,34 +4344,34 @@ class NetLangParser ( Parser ):
         self.enterRule(localctx, 100, self.RULE_fieldAccess)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 445
+            self.state = 444
             self.scopedIdentifier()
-            self.state = 454
+            self.state = 453
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,33,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
-                    self.state = 452
+                    self.state = 451
                     self._errHandler.sync(self)
                     token = self._input.LA(1)
                     if token in [52]:
-                        self.state = 446
+                        self.state = 445
                         self.match(NetLangParser.DOT)
-                        self.state = 447
+                        self.state = 446
                         self.match(NetLangParser.ID)
                         pass
                     elif token in [62]:
-                        self.state = 448
+                        self.state = 447
                         self.match(NetLangParser.LT)
-                        self.state = 449
+                        self.state = 448
                         self.expression()
-                        self.state = 450
+                        self.state = 449
                         self.match(NetLangParser.GT)
                         pass
                     else:
                         raise NoViableAltException(self)
              
-                self.state = 456
+                self.state = 455
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,33,self._ctx)
 
@@ -4432,19 +4426,19 @@ class NetLangParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 457
+            self.state = 456
             self.scopedIdentifier()
-            self.state = 458
+            self.state = 457
             self.match(NetLangParser.T__22)
-            self.state = 460
+            self.state = 459
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if ((((_la - 14)) & ~0x3f) == 0 and ((1 << (_la - 14)) & 4593708462134796801) != 0):
-                self.state = 459
+            if ((((_la - 14)) & ~0x3f) == 0 and ((1 << (_la - 14)) & 4593708462141088257) != 0):
+                self.state = 458
                 self.expressionList()
 
 
-            self.state = 462
+            self.state = 461
             self.match(NetLangParser.T__23)
         except RecognitionException as re:
             localctx.exception = re
@@ -4502,13 +4496,13 @@ class NetLangParser ( Parser ):
         self.enterRule(localctx, 104, self.RULE_listIndexAccess)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 464
+            self.state = 463
             self.scopedIdentifier()
-            self.state = 465
+            self.state = 464
             self.match(NetLangParser.LT)
-            self.state = 466
+            self.state = 465
             self.expression()
-            self.state = 467
+            self.state = 466
             self.match(NetLangParser.GT)
         except RecognitionException as re:
             localctx.exception = re
