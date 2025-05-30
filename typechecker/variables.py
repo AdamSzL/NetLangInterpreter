@@ -1,12 +1,11 @@
 from __future__ import annotations
-
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
 from typing import TYPE_CHECKING, Any
-
 from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.utils.types import is_known_type, are_types_compatible
+import difflib
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor
@@ -34,7 +33,7 @@ def visitVariableDeclaration(self: "TypeCheckingVisitor", ctx: NetLangParser.Var
         )
 
     self.declare_variable(name, Variable(declared_type, ctx.start.line), ctx)
-    return declared_type
+    return None
 
 def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableAssignmentContext):
     expr_type = self.visit(ctx.expression())
@@ -45,13 +44,13 @@ def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.Vari
     self.scoped_identifier_expectation = "variable"
     try:
         expected_type = self.visit(scoped_ctx)
-    except UndefinedVariableError:
+    except UndefinedVariableError as undefined_variable_error:
         self.scoped_identifier_expectation = "function"
         try:
             _ = self.visit(scoped_ctx)
             raise NetLangTypeError(f"Cannot assign to function '{var_name}'", ctx)
         except UndefinedFunctionError:
-            raise NetLangTypeError(f"Undefined variable '{var_name}'", ctx)
+            raise undefined_variable_error
     finally:
         self.scoped_identifier_expectation = None
 
@@ -93,6 +92,19 @@ def visitScopedIdentifier(self: "TypeCheckingVisitor", ctx: NetLangParser.Scoped
             continue
 
     if last_error:
+        all_names = set()
+        for scope in self.scopes:
+            all_names.update(scope.variables.keys())
+            all_names.update(scope.functions.keys())
+
+        suggestions = difflib.get_close_matches(var_name, all_names, n=1, cutoff=0.6)
+        if suggestions:
+            suggestion = suggestions[0]
+            if isinstance(last_error, UndefinedVariableError):
+                raise UndefinedVariableError(f"{last_error.message}. Did you mean '{suggestion}'?")
+            elif isinstance(last_error, UndefinedFunctionError):
+                raise UndefinedFunctionError(f"{last_error.message}. Did you mean '{suggestion}'?")
+
         raise last_error
 
     raise NetLangTypeError(f"Unknown identifier '{var_name}'", ctx)

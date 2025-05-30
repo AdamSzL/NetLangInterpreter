@@ -21,8 +21,8 @@ def visitSendPacketStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.Sen
 
     if packet_type != "Packet":
         raise NetLangTypeError(
-            message=f"Variable '{packet_name}' must be of type Packet, got {packet_type}",
-            ctx=ctx
+            f"Variable '{packet_name}' must be of type Packet, got {packet_type}",
+            ctx
         )
 
     self.scoped_identifier_expectation = "variable"
@@ -33,15 +33,15 @@ def visitSendPacketStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.Sen
 
     if device_var_type != "Host":
         raise NetLangTypeError(
-            message="Only hosts can send packets",
-            ctx=ctx
+            "Only hosts can send packets",
+            ctx
         )
 
     port_type = self.visit(port_ctx)
     if not port_type.endswith("Port"):
         raise NetLangTypeError(
-            message=f"Packet can only be sent from a port, got {port_type} instead",
-            ctx=ctx
+            f"Packet can only be sent from a port, got {port_type} instead",
+            ctx
         )
 
     return None

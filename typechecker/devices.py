@@ -24,26 +24,23 @@ def visitShowInterfacesStatement(self: "TypeCheckingVisitor", ctx: NetLangParser
     self.scoped_identifier_expectation = "variable"
     try:
         device_type = self.visit(scoped_ctx)
-    except UndefinedVariableError:
+    except UndefinedVariableError as undefined_variable_error:
         self.scoped_identifier_expectation = "function"
         try:
             self.visit(scoped_ctx)
             raise NetLangTypeError(
-                message=f"Cannot show interfaces of function '{device_name}'",
-                ctx=ctx
+                f"Cannot show interfaces of function '{device_name}'",
+                ctx
             )
         except UndefinedFunctionError:
-            raise NetLangTypeError(
-                message=f"Undefined variable '{device_name}'",
-                ctx=ctx
-            )
+            raise undefined_variable_error
     finally:
         self.scoped_identifier_expectation = None
 
     if device_type not in ["Host", "Router", "Switch"]:
         raise NetLangTypeError(
-            message=f"'{device_name}' is not a device",
-            ctx=ctx
+            f"'{device_name}' is not a device",
+            ctx
         )
 
     return None

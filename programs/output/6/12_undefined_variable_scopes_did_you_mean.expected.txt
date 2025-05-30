@@ -1,0 +1,1 @@
+Type Error: [Line 5, Column 10] Undefined variable 'varia'. Did you mean 'vari'?

@@ -1,0 +1,6 @@
+set vari: int <- 5
+
+define test() {
+    set variable: int <- 3
+    print varia
+}

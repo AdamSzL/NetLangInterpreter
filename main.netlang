@@ -1,15 +1,20 @@
-set mixedPorts: [CopperEthernetPort] <- [
-    CopperEthernetPort {
-        portId <- "eth0",
-        ip <- 192.168.1.0/24
-    },
-    CopperEthernetPort {
-        portId <- "eth1",
-        ip <- 192.168.1.1/24
+define createHost(name: string) => Host {
+    return Host {
+        name <- name,
+        ports <- [
+            CopperEthernetPort {
+                portId <- "eth0",
+                ip <- 192.168.1.0/24
+            }
+        ]
     }
-]
-
-set port: WirelessPort <- {
 }
 
-print port.frequency
+set hosts: [Host] <- []
+
+repeat 5 times as index {
+    set host: Host <- createHost("Host " + index)
+    add host to hosts
+}
+
+print hosts

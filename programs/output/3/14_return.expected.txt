@@ -1,1 +1,1 @@
-Type Error: Function 'missingReturn' declares return type 'int' but not all control paths return a value
+Type Error: [Line 5, Column 0] Function 'missingReturn' declares return type 'int' but not all control paths return a value

@@ -26,19 +26,16 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
 
     try:
         function: Function = self.visit(scoped_ctx)
-    except UndefinedFunctionError:
+    except UndefinedFunctionError as undefined_function_error:
         self.scoped_identifier_expectation = "variable"
         try:
             _ = self.visit(scoped_ctx)
             raise NetLangTypeError(
-                message=f"Variable '{function_name}' is not callable",
-                ctx=ctx
+                f"Variable '{function_name}' is not callable",
+                ctx
             )
         except UndefinedVariableError:
-            raise NetLangTypeError(
-                message=f"Undefined function '{function_name}'",
-                ctx=ctx
-            )
+            raise undefined_function_error
     finally:
         self.scoped_identifier_expectation = None
         self.current_call_line = None
@@ -153,7 +150,8 @@ def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Func
 
     if function.return_type != "void" and return_type is None:
         raise NetLangTypeError(
-            f"Function '{name}' declares return type '{function.return_type}' but not all control paths return a value"
+            f"Function '{name}' declares return type '{function.return_type}' but not all control paths return a value",
+            ctx
         )
 
 def block_returns_type(self, block_ctx) -> Optional[str]:

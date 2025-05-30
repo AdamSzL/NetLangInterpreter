@@ -1,1 +1,1 @@
-Type Error: Function 'f' declares return type 'int' but not all control paths return a value
+Type Error: [Line 11, Column 0] Function 'f' declares return type 'int' but not all control paths return a value
