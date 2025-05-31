@@ -41,7 +41,7 @@ def visitIPAddressLiteral(self: "Interpreter", ctx: NetLangParser.IPAddressLiter
     return IPAddress(ctx.IPADDR().getText())
 
 def visitMacAddressLiteral(self: "Interpreter", ctx: NetLangParser.MacAddressLiteralContext) -> MACAddress:
-    return MACAddress(ctx.MACADDR().getText())
+    return MACAddress(ctx.MACADDR().getText().upper())
 
 def visitListLiteralExpr(self: "Interpreter", ctx: NetLangParser.ListLiteralExprContext) -> list:
     return self.visit(ctx.listLiteral())

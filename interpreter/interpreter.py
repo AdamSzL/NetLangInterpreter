@@ -1,11 +1,8 @@
 from dataclasses import dataclass
 from generated.NetLangVisitor import NetLangVisitor
 from shared.model import Connection
-from shared.model.Function import Function
-from shared.model.Scope import Scope
-from shared.model.Variable import Variable
 from shared.scopes import ScopedVisitorBase
-from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier
+from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier,assign_device_uids, generate_uid
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, visitFunctionDeclarationStatement
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment, getListAndIndex
 from .expressions import (
@@ -37,11 +34,11 @@ from .operators import (
     visitCastExpr,
     visitUnaryExpr
 )
-from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment
+from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluateParentOfAccess, evaluateFieldAccessUntil
 from .devices import visitConnectStatement, visitShowInterfacesStatement
 from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop, visitEachLoop, visitBreakStatement, visitContinueStatement
-from .visualization import draw_graph
-from .packets import visitSendPacketStatement, forward_packet
+from interpreter.visualization.main import draw_graph_and_animate_packet
+from .packets import visitSendPacketStatement
 from types import MethodType
 
 @dataclass
@@ -50,7 +47,6 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
     def visitProgram(self, ctx):
         for stmt in ctx.statement():
             self.visit(stmt)
-        self.draw_graph()
 
     def visitPrintStatement(self, ctx):
         value = self.visit(ctx.expression())
@@ -64,6 +60,8 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
     def __init__(self):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)
         self.visitVariableAssignment = MethodType(visitVariableAssignment, self)
+        self.assign_device_uids = MethodType(assign_device_uids, self)
+        self.generate_uid = MethodType(generate_uid, self)
 
         self.visitAtomExpr = MethodType(visitAtomExpr, self)
         self.visitIntLiteral = MethodType(visitIntLiteral, self)
@@ -78,6 +76,8 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
         self.visitListIndexAccessExpr = MethodType(visitListIndexAccessExpr, self)
+        self.evaluateParentOfAccess = MethodType(evaluateParentOfAccess, self)
+        self.evaluateFieldAccessUntil = MethodType(evaluateFieldAccessUntil, self)
 
         self.visitMulDivExpr = MethodType(visitMulDivExpr, self)
         self.visitAddSubExpr = MethodType(visitAddSubExpr, self)
@@ -122,10 +122,10 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitReturnStatement = MethodType(visitReturnStatement, self)
         self.visitScopedIdentifier = MethodType(visitScopedIdentifier, self)
 
-        self.draw_graph = MethodType(draw_graph, self)
-        self.forward_packet = MethodType(forward_packet, self)
+        self.draw_graph_and_animate_packet = MethodType(draw_graph_and_animate_packet, self)
 
         ScopedVisitorBase.__init__(self)
         self.connections: list[Connection] = []
+        self.used_ids: set[str] = set()
         self.call_depth = 0
         self.max_call_depth = 100

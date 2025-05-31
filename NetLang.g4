@@ -61,7 +61,7 @@ showInterfacesStatement
     ;
 
 sendPacketStatement
-    : 'send' scopedIdentifier 'from' fieldAccess 'to' IPADDR
+    : 'send' fieldAccess 'from' fieldAccess 'to' IPADDR
 //    | 'send' 'from' fieldAccess 'to' IPADDR 'with' objectInitializer
     ;
 

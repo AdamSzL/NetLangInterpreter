@@ -2,6 +2,9 @@ import re
 import random
 from typing import ClassVar
 
+from shared.errors import NetLangRuntimeError
+
+
 class MACAddress:
     active_addresses: ClassVar[set[str]] = set()
     mac: str
@@ -29,13 +32,11 @@ class MACAddress:
                 return MACAddress(mac_str)
 
     @classmethod
-    def register(cls, mac):
-        cls.active_addresses.add(mac.upper())
+    def register(cls, mac: str, ctx):
+        if mac in cls.active_addresses:
+            raise NetLangRuntimeError(f"MAC address {mac} is already in use", ctx)
+        cls.active_addresses.add(mac)
 
     @classmethod
     def unregister(cls, mac):
-        cls.active_addresses.discard(mac.upper())
-
-    @classmethod
-    def is_registered(cls, mac):
-        return mac in cls.active_addresses
+        cls.active_addresses.discard(mac)

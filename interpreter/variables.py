@@ -7,6 +7,7 @@ from shared.model.base import NetLangObject
 from shared.errors import NetLangRuntimeError
 from shared.utils.types import type_map
 from typing import TYPE_CHECKING
+import uuid
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter
@@ -20,6 +21,7 @@ def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDec
         value = type_map[declared_type].from_dict(value, ctx)
 
     self.declare_variable(name, Variable(declared_type, ctx.start.line, value=value), ctx)
+    self.assign_device_uids(value)
     return value
 
 def visitVariableAssignment(self: "Interpreter", ctx: NetLangParser.VariableAssignmentContext):
@@ -51,3 +53,19 @@ def visitScopedIdentifier(self: "Interpreter", ctx: NetLangParser.ScopedIdentifi
             return scope, var_name
 
     raise NetLangRuntimeError(f"Identifier '{var_name}' not found (should be impossible at runtime)")
+
+def assign_device_uids(self: "Interpreter", value):
+    if isinstance(value, list):
+        for item in value:
+            if hasattr(item, "uid"):
+                item.uid = self.generate_uid()
+    else:
+        if hasattr(value, "uid"):
+            value.uid = self.generate_uid()
+
+def generate_uid(self: "Interpreter") -> str:
+    while True:
+        uid = f"device_{uuid.uuid4().hex[:8]}"
+        if uid not in self.used_ids:
+            self.used_ids.add(uid)
+            return uid

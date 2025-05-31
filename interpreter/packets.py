@@ -14,31 +14,16 @@ if TYPE_CHECKING:
     from .interpreter import Interpreter
 
 def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketStatementContext):
-    scoped_ctx = ctx.scopedIdentifier()
+    packet: Packet = self.visit(ctx.fieldAccess(0))
+    port = self.visit(ctx.fieldAccess(1))
     target_ip = ctx.IPADDR().getText()
 
-    packet_scope, packet_name = self.visit(scoped_ctx)
-    packet = packet_scope.variables[packet_name].value
-
-    device_scope, device_name = self.visit(ctx.fieldAccess().scopedIdentifier())
-    device = device_scope.variables[device_name].value
-
-    port = self.visit(ctx.fieldAccess())
-
-    body = Text()
-    body.append("📤 Sending packet\n", style="bold white")
-    body.append(Text.from_markup(f"[bold cyan]Source:[/bold cyan] [green]{device.name}.{port.portId}[/green]\n"))
-    body.append(Text.from_markup(f"[bold cyan]Destination:[/bold cyan] [yellow]{target_ip}[/yellow]\n"))
-    body.append(Text.from_markup(f"[bold cyan]Payload:[/bold cyan] [magenta]{packet.payload}[/magenta]\n"))
-    body.append(Text.from_markup(f"[bold cyan]Protocol:[/bold cyan] [blue]{packet.protocol}[/blue]\n"))
-    body.append(Text.from_markup(f"[bold cyan]Size:[/bold cyan] [white]{packet.size}[/white] B\n"))
-
-    log(Panel(body, title=f"[b]Host {device.name}[/b]", style="cyan"))
+    from_device = self.evaluateParentOfAccess(ctx.fieldAccess(1))
 
     packet.src = port.ip
     packet.dst = target_ip
 
-    self.forward_packet(packet, device_name, port, ctx)
+    self.draw_graph_and_animate_packet(packet, from_device, port)
 
 def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start_port, ctx: NetLangParser.SendPacketStatementContext):
     visited_ports = set()

@@ -14,26 +14,21 @@ class Switch(NetLangObject, Device):
         ports = data.get("ports", [])
 
         switch = cls(name, ports)
+        switch.validate_logic(ctx)
 
-        cls.validate_logic(name, ports, ctx)
+        for port in ports:
+            port.owner = switch
 
         for port in ports:
             setattr(switch, port.portId, port)
 
         return switch
 
-    @staticmethod
-    def validate_logic(name, ports, ctx):
-        seen_ids = set()
-        for port in ports:
-            if port.portId in seen_ids:
-                raise NetLangRuntimeError(
-                    f"Duplicate portId '{port.portId}' in Switch '{name}'",
-                    ctx
-                )
+    def validate_logic(self, ctx):
+        self.validate_base_logic(ctx)
+        for port in self.ports:
             if hasattr(port, "ip") and port.ip is not None:
                 raise NetLangRuntimeError(
                     f"Switch port '{port.portId}' must not have an IP address",
                     ctx
                 )
-            seen_ids.add(port.portId)

@@ -1,0 +1,10 @@
+set switch: Switch <- {
+    name <- "Switch 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0"
+        }
+    ]
+}
+
+switch.ports<0>.ip <- 192.168.1.0/24

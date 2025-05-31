@@ -81,14 +81,19 @@ def visitAddSubExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.AddSubExprCo
                 result_type = "string"
             elif result_type in ["int", "float"] and right_type in ["int", "float"]:
                 result_type = "float" if "float" in (result_type, right_type) else "int"
+            elif result_type == "IP" and right_type == "int":
+                result_type = "IP"
+            elif result_type == "CIDR" and right_type == "int":
+                result_type = "CIDR"
             else:
-                raise NetLangTypeError(
-                    message=f"Cannot add {result_type} and {right_type}",
-                    ctx=ctx
-                )
+                raise NetLangTypeError(f"Cannot add {result_type} and {right_type}", ctx)
         elif operator == "-":
             if result_type in ["int", "float"] and right_type in ["int", "float"]:
                 result_type = "float" if "float" in (result_type, right_type) else "int"
+            elif result_type == "IP" and right_type == "int":
+                result_type = "IP"
+            elif result_type == "CIDR" and right_type == "int":
+                result_type = "CIDR"
             else:
                 raise NetLangTypeError(f"Cannot subtract {right_type} from {result_type}", ctx)
 
@@ -105,8 +110,8 @@ def visitMulDivExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.MulDivExprCo
                 result_type = "int"
             else:
                 raise NetLangTypeError(
-                    message=f"Modulo operator '%' requires both operands to be int, got {result_type} and {right_type}",
-                    ctx=ctx
+                    f"Modulo operator '%' requires both operands to be int, got {result_type} and {right_type}",
+                    ctx
                 )
 
         elif result_type in ["int", "float"] and right_type in ["int", "float"]:
@@ -117,8 +122,8 @@ def visitMulDivExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.MulDivExprCo
             )
         else:
             raise NetLangTypeError(
-                message=f"Cannot apply '{operator}' to {result_type} and {right_type}",
-                ctx=ctx
+                f"Cannot apply '{operator}' to {result_type} and {right_type}",
+                ctx
             )
 
     return result_type

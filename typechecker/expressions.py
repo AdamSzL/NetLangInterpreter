@@ -125,6 +125,13 @@ def visitObjectInitializer(self: "TypeCheckingVisitor", ctx: NetLangParser.Objec
                     fieldCtx
                 )
 
+    if are_types_compatible("Port", type_name):
+        if "gateway" in given_fields and "ip" not in given_fields:
+            raise NetLangTypeError(
+                f"Cannot specify 'gateway' without 'ip' in port of type '{type_name}'",
+                ctx
+            )
+
     missing_required = set(required_fields.keys()) - given_fields
     if missing_required:
         raise NetLangTypeError(

@@ -1,0 +1,7 @@
+set port: OpticalEthernetPort <- {
+    portId <- "eth0",
+    ip <- 192.168.1.2/24,
+    gateway <- 192.168.1.1
+}
+
+port.gateway <- 192.168.2.0

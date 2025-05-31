@@ -16,34 +16,38 @@ class Router(NetLangObject, Device):
         routingTable = data.get("routingTable", [])
 
         router = cls(name, ports, routingTable)
+        router.validate_logic(ctx)
 
-        cls.validate_logic(name, ports, routingTable, ctx)
+        for port in ports:
+            port.owner = router
 
         for port in ports:
             setattr(router, port.portId, port)
 
         return router
 
-    @staticmethod
-    def validate_logic(name, ports, routingTable, ctx):
-        seen_ids = set()
-        for port in ports:
-            if port.portId in seen_ids:
-                raise NetLangRuntimeError(
-                    f"Duplicate portId '{port.portId}' in Router '{name}'",
-                    ctx
-                )
+    def validate_logic(self, ctx):
+        self.validate_base_logic(ctx)
+        seen_ips = set()
+        for port in self.ports:
             if not hasattr(port, "ip") or port.ip is None:
                 raise NetLangRuntimeError(
                     f"Host port '{port.portId}' must have an IP address",
                     ctx
                 )
-            seen_ids.add(port.portId)
 
-        port_ids = {port.portId for port in ports}
-        for entry in routingTable:
+            ip_str = str(port.ip.ip.ip)
+            if ip_str in seen_ips:
+                raise NetLangRuntimeError(
+                    f"Duplicate IP '{ip_str}' in Router '{self.name}'",
+                    ctx
+                )
+            seen_ips.add(ip_str)
+
+        port_ids = {port.portId for port in self.ports}
+        for entry in self.routingTable:
             if entry.via not in port_ids:
                 raise NetLangRuntimeError(
-                    f"RoutingEntry refers to unknown portId '{entry.via}' in Router '{name}'",
+                    f"RoutingEntry refers to unknown portId '{entry.via}' in Router '{self.name}'",
                     ctx
                 )

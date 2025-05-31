@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, Optional
 
 from shared.errors import NetLangRuntimeError
+from shared.model import IPAddress
 from shared.model.CIDR import CIDR
 from shared.model.MACAddress import MACAddress
 from shared.model.Port import Port
@@ -9,31 +10,18 @@ from dataclasses import dataclass
 
 @dataclass
 class WirelessPort(NetLangObject, Port):
-    portId: str
-    ip: CIDR
-    mac: MACAddress
     bandwidth: int = 150
-    mtu: int = 1500
     frequency: float = 2.4
-    connectedTo: Any = None
 
     @classmethod
     def from_dict(cls, data: dict, ctx=None):
-        portId = data.get("portId")
-        ip = data.get("ip")
-        mac = data.get("mac")
+        port_id, ip, mac, mtu, gateway = Port.base_from_dict(data, ctx)
         bandwidth = data.get("bandwidth", 150)
-        mtu = data.get("mtu", 1500)
         frequency = data.get("frequency", 2.4)
 
-        if mac is None:
-            mac = MACAddress.generate()
-        else:
-            if MACAddress.is_registered(mac.mac):
-                raise NetLangRuntimeError(f"MAC address {mac.mac} is already in use", ctx)
-            MACAddress.register(mac.mac)
-
-        return cls(portId, ip, mac, bandwidth, mtu, frequency)
+        port = cls(port_id, ip, mac, mtu, None, gateway, bandwidth, frequency)
+        port.validate_logic(ctx)
+        return port
 
     def __hash__(self):
         return hash(self.mac)

@@ -1,0 +1,13 @@
+set host: Host <- {
+    name <- "Host 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.2.0/24
+        },
+        OpticalEthernetPort {
+            portId <- "eth1",
+            ip <- 192.168.2.0/24
+        }
+    ]
+}

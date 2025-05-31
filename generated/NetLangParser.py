@@ -87,7 +87,7 @@ def serializedATN():
         7,0,0,165,166,3,100,50,0,166,169,1,0,0,0,167,169,3,54,27,0,168,163,
         1,0,0,0,168,167,1,0,0,0,169,17,1,0,0,0,170,171,5,8,0,0,171,172,5,
         9,0,0,172,173,5,10,0,0,173,174,3,54,27,0,174,19,1,0,0,0,175,176,
-        5,11,0,0,176,177,3,54,27,0,177,178,5,7,0,0,178,179,3,100,50,0,179,
+        5,11,0,0,176,177,3,100,50,0,177,178,5,7,0,0,178,179,3,100,50,0,179,
         180,5,3,0,0,180,181,5,74,0,0,181,21,1,0,0,0,182,183,5,12,0,0,183,
         184,3,64,32,0,184,188,3,28,14,0,185,187,3,24,12,0,186,185,1,0,0,
         0,187,190,1,0,0,0,188,186,1,0,0,0,188,189,1,0,0,0,189,192,1,0,0,
@@ -1158,12 +1158,11 @@ class NetLangParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def scopedIdentifier(self):
-            return self.getTypedRuleContext(NetLangParser.ScopedIdentifierContext,0)
-
-
-        def fieldAccess(self):
-            return self.getTypedRuleContext(NetLangParser.FieldAccessContext,0)
+        def fieldAccess(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(NetLangParser.FieldAccessContext)
+            else:
+                return self.getTypedRuleContext(NetLangParser.FieldAccessContext,i)
 
 
         def IPADDR(self):
@@ -1198,7 +1197,7 @@ class NetLangParser ( Parser ):
             self.state = 175
             self.match(NetLangParser.T__10)
             self.state = 176
-            self.scopedIdentifier()
+            self.fieldAccess()
             self.state = 177
             self.match(NetLangParser.T__6)
             self.state = 178

@@ -18,16 +18,16 @@ class CIDR(NetLangObject):
         # self.ip = ip
         # self.mask = mask
 
-    def _current_network(self):
+    def current_network(self):
         return ipaddress.IPv4Network(f"{self.ip}/{self.mask}", strict=False)
 
     @property
     def network(self):
-        return str(self._current_network().network_address)
+        return str(self.current_network().network_address)
 
     @property
     def broadcast(self):
-        return str(self._current_network().broadcast_address)
+        return str(self.current_network().broadcast_address)
 
     @classmethod
     def from_dict(cls, data: dict, ctx):
@@ -38,3 +38,11 @@ class CIDR(NetLangObject):
 
     def __repr__(self):
         return f"{self.ip.ip}/{self.mask}"
+
+    def __add__(self, other: int) -> "CIDR":
+        new_ip = int(self.ip.ip) + other
+        return CIDR(IPAddress(str(ipaddress.IPv4Address(new_ip))), self.mask)
+
+    def __sub__(self, other: int) -> "CIDR":
+        new_ip = int(self.ip.ip) - other
+        return CIDR(IPAddress(str(ipaddress.IPv4Address(new_ip))), self.mask)

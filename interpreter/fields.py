@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError
+from shared.model import IPAddress, MACAddress
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter
@@ -10,89 +11,83 @@ def visitFieldAccessExpr(self: "Interpreter", ctx: NetLangParser.FieldAccessExpr
     return self.visit(ctx.fieldAccess())
 
 def visitFieldAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext):
-    scope, var_name = self.visit(ctx.scopedIdentifier())
-    current = scope.variables[var_name].value
-
-    i = 1
-    while i < len(ctx.children):
-        operator = ctx.getChild(i).getText()
-
-        if operator == ".":
-            field_name = ctx.getChild(i + 1).getText()
-
-            if isinstance(current, list) and field_name == "size":
-                current = len(current)
-            elif hasattr(current, field_name):
-                current = getattr(current, field_name)
-            else:
-                raise NetLangRuntimeError(
-                    f"Object of type {type(current).__name__} has no field '{field_name}'"
-                )
-
-            i += 2  # przeskocz kropkę i ID
-
-        elif operator == "<":
-            expression_ctx = ctx.getChild(i + 1)
-            index = int(self.visit(expression_ctx))
-            if not isinstance(current, list):
-                raise NetLangRuntimeError(
-                    f"Trying to index non-list object of type {type(current).__name__}"
-                )
-            try:
-                current = current[index]
-            except IndexError:
-                raise NetLangRuntimeError(f"Index {index} out of range")
-
-            i += 3  # przeskocz < expression >
-
-        else:
-            raise NetLangRuntimeError(f"Unknown field access operator '{operator}'")
-
-    return current
+    return self.evaluateFieldAccessUntil(ctx, stop_before_last=False)
 
 def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignmentContext):
     access = ctx.fieldAccess()
     value = self.visit(ctx.expression())
 
-    scope, var_name = self.visit(access.scopedIdentifier())
-    current = scope.variables[var_name]
-
-    for i in range(1, len(access.children) - 2, 2):
-        op = access.getChild(i).getText()
-        operand = access.getChild(i + 1)
-
-        if op == ".":
-            field = operand.getText()
-            if not hasattr(current.value, field):
-                raise NetLangRuntimeError(f"'{type(current.value).__name__}' has no field '{field}'")
-            current = getattr(current.value, field)
-
-        elif op == "<":
-            index = int(self.visit(operand))
-            if not isinstance(current.value, list):
-                raise NetLangRuntimeError(f"Tried to index non-list object")
-            try:
-                current = current.value[index]
-            except IndexError:
-                raise NetLangRuntimeError(f"Index {index} out of range")
-
-    last_op = access.getChild(-2).getText()
+    parent = self.evaluateParentOfAccess(access)
+    last_operator = access.getChild(-2).getText()
     last_operand = access.getChild(-1)
-
-    if last_op == ".":
+    if last_operator == ".":
         field_name = last_operand.getText()
-        if not hasattr(current.value, field_name):
-            raise NetLangRuntimeError(f"'{type(current.value).__name__}' has no field '{field_name}'")
-        setattr(current.value, field_name, value)
-        return value
 
-    elif last_op == "<":
+        old_value = getattr(parent, field_name)
+
+        if field_name == "ip":
+            if old_value is not None:
+                IPAddress.unregister(str(old_value.ip))
+            IPAddress.register(str(value.ip), ctx)
+
+        elif field_name == "mac":
+            if old_value is not None:
+                MACAddress.unregister(old_value.mac)
+            MACAddress.register(value.mac, ctx)
+
+        setattr(parent, field_name, value)
+
+        if hasattr(parent, "validate_logic") and callable(parent.validate_logic):
+            parent.validate_logic(ctx)
+
+        return value
+    elif last_operator == "<":
         index = int(self.visit(last_operand))
-        if not isinstance(current.value, list):
-            raise NetLangRuntimeError(f"Tried to index non-list object")
-        if index >= len(current.value):
-            raise NetLangRuntimeError(f"Index {index} out of range")
-        current.value[index] = value
+        try:
+            parent[index] = value
+        except:
+            raise NetLangRuntimeError(f"Index {index} out of range", ctx)
         return value
 
-    raise NetLangRuntimeError(f"Unsupported assignment operator '{last_op}'")
+    raise NetLangRuntimeError(f"Unsupported assignment operator '{last_operator}'", ctx)
+
+def evaluateParentOfAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext):
+    return self.evaluateFieldAccessUntil(ctx, stop_before_last=True)
+
+def evaluateFieldAccessUntil(self: "Interpreter", ctx, stop_before_last=False):
+    scope, var_name = self.visit(ctx.scopedIdentifier())
+    current = scope.variables[var_name].value
+
+    end = len(ctx.children)
+
+    if stop_before_last:
+        last_dot_index = -1
+        for j in range(1, len(ctx.children)):
+            if ctx.getChild(j).getText() == ".":
+                last_dot_index = j
+
+        if last_dot_index == -1:
+            return current
+
+        end = last_dot_index
+
+    i = 1
+    while i < end:
+        operator = ctx.getChild(i).getText()
+
+        if operator == ".":
+            field_name = ctx.getChild(i + 1).getText()
+            if isinstance(current, list) and field_name == "size":
+                current = len(current)
+            else:
+                current = getattr(current, field_name)
+            i += 2
+        elif operator == "<":
+            index = int(self.visit(ctx.getChild(i + 1)))
+            try:
+                current = current[index]
+            except IndexError:
+                raise NetLangRuntimeError(f"Index {index} out of range", ctx)
+            i += 3
+
+    return current

@@ -14,26 +14,39 @@ class Host(NetLangObject, Device):
         ports = data.get("ports", [])
 
         host = cls(name, ports)
+        host.validate_logic(ctx)
 
-        cls.validate_logic(name, ports, ctx)
+        for port in ports:
+            port.owner = host
 
         for port in ports:
             setattr(host, port.portId, port)
 
         return host
 
-    @staticmethod
-    def validate_logic(name, ports, ctx):
-        seen_ids = set()
-        for port in ports:
-            if port.portId in seen_ids:
-                raise NetLangRuntimeError(
-                    f"Duplicate portId '{port.portId}' in Host '{name}'",
-                    ctx
-                )
+    def validate_logic(self, ctx):
+        self.validate_base_logic(ctx)
+        seen_ips = set()
+        cidr = None
+        for port in self.ports:
             if not hasattr(port, "ip") or port.ip is None:
                 raise NetLangRuntimeError(
                     f"Host port '{port.portId}' must have an IP address",
                     ctx
                 )
-            seen_ids.add(port.portId)
+
+            ip_str = str(port.ip.ip.ip)
+            if ip_str in seen_ips:
+                raise NetLangRuntimeError(
+                    f"Duplicate IP '{ip_str}' in Host '{self.name}'",
+                    ctx
+                )
+            seen_ips.add(ip_str)
+
+            if cidr is None:
+                cidr = port.ip.current_network()
+            elif port.ip.current_network() != cidr:
+                raise NetLangRuntimeError(
+                    f"All ports in Host '{self.name}' must be in the same subnet",
+                    ctx
+                )

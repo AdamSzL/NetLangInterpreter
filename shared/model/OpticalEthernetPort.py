@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, Optional
 
 from shared.errors import NetLangRuntimeError
+from shared.model import IPAddress
 from shared.model.MACAddress import MACAddress
 from shared.model.CIDR import CIDR
 from enum import Enum
@@ -15,33 +16,20 @@ class ConnectorType(Enum):
 
 @dataclass
 class OpticalEthernetPort(NetLangObject, Port):
-    portId: str
-    ip: CIDR
-    mac: MACAddress
     bandwidth: int = 10000
     wavelength: int = 1310
-    mtu: int = 1500
     connector: str = ConnectorType.LC
-    connectedTo: Any = None
 
     @classmethod
     def from_dict(cls, data: dict, ctx):
-        portId = data.get("portId")
-        ip = data.get("ip")
-        mac = data.get("mac")
+        port_id, ip, mac, mtu, gateway = Port.base_from_dict(data, ctx)
         bandwidth = data.get("bandwidth", 10000)
         wavelength = data.get("wavelength", 1310)
-        mtu = data.get("mtu", 1500)
         connector = data.get("connector", ConnectorType.LC)
 
-        if mac is None:
-            mac = MACAddress.generate()
-        else:
-            if MACAddress.is_registered(mac.mac):
-                raise NetLangRuntimeError(f"MAC address {mac.mac} is already in use", ctx)
-            MACAddress.register(mac.mac)
-
-        return cls(portId, ip, mac, bandwidth, wavelength, mtu, connector)
+        port = cls(port_id, ip, mac, mtu, None, gateway, bandwidth, wavelength, connector)
+        port.validate_logic(ctx)
+        return port
 
 
     def __hash__(self):

@@ -16,23 +16,16 @@ def visitConnectStatement(self: "Interpreter", ctx: NetLangParser.ConnectStateme
     port2 = self.visit(ctx.fieldAccess(1))
 
     if port1.connectedTo is not None or port2.connectedTo is not None:
-        raise NetLangRuntimeError("One of the ports is already connected")
+        raise NetLangRuntimeError("One of the ports is already connected", ctx)
 
     port1.connectedTo = port2
     port2.connectedTo = port1
 
-    dev1_scope, dev1_var = self.visit(ctx.fieldAccess(0).scopedIdentifier())
-    dev2_scope, dev2_var = self.visit(ctx.fieldAccess(1).scopedIdentifier())
+    device1 = self.evaluateParentOfAccess(ctx.fieldAccess(0))
+    device2 = self.evaluateParentOfAccess(ctx.fieldAccess(1))
 
-    dev1_id = dev1_scope.variables[dev1_var].value.name
-    dev2_id = dev2_scope.variables[dev2_var].value.name
-
-    port1_id = ctx.fieldAccess(0).ID(0).getText()
-    port2_id = ctx.fieldAccess(1).ID(0).getText()
-
-    self.connections.append(Connection(dev1_id, port1_id, dev2_id, port2_id))
-
-    print(f"Connected {dev1_id}.{port1_id} <-> {dev2_id}.{port2_id}")
+    connection = Connection(device1, port1, device2, port2)
+    self.connections.append(connection)
 
 def visitShowInterfacesStatement(self: "Interpreter", ctx: NetLangParser.ShowInterfacesStatementContext):
     scoped_ctx = ctx.scopedIdentifier()

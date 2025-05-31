@@ -39,8 +39,7 @@ def main():
         type_checker.check_all_function_bodies()
 
         interpreter = Interpreter()
-        for statement in tree.statement():
-            interpreter.visit(statement)
+        interpreter.visitProgram(tree)
     except NetLangRuntimeError as e:
         log(f"[bold red]Runtime Error:[/bold red]", e)
         sys.exit(1)

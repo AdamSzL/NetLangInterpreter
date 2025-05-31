@@ -42,7 +42,8 @@ type_field_map = {
             "ip": "CIDR",
             "mac": "MAC",
             "bandwidth": "int",
-            "mtu": "int"
+            "mtu": "int",
+            "gateway": "IP"
         },
         "readonly": {}
     },
@@ -56,8 +57,9 @@ type_field_map = {
             "bandwidth": "int",
             "wavelength": "int",
             "mtu": "int",
-            "connector": "string"
-        },
+            "connector": "string",
+            "gateway": "IP"
+},
         "readonly": {}
     },
     "WirelessPort": {
@@ -69,7 +71,8 @@ type_field_map = {
             "mac": "MAC",
             "bandwidth": "int",
             "mtu": "int",
-            "frequency": "float"
+            "frequency": "float",
+            "gateway": "IP"
         },
         "readonly": {}
     },
@@ -81,7 +84,8 @@ type_field_map = {
             "ip": "CIDR",
             "mac": "MAC",
             "bandwidth": "int",
-            "mtu": "int"
+            "mtu": "int",
+            "gateway": "IP"
         },
         "readonly": {}
     },

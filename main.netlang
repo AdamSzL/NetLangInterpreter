@@ -1,10 +1,11 @@
-define createHost(name: string) => Host {
+define createHost(index: int) => Host {
     return Host {
-        name <- name,
+        name <- "Host " + index,
         ports <- [
             CopperEthernetPort {
                 portId <- "eth0",
-                ip <- 192.168.1.0/24
+                ip <- 192.168.1.1/24 + index,
+                gateway <- 192.168.1.0
             }
         ]
     }
@@ -13,8 +14,18 @@ define createHost(name: string) => Host {
 set hosts: [Host] <- []
 
 repeat 5 times as index {
-    set host: Host <- createHost("Host " + index)
+    set host: Host <- createHost(index)
     add host to hosts
 }
 
-print hosts
+connect hosts<0>.ports<0> to hosts<1>.ports<0>
+
+set packet: Packet <- {
+    payload <- "Hello!",
+    protocol <- ICMP,
+    size <- 1000
+}
+
+print hosts<0>.ports<0>.gateway
+
+send packet from hosts<0>.ports<0> to 192.168.1.5
