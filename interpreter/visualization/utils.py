@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from interpreter.visualization.constants import NODE_RADIUS, SCREEN_SIZE, INFO_PANEL_WIDTH, ICON_SIZE, icons, \
-    drawing_area, PADDING, LOG_PANEL_HEIGHT, font, suppress_stdout
+from interpreter.visualization.constants import NODE_RADIUS, INFO_PANEL_WIDTH, ICON_SIZE, icons, PADDING, \
+    LOG_PANEL_HEIGHT, font, suppress_stdout, font_small, EDGE_COLOR, DEVICE_LABEL_COLOR, \
+    IP_LABEL_COLOR, INFO_PANEL_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, DRAWING_WIDTH, DRAWING_HEIGHT
 from shared.model import Host, Router, Switch, OpticalEthernetPort, WirelessPort, Port, Packet, Connection
 
 with suppress_stdout():
@@ -30,18 +31,50 @@ def draw_edges(screen, connections, pos):
     for conn in connections:
         x1, y1 = pos[conn.device1.uid]
         x2, y2 = pos[conn.device2.uid]
-        pygame.draw.line(screen, (100, 100, 255), (x1, y1), (x2, y2), 2)
+        pygame.draw.line(screen, EDGE_COLOR, (x1, y1), (x2, y2), 2)
 
 def draw_devices(screen, pos, uid_to_device):
     for uid, (cx, cy) in pos.items():
         draw_device_icon(uid, cx, cy, screen, uid_to_device)
 
-        label = font.render(uid_to_device[uid].name, True, (0, 0, 0))
+        label = font.render(uid_to_device[uid].name, True, DEVICE_LABEL_COLOR)
         screen.blit(label, (cx - label.get_width() // 2, cy + NODE_RADIUS + 5))
 
+def draw_ip_labels(screen, connections: list[Connection], pos: dict):
+    OFFSET = 40
+
+    for conn in connections:
+        x1, y1 = pos[conn.device1.uid]
+        x2, y2 = pos[conn.device2.uid]
+
+        dx, dy = x2 - x1, y2 - y1
+        dist = max((dx ** 2 + dy ** 2) ** 0.5, 1)
+        dx /= dist
+        dy /= dist
+
+        if conn.port1.ip:
+            label = font_small.render(str(conn.port1.ip), True, (0, 0, 0))
+            px = x1 + dx * OFFSET
+            py = y1 + dy * OFFSET
+
+            label_rect = label.get_rect(center=(px, py))
+            pygame.draw.rect(screen, (255, 255, 255), label_rect.inflate(6, 4), border_radius=4)
+            pygame.draw.rect(screen, (0, 0, 0), label_rect.inflate(6, 4), width=1, border_radius=4)
+            screen.blit(label, label_rect)
+
+        if conn.port2.ip:
+            label = font_small.render(str(conn.port2.ip), True, (0, 0, 0))
+            px = x2 - dx * OFFSET
+            py = y2 - dy * OFFSET
+
+            label_rect = label.get_rect(center=(px, py))
+            pygame.draw.rect(screen, (255, 255, 255), label_rect.inflate(6, 4), border_radius=4)
+            pygame.draw.rect(screen, (0, 0, 0), label_rect.inflate(6, 4), width=1, border_radius=4)
+            screen.blit(label, label_rect)
+
 def draw_info_panel(screen, device):
-    pygame.draw.rect(screen, color=(245, 245, 245),
-                     rect=(SCREEN_SIZE, 0, INFO_PANEL_WIDTH, SCREEN_SIZE))
+    pygame.draw.rect(screen, color=INFO_PANEL_COLOR,
+                     rect=(SCREEN_WIDTH, 0, INFO_PANEL_WIDTH, SCREEN_HEIGHT))
 
     lines: list[LogEntry] = [
         LogEntry(f"UID: {device.uid}", (0, 0, 0)),
@@ -51,24 +84,24 @@ def draw_info_panel(screen, device):
     ]
 
     for i, entry in enumerate(lines):
-        label = font.render(entry.text, True, entry.color)
-        screen.blit(label, (SCREEN_SIZE + 20, 20 + i * 30))
+        label = font_small.render(entry.text, True, entry.color)
+        screen.blit(label, (SCREEN_WIDTH + 20, 20 + i * 30))
 
     y = 20 + len(lines) * 30 + 10
     if hasattr(device, "ports"):
         for port in device.ports:
-            y = render_port_info(port, screen, SCREEN_SIZE + 20, y)
+            y = render_port_info(port, screen, SCREEN_WIDTH + 20, y)
 
 def draw_log_panel(screen, log_lines: list[LogEntry]):
     pygame.draw.rect(screen, color=(240, 240, 240),
-                     rect=(0, SCREEN_SIZE, SCREEN_SIZE + INFO_PANEL_WIDTH, LOG_PANEL_HEIGHT))
+                     rect=(0, SCREEN_HEIGHT, SCREEN_WIDTH + INFO_PANEL_WIDTH, LOG_PANEL_HEIGHT))
 
-    max_lines = SCREEN_SIZE // 24
+    max_lines = SCREEN_HEIGHT // 24
     visible_lines = log_lines[-max_lines:]
 
     for i, entry in enumerate(visible_lines):
         label = font.render(entry.text, True, entry.color)
-        screen.blit(label, (10, 10 + SCREEN_SIZE + i * 24))
+        screen.blit(label, (10, 10 + SCREEN_HEIGHT + i * 24))
 
 def draw_device_icon(uid, cx, cy, screen, uid_to_device):
     device = uid_to_device[uid]
@@ -94,8 +127,8 @@ def build_uid_map(connections):
 
 def to_screen(x: float, y: float) -> tuple[int, int]:
     return (
-        int((x + 1) / 2 * drawing_area + PADDING),
-        int((y + 1) / 2 * drawing_area + PADDING)
+        int((x + 1) / 2 * DRAWING_WIDTH + PADDING),
+        int((y + 1) / 2 * DRAWING_HEIGHT + PADDING)
     )
 
 def render_port_info(port: Port, screen, x, y) -> int:
@@ -114,7 +147,7 @@ def render_port_info(port: Port, screen, x, y) -> int:
         lines.append(LogEntry(f"Connector: {port.connector}", (140, 70, 0)))
 
     for entry in lines:
-        label = font.render(entry.text, True, entry.color)
+        label = font_small.render(entry.text, True, entry.color)
         screen.blit(label, (x, y))
         y += 25
 

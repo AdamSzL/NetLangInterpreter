@@ -1,69 +1,32 @@
 import matplotlib.pyplot as plt
 from PIL import Image
 import networkx as nx
-
 from shared.model import Host, Switch
 from shared.model.Packet import Packet
 from shared.model.Connection import Connection
 from shared.model.Port import Port
-from .constants import SCREEN_SIZE, INFO_PANEL_WIDTH, NODE_RADIUS, icons, ICON_SIZE, LOG_PANEL_HEIGHT, suppress_stdout, \
-    font
+from .constants import SCREEN_WIDTH, SCREEN_HEIGHT, INFO_PANEL_WIDTH, NODE_RADIUS, icons, ICON_SIZE, LOG_PANEL_HEIGHT, suppress_stdout, \
+    font, BACKGROUND_COLOR
 from .utils import get_device_type, build_uid_map, to_screen, draw_graph, LogEntry, show_constructed_frame, \
-    PacketHop, resolve_mac_for_packet
+    PacketHop, resolve_mac_for_packet, draw_ip_labels
 
 with suppress_stdout():
     import pygame
 
 from typing import TYPE_CHECKING, Optional
 
-from shared.model.Device import Device
-
 if TYPE_CHECKING:
     from interpreter.interpreter import Interpreter
 
 def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet):
-    G = nx.Graph()
-    for conn in self.connections:
-        G.add_node(conn.device1.uid)
-        G.add_node(conn.device2.uid)
-        G.add_edge(conn.device1.uid, conn.device2.uid)
+    def init_pygame_window():
+        pygame.init()
+        screen = pygame.display.set_mode((SCREEN_WIDTH + INFO_PANEL_WIDTH, SCREEN_HEIGHT + LOG_PANEL_HEIGHT))
+        pygame.display.set_caption("NetLang Graph")
+        return screen, pygame.time.Clock()
 
-    raw_pos = nx.spring_layout(G, seed=42, k=0.8)
-    pos = {uid: to_screen(x, y) for uid, (x, y) in raw_pos.items()}
-    uid_to_device = build_uid_map(self.connections)
-    selected_device = None
-    log_lines = []
-
-    pygame.init()
-    screen = pygame.display.set_mode((SCREEN_SIZE + INFO_PANEL_WIDTH, SCREEN_SIZE + LOG_PANEL_HEIGHT))
-    pygame.display.set_caption("NetLang Graph")
-    clock = pygame.time.Clock()
-
-    packet_hops: list[PacketHop] = []
-    current_hop_index = 0
-    animation_step = 0
-    animation_steps = 60
-    animating = False
-
-    frame_display_ticks = 300
-    frame_display_counter = 0
-    frame_waiting = False
-
-    paused = False
-
-    dst_mac = resolve_mac_for_packet(packet, self.arp_table, log_lines)
-
-    if dst_mac is not None:
-        show_constructed_frame(packet, log_lines, dst_mac)
-        frame_waiting = True
-        packet_hops = forward_packet_from_port(packet.source, dst_mac)
-
-    running = True
-    while running:
-        screen.fill((255, 255, 255))
-
-        draw_graph(screen, self.connections, pos, uid_to_device, selected_device, log_lines)
-
+    def process_events():
+        nonlocal running, selected_device, paused
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -77,48 +40,90 @@ def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet):
                 if event.key == pygame.K_SPACE:
                     paused = not paused
 
-        if paused:
-            if animating and current_hop_index < len(packet_hops):
-                hop = packet_hops[current_hop_index]
-                t = animation_step / animation_steps
-                render_packet_movement(screen, hop, pos, t)
-
-            label = font.render("⏸ PAUSED", True, (200, 0, 0))
-            screen.blit(label, (10, 10))
-            pygame.display.flip()
-            clock.tick(60)
-            continue
-
-        if frame_waiting:
-            pygame.display.flip()
-            clock.tick(60)
-            frame_display_counter += 1
-            if frame_display_counter >= frame_display_ticks:
-                log_lines.clear()
-                frame_waiting = False
-                animating = True
-                animation_step = 0
-                current_hop_index = 0
-            continue
-
+    def render_paused_state():
         if animating and current_hop_index < len(packet_hops):
             hop = packet_hops[current_hop_index]
             t = animation_step / animation_steps
             render_packet_movement(screen, hop, pos, t)
+        label = font.render("PAUSED", True, (200, 0, 0))
+        screen.blit(label, (10, 10))
 
-            animation_step += 1
-            if animation_step > animation_steps:
-                animation_step = 0
-                current_hop_index += 1
-                if current_hop_index >= len(packet_hops):
-                    animating = False
-                else:
-                    handle_packet_arrival(packet_hops[current_hop_index], packet, dst_mac, log_lines)
+    def handle_frame_waiting():
+        nonlocal frame_display_counter, frame_waiting, animating, animation_step, current_hop_index, pending_log_hop
+        frame_display_counter += 1
+        if frame_display_counter >= frame_display_ticks:
+            log_lines.clear()
+            frame_waiting = False
+            animating = True
+            animation_step = 0
+            current_hop_index = 0
+            pending_log_hop = 0
+
+    def handle_packet_animation():
+        nonlocal animation_step, current_hop_index, animating, pending_log_hop
+        hop = packet_hops[current_hop_index]
+        t = animation_step / animation_steps
+        render_packet_movement(screen, hop, pos, t)
+        animation_step += 1
+        if animation_step > animation_steps:
+            animation_step = 0
+            if pending_log_hop is not None:
+                handle_packet_arrival(packet_hops[pending_log_hop], packet, dst_mac, log_lines)
+                pending_log_hop = None
+            current_hop_index += 1
+            if current_hop_index >= len(packet_hops):
+                animating = False
+            else:
+                pending_log_hop = current_hop_index
+
+    G = nx.Graph()
+    for conn in self.connections:
+        G.add_node(conn.device1.uid)
+        G.add_node(conn.device2.uid)
+        G.add_edge(conn.device1.uid, conn.device2.uid)
+    raw_pos = nx.spring_layout(G, seed=42, k=0.8)
+    pos = {uid: to_screen(x, y) for uid, (x, y) in raw_pos.items()}
+    uid_to_device = build_uid_map(self.connections)
+    selected_device = None
+    log_lines = []
+    screen, clock = init_pygame_window()
+
+    packet_hops: list[PacketHop] = []
+    current_hop_index = 0
+    animation_step = 0
+    animation_steps = 60
+    animating = False
+    frame_display_ticks = 300
+    frame_display_counter = 0
+    frame_waiting = False
+    paused = False
+    pending_log_hop = None
+
+    dst_mac = resolve_mac_for_packet(packet, self.arp_table, log_lines)
+    if dst_mac is not None:
+        show_constructed_frame(packet, log_lines, dst_mac)
+        frame_waiting = True
+        packet_hops = forward_packet_from_port(packet.source, dst_mac)
+
+    running = True
+    while running:
+        screen.fill(BACKGROUND_COLOR)
+        draw_graph(screen, self.connections, pos, uid_to_device, selected_device, log_lines)
+        draw_ip_labels(screen, self.connections, pos)
+        process_events()
+
+        if paused:
+            render_paused_state()
+        elif frame_waiting:
+            handle_frame_waiting()
+        elif animating and current_hop_index < len(packet_hops):
+            handle_packet_animation()
 
         pygame.display.flip()
         clock.tick(60)
 
     pygame.quit()
+
 
 def render_packet_movement(screen, hop: PacketHop, pos, t: float) -> None:
     x1, y1 = pos[hop.from_port.owner.uid]
