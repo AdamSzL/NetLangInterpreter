@@ -28,12 +28,16 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
         if field_name == "ip":
             if old_value is not None:
                 IPAddress.unregister(str(old_value.ip))
+                self.arp_table.pop(str(old_value.ip), None)
             IPAddress.register(str(value.ip), ctx)
+            self.arp_table[str(value.ip)] = value.mac
 
         elif field_name == "mac":
             if old_value is not None:
                 MACAddress.unregister(old_value.mac)
+                self.arp_table.pop(str(parent.ip.ip), None)
             MACAddress.register(value.mac, ctx)
+            self.arp_table[str(parent.ip.ip)] = value.mac
 
         setattr(parent, field_name, value)
 

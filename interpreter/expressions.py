@@ -2,6 +2,7 @@ from typing import Any, cast
 
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError
+from shared.model.Port import Port
 from shared.model.Variable import Variable
 from shared.utils.types import type_map
 from shared.model import ConnectorType, Protocol, IPAddress, MACAddress, CIDR
@@ -65,11 +66,17 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
 
     if ctx.objectType():
         type_name = ctx.objectType().getText()
-        return type_map[type_name].from_dict(obj, ctx)
+        result = type_map[type_name].from_dict(obj, ctx)
     elif ctx.deviceType():
         type_name = ctx.deviceType().getText()
-        return type_map[type_name].from_dict(obj, ctx)
-    return obj
+        result = type_map[type_name].from_dict(obj, ctx)
+    else:
+        return obj
+
+    if isinstance(result, Port) and result.ip is not None and result.mac is not None:
+        self.arp_table[str(result.ip.ip)] = result.mac.mac
+
+    return result
 
 def visitCidrLiteral(self: "Interpreter", ctx: NetLangParser.CidrLiteralContext):
     scoped_ctx = ctx.scopedIdentifier()

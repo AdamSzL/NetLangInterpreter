@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from generated.NetLangParser import NetLangParser
+from shared.model.Port import Port
 from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.model.base import NetLangObject
@@ -19,6 +20,9 @@ def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDec
 
     if isinstance(value, dict) and declared_type in type_map and issubclass(type_map[declared_type], NetLangObject):
         value = type_map[declared_type].from_dict(value, ctx)
+
+        if isinstance(value, Port) and value.ip is not None and value.mac is not None:
+            self.arp_table[str(value.ip.ip)] = value.mac.mac
 
     self.declare_variable(name, Variable(declared_type, ctx.start.line, value=value), ctx)
     self.assign_device_uids(value)

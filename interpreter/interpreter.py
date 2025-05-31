@@ -129,3 +129,4 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.used_ids: set[str] = set()
         self.call_depth = 0
         self.max_call_depth = 100
+        self.arp_table: dict[str, str] = {}

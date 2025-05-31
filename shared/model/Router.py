@@ -30,6 +30,11 @@ class Router(NetLangObject, Device):
         self.validate_base_logic(ctx)
         seen_ips = set()
         for port in self.ports:
+            if port.gateway is not None:
+                raise NetLangRuntimeError(
+                    f"Router port '{port.portId}' must not have a gateway assigned",
+                    ctx
+                )
             if not hasattr(port, "ip") or port.ip is None:
                 raise NetLangRuntimeError(
                     f"Host port '{port.portId}' must have an IP address",

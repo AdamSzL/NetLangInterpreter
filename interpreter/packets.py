@@ -2,7 +2,7 @@ from rich.panel import Panel
 from rich.text import Text
 
 from generated.NetLangParser import NetLangParser
-from shared.model import Switch, Router, Host, Packet
+from shared.model import Switch, Router, Host, Packet, IPAddress
 from time import sleep
 
 from shared.errors import NetLangRuntimeError
@@ -16,14 +16,14 @@ if TYPE_CHECKING:
 def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketStatementContext):
     packet: Packet = self.visit(ctx.fieldAccess(0))
     port = self.visit(ctx.fieldAccess(1))
-    target_ip = ctx.IPADDR().getText()
+    target_ip = IPAddress(ctx.IPADDR().getText())
 
     from_device = self.evaluateParentOfAccess(ctx.fieldAccess(1))
 
-    packet.src = port.ip
-    packet.dst = target_ip
+    packet.source = port
+    packet.destination = target_ip
 
-    self.draw_graph_and_animate_packet(packet, from_device, port)
+    self.draw_graph_and_animate_packet(packet)
 
 def forward_packet(self: "Interpreter", packet: Packet, start_device: str, start_port, ctx: NetLangParser.SendPacketStatementContext):
     visited_ports = set()

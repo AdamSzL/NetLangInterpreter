@@ -2,7 +2,9 @@ from dataclasses import dataclass, field
 from typing import Optional, Any
 
 from shared.errors import NetLangRuntimeError
-from shared.model import CIDR, MACAddress, IPAddress
+from shared.model.CIDR import CIDR
+from shared.model.MACAddress import MACAddress
+from shared.model.IPAddress import IPAddress
 from shared.model.Device import Device
 
 
