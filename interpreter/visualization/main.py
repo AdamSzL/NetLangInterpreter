@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from PIL import Image
 import networkx as nx
-from shared.model import Host, Switch
+from shared.model import Host, Switch, Router
 from shared.model.Packet import Packet
 from shared.model.Connection import Connection
 from shared.model.Port import Port
@@ -9,11 +9,12 @@ from .constants import SCREEN_WIDTH, SCREEN_HEIGHT, INFO_PANEL_WIDTH, NODE_RADIU
     font, BACKGROUND_COLOR
 from .utils import get_device_type, build_uid_map, to_screen, draw_graph, LogEntry, show_constructed_frame, \
     PacketHop, resolve_mac_for_packet, draw_ip_labels
+import copy
 
 with suppress_stdout():
     import pygame
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 if TYPE_CHECKING:
     from interpreter.interpreter import Interpreter
@@ -68,7 +69,7 @@ def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet):
         if animation_step > animation_steps:
             animation_step = 0
             if pending_log_hop is not None:
-                handle_packet_arrival(packet_hops[pending_log_hop], packet, dst_mac, log_lines)
+                handle_packet_arrival(packet_hops[pending_log_hop], log_lines)
                 pending_log_hop = None
             current_hop_index += 1
             if current_hop_index >= len(packet_hops):
@@ -101,9 +102,10 @@ def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet):
 
     dst_mac = resolve_mac_for_packet(packet, self.arp_table, log_lines)
     if dst_mac is not None:
-        show_constructed_frame(packet, log_lines, dst_mac)
+        packet.destination_mac = dst_mac
+        show_constructed_frame(packet, log_lines)
         frame_waiting = True
-        packet_hops = forward_packet_from_port(packet.source, dst_mac)
+        packet_hops = forward_packet_from_port(packet, self.arp_table)
 
     running = True
     while running:
@@ -134,10 +136,11 @@ def render_packet_movement(screen, hop: PacketHop, pos, t: float) -> None:
     icon = pygame.transform.scale(icons["packet"], (ICON_SIZE // 2, ICON_SIZE // 2))
     screen.blit(icon, (px - NODE_RADIUS // 2, py - NODE_RADIUS // 2))
 
-def handle_packet_arrival(hop: PacketHop, packet: Packet, dst_mac: str, log_lines: list[LogEntry]) -> None:
+def handle_packet_arrival(hop: PacketHop, log_lines: list[LogEntry]) -> None:
     dst_device = hop.to_port.owner
+    log_lines.clear()
     log_lines.append(LogEntry(
-        f"→ Packet arrived at port {hop.to_port.portId} on device {dst_device.name}",
+        f"-> Packet arrived at port {hop.to_port.portId} on device {dst_device.name}",
         (0, 0, 150)
     ))
 
@@ -148,25 +151,49 @@ def handle_packet_arrival(hop: PacketHop, packet: Packet, dst_mac: str, log_line
         ))
 
     elif isinstance(dst_device, Host):
-        if hop.to_port.mac.mac == dst_mac:
+        if hop.to_port.mac.mac == hop.packet_snapshot.destination_mac:
             log_lines.append(LogEntry(
                 f"{dst_device.name} accepted packet",
                 (0, 128, 0)
             ))
         else:
             log_lines.append(LogEntry(
-                f"{dst_device.name} ignored packet (wrong MAC)",
-                (100, 100, 100)
+                f"{dst_device.name} dropped packet (MAC mismatch)",
+                (200, 0, 0)
             ))
 
+    elif isinstance(dst_device, Router):
+        if hop.to_port.ip.ip.ip == hop.packet_snapshot.destination_ip.ip:
+            log_lines.append(LogEntry(
+                f"{dst_device.name} accepted packet",
+                (0, 128, 0)
+            ))
+        else:
+            log_lines.append(LogEntry(
+                f"{dst_device.name} is routing packet (new encapsulation)...",
+                (100, 100, 200)
+            ))
+            if hop.routing_table_snapshot:
+                log_lines.append(LogEntry("Routing Table:", (80, 80, 80)))
+                for entry in hop.routing_table_snapshot:
+                    line = f"  - {entry.destination} via {entry.via}"
+                    color = (0, 100, 0) if hop.routing_entry == entry else (100, 100, 100)
+                    log_lines.append(LogEntry(line, color))
+
+            if hop.routing_entry is None:
+                log_lines.append(LogEntry("X No matching route – packet dropped", (200, 0, 0)))
+
+            show_constructed_frame(hop.packet_snapshot, log_lines)
+
 def forward_packet_from_port(
-    start_port: Port,
-    dst_mac: str,
+    packet: Packet,
+    arp_table: dict[str, str]
 ) -> list[PacketHop]:
     visited_ports = set()
     port_queue = []
     hops: list[PacketHop] = []
 
+    start_port = packet.source
     if start_port.connectedTo:
         port_queue.append((start_port.connectedTo, start_port))
 
@@ -178,14 +205,9 @@ def forward_packet_from_port(
 
         device = current_port.owner
 
-        if from_port:
-            hops.append(PacketHop(from_port, current_port))
-
-        if current_port.mac == dst_mac:
-            return hops
-
         if isinstance(device, Host):
-            continue
+            if from_port:
+                hops.append(PacketHop(from_port, current_port, copy.deepcopy(packet)))
 
         elif isinstance(device, Switch):
             for port in device.ports:
@@ -194,4 +216,36 @@ def forward_packet_from_port(
                 next_port = port.connectedTo
                 if next_port and next_port not in visited_ports:
                     port_queue.append((next_port, port))
+
+            if from_port:
+                hops.append(PacketHop(from_port, current_port, copy.deepcopy(packet)))
+
+        elif isinstance(device, Router):
+            selected_entry = None
+            routing_table_snapshot = device.routingTable[:]
+            dst_mac = arp_table.get(str(packet.destination_ip.ip))
+            packet.destination_mac = dst_mac
+            for entry in device.routingTable:
+                if packet.destination_ip.ip in entry.destination.current_network():
+                    selected_entry = entry
+                    for port in device.ports:
+                        if port.portId == entry.via:
+                            next_port = port.connectedTo
+                            if next_port and next_port not in visited_ports:
+                                port_queue.append((next_port, port))
+                    break
+
+            if from_port:
+                hops.append(PacketHop(
+                    from_port,
+                    current_port,
+                    copy.deepcopy(packet),
+                    routing_entry=selected_entry,
+                    routing_table_snapshot=routing_table_snapshot
+                ))
+
+
+        if current_port.mac.mac == packet.destination_mac and current_port.ip.ip.ip == packet.destination_ip.ip:
+            return hops
+
     return hops

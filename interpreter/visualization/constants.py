@@ -2,9 +2,6 @@ import contextlib
 import os
 import sys
 
-from pygments.styles.paraiso_light import BACKGROUND
-
-
 @contextlib.contextmanager
 def suppress_stdout():
     with open(os.devnull, "w") as devnull:
@@ -36,7 +33,7 @@ PADDING = 100
 DRAWING_WIDTH = SCREEN_WIDTH - 2 * PADDING
 DRAWING_HEIGHT = SCREEN_HEIGHT - 2 * PADDING
 INFO_PANEL_WIDTH = 250
-LOG_PANEL_HEIGHT = 300
+LOG_PANEL_HEIGHT = 350
 ICON_SIZE = 100
 NODE_RADIUS = ICON_SIZE // 2
 

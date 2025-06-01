@@ -4,7 +4,7 @@ from typing import Optional
 from interpreter.visualization.constants import NODE_RADIUS, INFO_PANEL_WIDTH, ICON_SIZE, icons, PADDING, \
     LOG_PANEL_HEIGHT, font, suppress_stdout, font_small, EDGE_COLOR, DEVICE_LABEL_COLOR, \
     IP_LABEL_COLOR, INFO_PANEL_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, DRAWING_WIDTH, DRAWING_HEIGHT
-from shared.model import Host, Router, Switch, OpticalEthernetPort, WirelessPort, Port, Packet, Connection
+from shared.model import Host, Router, Switch, OpticalEthernetPort, WirelessPort, Port, Packet, Connection, RoutingEntry
 
 with suppress_stdout():
     import pygame
@@ -18,6 +18,9 @@ class LogEntry:
 class PacketHop:
     from_port: Port
     to_port: Port
+    packet_snapshot: Packet
+    routing_entry: Optional[RoutingEntry] = None
+    routing_table_snapshot: Optional[list[RoutingEntry]] = None
 
 def draw_graph(screen, connections, pos, uid_to_device, selected_device, log_lines):
     draw_edges(screen, connections, pos)
@@ -153,24 +156,27 @@ def render_port_info(port: Port, screen, x, y) -> int:
 
     return y
 
-def show_constructed_frame(packet: Packet, log_lines: list[LogEntry], dst_mac: str) -> None:
+def show_constructed_frame(packet: Packet, log_lines: list[LogEntry]) -> None:
     log_lines.append(LogEntry("------------------------------------------------"))
-    log_lines.append(LogEntry("Constructed Ethernet Frame:", (0, 0, 150)))
-    log_lines.append(LogEntry(f"| -> Destination MAC: {dst_mac}", (0, 0, 0)))
-    log_lines.append(LogEntry(f"| -> Source MAC: {packet.source.mac}", (0, 0, 0)))
-    log_lines.append(LogEntry(f"| -> Payload: \"{packet.payload}\"", (0, 0, 0)))
+    log_lines.append(LogEntry("Constructed Ethernet Frame (Layer 2):", (0, 0, 150)))
+    log_lines.append(LogEntry(f"| → Destination MAC: {packet.destination_mac}", (0, 0, 0)))
+    log_lines.append(LogEntry(f"| → Source MAC: {packet.source.mac}", (0, 0, 0)))
+    log_lines.append(LogEntry("Encapsulated IP Packet (Layer 3):", (0, 0, 150)))
+    log_lines.append(LogEntry(f"| → Destination IP: {packet.destination_ip.ip}", (0, 0, 0)))
+    log_lines.append(LogEntry(f"| → Source IP: {packet.source.ip}", (0, 0, 0)))
+    log_lines.append(LogEntry(f"| → Payload: \"{packet.payload}\"", (0, 0, 0)))
     log_lines.append(LogEntry("------------------------------------------------"))
 
-def resolve_mac_for_packet(packet, arp_table, log_lines) -> Optional[str]:
-    if packet.destination.ip in packet.source.ip.current_network():
+def resolve_mac_for_packet(packet: Packet, arp_table: dict[str, str], log_lines: list[LogEntry]) -> Optional[str]:
+    if packet.destination_ip.ip in packet.source.ip.current_network():
         log_lines.append(LogEntry(
-            f"Destination IP {packet.destination.ip} is in the same subnet as source {packet.source.ip}", (0, 128, 0)
+            f"Destination IP {packet.destination_ip.ip} is in the same subnet as source {packet.source.ip}", (0, 128, 0)
         ))
 
-        dst_ip = packet.destination.ip
+        dst_ip = packet.destination_ip.ip
     else:
         log_lines.append(LogEntry(
-            f"Destination IP {packet.destination.ip} is outside the source subnet {packet.source.ip.current_network()}",
+            f"Destination IP {packet.destination_ip.ip} is outside the source subnet {packet.source.ip.current_network()}",
             (150, 100, 0)
         ))
 

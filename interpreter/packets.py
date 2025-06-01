@@ -21,7 +21,7 @@ def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketS
     from_device = self.evaluateParentOfAccess(ctx.fieldAccess(1))
 
     packet.source = port
-    packet.destination = target_ip
+    packet.destination_ip = target_ip
 
     self.draw_graph_and_animate_packet(packet)
 

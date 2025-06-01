@@ -19,7 +19,8 @@ class Packet(NetLangObject):
     protocol: str = Protocol.ICMP
     size: int = 500
     source: Optional[Port] = field(default=None, init=False)
-    destination: Optional[IPAddress] = field(default=None, init=False)
+    destination_ip: Optional[IPAddress] = field(default=None, init=False)
+    destination_mac: Optional[str] = field(default=None, init=False)
 
     @classmethod
     def from_dict(cls, data: dict, ctx):
