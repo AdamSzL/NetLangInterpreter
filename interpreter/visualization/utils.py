@@ -34,7 +34,17 @@ def draw_edges(screen, connections, pos):
     for conn in connections:
         x1, y1 = pos[conn.device1.uid]
         x2, y2 = pos[conn.device2.uid]
-        pygame.draw.line(screen, EDGE_COLOR, (x1, y1), (x2, y2), 2)
+
+        port_type = type(conn.port1).__name__
+
+        if port_type == "CopperEthernetPort":
+            color = (255, 165, 0)
+        elif port_type == "OpticalEthernetPort":
+            color = (0, 120, 255)
+        else:
+            color = (0, 0, 0)
+
+        pygame.draw.line(screen, color, (x1, y1), (x2, y2), width=2)
 
 def draw_devices(screen, pos, uid_to_device):
     for uid, (cx, cy) in pos.items():
