@@ -1,10 +1,10 @@
-set port: CopperEthernetPort <- {
+set port <- CopperEthernetPort {
     portId <- "eth0",
     ip <- 192.168.1.0/24,
     mac <- AA:BB:CC:DD:EE:FF
 }
 
-set secondPort: CopperEthernetPort <- {
+set secondPort <- CopperEthernetPort {
     portId <- "eth0",
     ip <- 192.168.1.1/24,
     mac <- AA:BB:CC:DD:EE:FA

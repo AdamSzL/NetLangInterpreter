@@ -124,11 +124,6 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#listIndexAssignment.
-    def visitListIndexAssignment(self, ctx:NetLangParser.ListIndexAssignmentContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by NetLangParser#breakStatement.
     def visitBreakStatement(self, ctx:NetLangParser.BreakStatementContext):
         return self.visitChildren(ctx)
@@ -156,11 +151,6 @@ class NetLangVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by NetLangParser#objectType.
     def visitObjectType(self, ctx:NetLangParser.ObjectTypeContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#deviceType.
-    def visitDeviceType(self, ctx:NetLangParser.DeviceTypeContext):
         return self.visitChildren(ctx)
 
 
@@ -284,11 +274,6 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#ListIndexAccessExpr.
-    def visitListIndexAccessExpr(self, ctx:NetLangParser.ListIndexAccessExprContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by NetLangParser#listLiteral.
     def visitListLiteral(self, ctx:NetLangParser.ListLiteralContext):
         return self.visitChildren(ctx)
@@ -326,11 +311,6 @@ class NetLangVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by NetLangParser#functionCall.
     def visitFunctionCall(self, ctx:NetLangParser.FunctionCallContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#listIndexAccess.
-    def visitListIndexAccess(self, ctx:NetLangParser.ListIndexAccessContext):
         return self.visitChildren(ctx)
 
 

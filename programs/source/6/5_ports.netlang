@@ -1,4 +1,4 @@
-set host: Host <- {
+set host <- Host {
     name <- "Host 1",
     ports <- [
         CopperEthernetPort {
@@ -14,10 +14,11 @@ set host: Host <- {
 
 print host.ports<0>.portId
 
-set port: Port <- WirelessPort {
-    portId <- "wlan0",
-    ip <- 192.168.1.1/24,
-    frequency <- 2.4
+set port: Port <- CopperEthernetPort {
+    portId <- "eth2",
+    ip <- 192.168.1.1/24
 }
 
+add port to host.ports
 print port.portId
+print host.ports.size

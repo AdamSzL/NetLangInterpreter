@@ -1,4 +1,4 @@
-set hostA: Host <- {
+set hostA <- Host {
     name <- "Host A",
     ports <- [
         OpticalEthernetPort {
@@ -7,7 +7,7 @@ set hostA: Host <- {
         }
     ]
 }
-set hostB: Host <- {
+set hostB <- Host {
     name <- "Host B",
     ports <- [
         CopperEthernetPort {
@@ -16,7 +16,7 @@ set hostB: Host <- {
         }
     ]
 }
-set switch: Switch <- {
+set switch <- Switch {
     name <- "Switch",
     ports <- [
         OpticalEthernetPort {

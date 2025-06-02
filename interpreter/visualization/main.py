@@ -232,7 +232,6 @@ def forward_packet_from_port(
             if selected_entry:
                 next_hop_ip = packet.destination_ip.ip
                 if selected_entry.nextHop:
-                    print(selected_entry.nextHop.ip)
                     next_hop_ip = selected_entry.nextHop.ip
                 dst_mac = arp_table.get(str(next_hop_ip))
                 packet.destination_mac = dst_mac

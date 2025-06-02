@@ -1,4 +1,4 @@
-set host: Host <- {
+set host <- Host {
     name <- "Host 1",
     name <- "Host 2"
 }

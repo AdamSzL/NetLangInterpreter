@@ -11,7 +11,6 @@ from shared.model.Packet import Packet
 from shared.model import Router
 from shared.model import RoutingEntry
 from shared.model.Switch import Switch
-from shared.model.WirelessPort import WirelessPort
 
 type_map = {
     "int": int,
@@ -23,7 +22,6 @@ type_map = {
     "MAC": MACAddress,
     "CopperEthernetPort": CopperEthernetPort,
     "OpticalEthernetPort": OpticalEthernetPort,
-    "WirelessPort": WirelessPort,
     "Port": Port,
     "RoutingEntry": RoutingEntry,
     "Packet": Packet,
@@ -32,6 +30,26 @@ type_map = {
     "Router": Router,
     "void": type(None)
 }
+reverse_type_map = {v: k for k, v in type_map.items()}
+
+def get_typename(value: Any) -> str:
+    if isinstance(value, list):
+        if not value:
+            return "[]"
+
+        element_types = {get_typename(elem) for elem in value}
+
+        if len(element_types) == 1:
+            inner_type = element_types.pop()
+            return f"[{inner_type}]"
+        else:
+            return "[]"
+
+    value_type = type(value)
+    if value_type in reverse_type_map:
+        return reverse_type_map[value_type]
+
+    return value_type.__name__
 
 type_field_map = {
     "CopperEthernetPort": {
@@ -60,20 +78,6 @@ type_field_map = {
             "connector": "string",
             "gateway": "IP"
     },
-        "readonly": {}
-    },
-    "WirelessPort": {
-        "required": {
-            "portId": "string"
-        },
-        "optional": {
-            "ip": "CIDR",
-            "mac": "MAC",
-            "bandwidth": "int",
-            "mtu": "int",
-            "frequency": "float",
-            "gateway": "IP"
-        },
         "readonly": {}
     },
     "Port": {
@@ -140,7 +144,6 @@ type_field_map = {
 type_hierarchy = {
     "CopperEthernetPort": "Port",
     "OpticalEthernetPort": "Port",
-    "WirelessPort": "Port",
     "int": "float",
 }
 
@@ -154,6 +157,8 @@ def is_known_type(type_str: str) -> bool:
 
 def are_types_compatible(expected: str, actual: str) -> bool:
     if expected.startswith("[") and expected.endswith("]"):
+        if actual == "[]":
+            return True
         if not actual.startswith("[") or not actual.endswith("]"):
             return False
         expected_elem_type = expected[1:-1]

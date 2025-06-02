@@ -51,10 +51,6 @@ def visitCIDRLiteralExpr(self: "Interpreter", ctx: NetLangParser.CIDRLiteralExpr
 def visitObjectInitializerExpr(self: "Interpreter", ctx: NetLangParser.ObjectInitializerExprContext) -> NetLangObject:
     return self.visit(ctx.objectInitializer())
 
-def visitListIndexAccessExpr(self: "Interpreter", ctx: NetLangParser.ListIndexAccessExprContext):
-    return self.visit(ctx.listIndexAccess())
-
-
 def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitializerContext):
     obj = {}
     for field in ctx.objectFieldList().objectField():
@@ -62,14 +58,8 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
         value = self.visit(field.expression())
         obj[name] = value
 
-    if ctx.objectType():
-        type_name = ctx.objectType().getText()
-        result = type_map[type_name].from_dict(obj, ctx)
-    elif ctx.deviceType():
-        type_name = ctx.deviceType().getText()
-        result = type_map[type_name].from_dict(obj, ctx)
-    else:
-        return obj
+    type_name = ctx.objectType().getText()
+    result = type_map[type_name].from_dict(obj, ctx)
 
     if hasattr(result, "uid") and result.uid is None:
         result.uid = self.generate_uid()

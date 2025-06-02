@@ -7,7 +7,7 @@ from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 from shared.model.base import NetLangObject
 from shared.errors import NetLangRuntimeError
-from shared.utils.types import type_map
+from shared.utils.types import type_map, reverse_type_map, get_typename
 from typing import TYPE_CHECKING
 import uuid
 
@@ -16,17 +16,12 @@ if TYPE_CHECKING:
 
 def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDeclarationContext):
     name: str = ctx.ID().getText()
-    declared_type: str = ctx.type_().getText()
     value = self.visit(ctx.expression())
 
-    if isinstance(value, dict) and declared_type in type_map and issubclass(type_map[declared_type], NetLangObject):
-        value = type_map[declared_type].from_dict(value, ctx)
-
-        if isinstance(value, Device) and value.uid is None:
-            value.uid = self.generate_uid()
-
-        if isinstance(value, Port) and value.ip is not None and value.mac is not None:
-            self.arp_table[str(value.ip.ip)] = value.mac.mac
+    if ctx.type_():
+        declared_type = ctx.type_().getText()
+    else:
+        declared_type = get_typename(value)
 
     self.declare_variable(name, Variable(declared_type, ctx.start.line, value=value), ctx)
     return value

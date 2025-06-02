@@ -1,0 +1,7 @@
+set numbers: [int] <- [1, 2, 3, 3.4] as [int]
+
+set x: int <- numbers<0>
+print x
+
+set test <- [] as [string]
+print test

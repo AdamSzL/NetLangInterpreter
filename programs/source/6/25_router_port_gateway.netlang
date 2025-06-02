@@ -1,4 +1,4 @@
-set router: Router <- {
+set router <- Router {
     name <- "Router 1",
     ports <- [
         CopperEthernetPort {

@@ -4,7 +4,7 @@ from typing import Optional
 from interpreter.visualization.constants import NODE_RADIUS, INFO_PANEL_WIDTH, ICON_SIZE, icons, PADDING, \
     LOG_PANEL_HEIGHT, font, suppress_stdout, font_small, EDGE_COLOR, DEVICE_LABEL_COLOR, \
     IP_LABEL_COLOR, INFO_PANEL_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, DRAWING_WIDTH, DRAWING_HEIGHT
-from shared.model import Host, Router, Switch, OpticalEthernetPort, WirelessPort, Port, Packet, Connection, RoutingEntry
+from shared.model import Host, Router, Switch, OpticalEthernetPort, Port, Packet, Connection, RoutingEntry
 
 with suppress_stdout():
     import pygame
@@ -86,6 +86,20 @@ def draw_info_panel(screen, device):
         LogEntry(f"Ports: {len(device.ports)}", (0, 0, 0))
     ]
 
+    if isinstance(device, Router):
+        lines.append(LogEntry("Routing Table:", (0, 0, 0)))
+        for entry in device.routingTable:
+            if entry.nextHop is not None:
+                lines.append(LogEntry(
+                    f"-> {entry.destination} via {entry.via} (next hop: {entry.nextHop})",
+                    (80, 80, 80)
+                ))
+            else:
+                lines.append(LogEntry(
+                    f"-> {entry.destination} via {entry.via}",
+                    (80, 80, 80)
+                ))
+
     for i, entry in enumerate(lines):
         label = font_small.render(entry.text, True, entry.color)
         screen.blit(label, (SCREEN_WIDTH + 20, 20 + i * 30))
@@ -140,7 +154,8 @@ def render_port_info(port: Port, screen, x, y) -> int:
         LogEntry(f"IP: {port.ip}"),
         LogEntry(f"MAC: {port.mac}"),
         LogEntry(f"MTU: {port.mtu}"),
-        LogEntry(f"Bandwidth: {port.bandwidth} Mbps")
+        LogEntry(f"Bandwidth: {port.bandwidth} Mbps"),
+        LogEntry("-------------------")
     ]
 
     if isinstance(port, WirelessPort):

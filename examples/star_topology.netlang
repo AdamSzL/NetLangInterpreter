@@ -12,19 +12,19 @@ define createHost(index: int) => Host {
 
 set switchPorts: [Port] <- []
 repeat from 1 to 8 as i {
-    set port: CopperEthernetPort <- {
+    set port <- CopperEthernetPort {
         portId <- "eth" + i
     }
     add port to switchPorts
 }
-set switch: Switch <- {
+set switch <- Switch {
     name <- "Hub",
     ports <- switchPorts
 }
 
 set hosts: [Host] <- []
 repeat 8 times as index {
-    set host: Host <- createHost(index)
+    set host <- createHost(index)
     connect host.ports<0> to switch.ports<index>
     add host to hosts
 }

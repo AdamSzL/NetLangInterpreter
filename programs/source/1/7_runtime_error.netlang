@@ -1,4 +1,4 @@
-set h1: Host <- {
+set h1 <- Host {
     name <- "PC1",
     ports <- [
         OpticalEthernetPort {

@@ -10,7 +10,7 @@ from shared.model.Variable import Variable
 from shared.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier, _resolve_identifier_in_scope
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement, execute_function_body, block_returns_type
-from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment
+from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral
 from .expressions import (
     visitAtomExpr,
     visitIntLiteral,
@@ -22,7 +22,6 @@ from .expressions import (
     visitIPAddressLiteral,
     visitCIDRLiteralExpr,
     visitMacAddressLiteral,
-    visitListIndexAccessExpr,
     visitObjectInitializerExpr,
     visitObjectInitializer,
     visitCidrLiteral
@@ -40,7 +39,7 @@ from .operators import (
     visitCastExpr,
     visitUnaryExpr
 )
-from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluate_type_until, evaluate_type_of_parent
+from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluate_type_until, evaluate_type_of_parent, was_last_operator_indexing
 from .devices import visitConnectStatement
 from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement
 from .packets import visitSendPacketStatement
@@ -72,7 +71,6 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitMacAddressLiteral = MethodType(visitMacAddressLiteral, self)
         self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
-        self.visitListIndexAccessExpr = MethodType(visitListIndexAccessExpr, self)
 
         self.visitMulDivExpr = MethodType(visitMulDivExpr, self)
         self.visitAddSubExpr = MethodType(visitAddSubExpr, self)
@@ -99,8 +97,6 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
         self.visitFieldAssignment = MethodType(visitFieldAssignment, self)
-        self.visitListIndexAccess = MethodType(visitListIndexAccess, self)
-        self.visitListIndexAssignment = MethodType(visitListIndexAssignment, self)
         self.visitIfStatement = MethodType(visitIfStatement, self)
         self.visitRepeatWhileLoop = MethodType(visitRepeatWhileLoop, self)
         self.visitRepeatTimes = MethodType(visitRepeatTimes, self)
@@ -111,6 +107,7 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitContinueStatement = MethodType(visitContinueStatement, self)
         self.evaluate_type_of_parent = MethodType(evaluate_type_of_parent, self)
         self.evaluate_type_until = MethodType(evaluate_type_until, self)
+        self.was_last_operator_indexing = MethodType(was_last_operator_indexing, self)
 
         self.visitFunctionCallExpr = MethodType(visitFunctionCallExpr, self)
         self.visitFunctionCall = MethodType(visitFunctionCall, self)
@@ -127,7 +124,6 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.expected_return_type: Optional[str] = None
         self.scoped_identifier_expectation: Optional[str] = None
         self.return_found: bool = False
-        self.expected_type: Optional[str] = None
         self.in_function_body = False
         self.currently_checking_functions: set[str] = set()
         self.in_loop = False

@@ -1,0 +1,5 @@
+set name <- "Adam"
+set names <- []
+print names
+
+print name

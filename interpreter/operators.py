@@ -106,31 +106,20 @@ def visitCastExpr(self: "Interpreter", ctx: NetLangParser.CastExprContext):
     if ctx.type_():
         target_type = ctx.type_().getText()
 
-        try:
-            if target_type == "int":
-                return int(value)
-            elif target_type == "float":
-                return float(value)
-            elif target_type == "bool":
-                return bool(value)
-            elif target_type == "string":
-                if isinstance(value, bool):
-                    return "true" if value else "false"
-                return str(value)
-            elif target_type in type_map and isinstance(value, type_map[target_type]):
-                return value
-            elif target_type in type_map and is_subtype(value.__class__.__name__, target_type):
-                return value
-            else:
-                raise NetLangRuntimeError(
-                    f"Unsupported cast to type '{target_type}'",
-                    ctx
-                )
-        except Exception:
-            raise NetLangRuntimeError(
-                f"Cannot convert value '{value}' of type '{type(value).__name__}' to target type '{target_type}'",
-                ctx
-            )
+        if isinstance(value, list) and target_type.startswith("[") and target_type.endswith("]"):
+            elem_type = target_type[1:-1]
+            casted_list = []
+            for i, v in enumerate(value):
+                try:
+                    casted_list.append(cast_value(v, elem_type, ctx))
+                except Exception as e:
+                    raise NetLangRuntimeError(
+                        f"Cannot cast element at index {i} from {type(v).__name__} to {elem_type}: {e}",
+                        ctx
+                    )
+            return casted_list
+
+        return cast_value(value, target_type, ctx)
 
     return value
 
@@ -146,3 +135,28 @@ def visitUnaryExpr(self: "Interpreter", ctx: NetLangParser.UnaryExprContext):
 
 def visitParensExpr(self: "Interpreter", ctx: NetLangParser.ParensExprContext):
     return self.visit(ctx.expression())
+
+def cast_value(value, target_type: str, ctx):
+    try:
+        if target_type == "int":
+            if isinstance(value, str):
+                return int(float(value))
+            return int(value)
+        elif target_type == "float":
+            return float(value)
+        elif target_type == "bool":
+            return bool(value)
+        elif target_type == "string":
+            if isinstance(value, bool):
+                return "true" if value else "false"
+            return str(value)
+        elif target_type in type_map and isinstance(value, type_map[target_type]):
+            return value
+        elif target_type in type_map and is_subtype(value.__class__.__name__, target_type):
+            return value
+        raise NetLangRuntimeError(f"Unsupported cast to type '{target_type}'", ctx)
+    except Exception:
+        raise NetLangRuntimeError(
+            f"Cannot convert value '{value}' of type '{type(value).__name__}' to target type '{target_type}'",
+            ctx
+        )

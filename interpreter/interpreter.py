@@ -4,7 +4,7 @@ from shared.model import Connection
 from shared.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier,assign_device_uids, generate_uid
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, visitFunctionDeclarationStatement
-from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, visitListIndexAccess, visitListIndexAssignment, getListAndIndex
+from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, getListAndIndex
 from .expressions import (
     visitAtomExpr,
     visitIntLiteral,
@@ -16,7 +16,6 @@ from .expressions import (
     visitIPAddressLiteral,
     visitCIDRLiteralExpr,
     visitMacAddressLiteral,
-    visitListIndexAccessExpr,
     visitObjectInitializerExpr,
     visitObjectInitializer,
     visitCidrLiteral
@@ -75,7 +74,6 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitMacAddressLiteral = MethodType(visitMacAddressLiteral, self)
         self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
-        self.visitListIndexAccessExpr = MethodType(visitListIndexAccessExpr, self)
         self.evaluateParentOfAccess = MethodType(evaluateParentOfAccess, self)
         self.evaluateFieldAccessUntil = MethodType(evaluateFieldAccessUntil, self)
 
@@ -105,8 +103,6 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitObjectInitializerExpr = MethodType(visitObjectInitializerExpr, self)
         self.visitFieldAccessExpr = MethodType(visitFieldAccessExpr, self)
         self.visitFieldAssignment = MethodType(visitFieldAssignment, self)
-        self.visitListIndexAccess = MethodType(visitListIndexAccess, self)
-        self.visitListIndexAssignment = MethodType(visitListIndexAssignment, self)
         self.visitIfStatement = MethodType(visitIfStatement, self)
         self.visitRepeatWhileLoop = MethodType(visitRepeatWhileLoop, self)
         self.visitRepeatTimesLoop = MethodType(visitRepeatTimesLoop, self)

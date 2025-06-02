@@ -1,4 +1,4 @@
-set switch: Switch <- {
+set switch <- Switch {
     name <- "Switch 1",
     ports <- [
         CopperEthernetPort {

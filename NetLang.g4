@@ -2,10 +2,8 @@ grammar NetLang;
 
 program: statement* EOF;
 
-// ----------- Statements ----------
 statement
-    : listIndexAssignment
-    | variableDeclaration
+    : variableDeclaration
     | variableAssignment
     | addToListStatement
     | deleteListElementStatement
@@ -22,13 +20,10 @@ statement
     | continueStatement
     ;
 
-
-// ----------- Variable Declaration ----------
 variableDeclaration
-    : 'set' ID COLON type ASSIGN expression
+    : 'set' ID (COLON type)? ASSIGN expression
     ;
 
-// ----------- Variable Assignment ----------
 variableAssignment
     : scopedIdentifier '<-' expression
     ;
@@ -38,7 +33,7 @@ addToListStatement
     ;
 
 deleteListElementStatement
-    : 'delete' listIndexAccess
+    : 'delete' fieldAccess
     ;
 
 fieldAssignment
@@ -108,10 +103,6 @@ returnStatement
     : 'return' expression?
     ;
 
-listIndexAssignment
-    : listIndexAccess ASSIGN expression
-    ;
-
 breakStatement
     : EXIT
     ;
@@ -129,7 +120,6 @@ scopePrefix
     | '~'
     ;
 
-// ----------- Types ----------
 type
     : 'int'
     | 'float'
@@ -140,25 +130,19 @@ type
     | 'MAC'
     | '[' type ']'
     | objectType
-    | deviceType
     ;
 
 objectType
     : 'CIDR'
     | 'CopperEthernetPort'
     | 'OpticalEthernetPort'
-    | 'WirelessPort'
     | 'RoutingEntry'
     | 'Port'
-    ;
-
-deviceType
-    : 'Router'
+    | 'Router'
     | 'Host'
     | 'Switch'
     ;
 
-// ----------- Expressions ----------
 expression
     : orExpr
     ;
@@ -220,7 +204,6 @@ atomExpr
     | objectInitializer               # ObjectInitializerExpr
     | fieldAccess                     # FieldAccessExpr
     | functionCall                    # FunctionCallExpr
-    | listIndexAccess                 # ListIndexAccessExpr
     ;
 
 listLiteral
@@ -237,7 +220,7 @@ cidrLiteral
     ;
 
 objectInitializer
-    : (objectType | deviceType)? '{' objectFieldList? '}'
+    : objectType '{' objectFieldList? '}'
     ;
 
 objectFieldList
@@ -256,12 +239,7 @@ functionCall
     : scopedIdentifier '(' expressionList? ')'
     ;
 
-listIndexAccess
-    : scopedIdentifier '<' expression '>'
-    ;
-
 // ----------- Lexical Rules ----------
-
 EXIT: 'exit';
 NEXT: 'next';
 
@@ -270,7 +248,6 @@ COLON: ':';
 COMMA: ',';
 DOT: '.';
 
-// Arithmetic operators
 PLUS: '+';
 MINUS: '-';
 MUL: '*';
@@ -279,7 +256,6 @@ DIV: '/';
 MOD: '%';
 POW: '^';
 
-// Comparison operators
 EQ: '==';
 NEQ: '!=';
 LT: '<';
@@ -287,7 +263,6 @@ GT: '>';
 LE: '<=';
 GE: '>=';
 
-// Logical operators
 AND: '&&';
 OR: '||';
 NOT: '!';

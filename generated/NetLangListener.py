@@ -215,15 +215,6 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#listIndexAssignment.
-    def enterListIndexAssignment(self, ctx:NetLangParser.ListIndexAssignmentContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#listIndexAssignment.
-    def exitListIndexAssignment(self, ctx:NetLangParser.ListIndexAssignmentContext):
-        pass
-
-
     # Enter a parse tree produced by NetLangParser#breakStatement.
     def enterBreakStatement(self, ctx:NetLangParser.BreakStatementContext):
         pass
@@ -275,15 +266,6 @@ class NetLangListener(ParseTreeListener):
 
     # Exit a parse tree produced by NetLangParser#objectType.
     def exitObjectType(self, ctx:NetLangParser.ObjectTypeContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#deviceType.
-    def enterDeviceType(self, ctx:NetLangParser.DeviceTypeContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#deviceType.
-    def exitDeviceType(self, ctx:NetLangParser.DeviceTypeContext):
         pass
 
 
@@ -503,15 +485,6 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#ListIndexAccessExpr.
-    def enterListIndexAccessExpr(self, ctx:NetLangParser.ListIndexAccessExprContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#ListIndexAccessExpr.
-    def exitListIndexAccessExpr(self, ctx:NetLangParser.ListIndexAccessExprContext):
-        pass
-
-
     # Enter a parse tree produced by NetLangParser#listLiteral.
     def enterListLiteral(self, ctx:NetLangParser.ListLiteralContext):
         pass
@@ -581,15 +554,6 @@ class NetLangListener(ParseTreeListener):
 
     # Exit a parse tree produced by NetLangParser#functionCall.
     def exitFunctionCall(self, ctx:NetLangParser.FunctionCallContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#listIndexAccess.
-    def enterListIndexAccess(self, ctx:NetLangParser.ListIndexAccessContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#listIndexAccess.
-    def exitListIndexAccess(self, ctx:NetLangParser.ListIndexAccessContext):
         pass
 
 

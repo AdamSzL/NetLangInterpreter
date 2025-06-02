@@ -12,33 +12,36 @@ if TYPE_CHECKING:
 
 def visitVariableDeclaration(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableDeclarationContext):
     name: str = ctx.ID().getText()
-    declared_type: str = ctx.type_().getText()
 
-    if not is_known_type(declared_type):
-        raise NetLangTypeError(f"Unknown type '{declared_type}'", ctx)
+    if ctx.type_():
+        declared_type = ctx.type_().getText()
 
-    if declared_type == "void":
-        raise NetLangTypeError("Cannot declare variable of type 'void'", ctx)
+        if not is_known_type(declared_type):
+            raise NetLangTypeError(f"Unknown type '{declared_type}'", ctx)
 
-    self.expected_type = declared_type
-    try:
-        expr_type: str = self.visit(ctx.expression())
-    finally:
-        self.expected_type = None
+        if declared_type == "void":
+            raise NetLangTypeError("Cannot declare variable of type 'void'", ctx)
 
-    if not are_types_compatible(declared_type, expr_type):
-        raise NetLangTypeError(
-            f"Type mismatch: cannot assign {expr_type} to variable '{name}' of type {declared_type}",
-            ctx
-        )
+        expr_type = self.visit(ctx.expression())
+        if not are_types_compatible(declared_type, expr_type):
+            raise NetLangTypeError(
+                f"Type mismatch: cannot assign {expr_type} to variable '{name}' of type {declared_type}",
+                ctx
+            )
+    else:
+        expr_type = self.visit(ctx.expression())
+        if expr_type == "[]":
+            raise NetLangTypeError(
+                "Cannot infer type of empty list — please provide explicit type",
+                ctx
+            )
+        declared_type = expr_type
 
     self.declare_variable(name, Variable(declared_type, ctx.start.line), ctx)
     return None
 
 def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableAssignmentContext):
-    expr_type = self.visit(ctx.expression())
     scoped_ctx = ctx.scopedIdentifier()
-
     var_name = scoped_ctx.ID().getText()
 
     self.scoped_identifier_expectation = "variable"
@@ -54,6 +57,7 @@ def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.Vari
     finally:
         self.scoped_identifier_expectation = None
 
+    expr_type = self.visit(ctx.expression())
     if not are_types_compatible(expected_type, expr_type):
         raise NetLangTypeError(
             f"Type mismatch in assignment to variable '{var_name}': expected '{expected_type}', got '{expr_type}'",

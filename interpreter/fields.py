@@ -11,16 +11,16 @@ def visitFieldAccessExpr(self: "Interpreter", ctx: NetLangParser.FieldAccessExpr
     return self.visit(ctx.fieldAccess())
 
 def visitFieldAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext):
-    return self.evaluateFieldAccessUntil(ctx, stop_before_last=False)
+    return self.evaluateFieldAccessUntil(ctx, stop_before_last_dot=False)
 
 def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignmentContext):
     access = ctx.fieldAccess()
     value = self.visit(ctx.expression())
 
-    parent = self.evaluateParentOfAccess(access)
-    last_operator = access.getChild(-2).getText()
-    last_operand = access.getChild(-1)
+    last_operator, last_operand = get_last_field_access_step(access)
+
     if last_operator == ".":
+        parent = self.evaluateFieldAccessUntil(access, stop_before_last_dot=True)
         field_name = last_operand.getText()
 
         old_value = getattr(parent, field_name)
@@ -46,34 +46,46 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
 
         return value
     elif last_operator == "<":
+        parent = self.evaluateFieldAccessUntil(access, stop_before_last_index=True)
         index = int(self.visit(last_operand))
         try:
             parent[index] = value
         except:
-            raise NetLangRuntimeError(f"Index {index} out of range", ctx)
+            raise NetLangRuntimeError(f"Index {index} is out of range for list of length {len(parent)}", ctx)
         return value
 
     raise NetLangRuntimeError(f"Unsupported assignment operator '{last_operator}'", ctx)
 
 def evaluateParentOfAccess(self: "Interpreter", ctx: NetLangParser.FieldAccessContext):
-    return self.evaluateFieldAccessUntil(ctx, stop_before_last=True)
+    return self.evaluateFieldAccessUntil(ctx, stop_before_last_dot=True)
 
-def evaluateFieldAccessUntil(self: "Interpreter", ctx, stop_before_last=False):
+def evaluateFieldAccessUntil(
+        self: "Interpreter",
+        ctx: NetLangParser.FieldAccessContext,
+        stop_before_last_dot: bool = False,
+        stop_before_last_index: bool = False
+):
     scope, var_name = self.visit(ctx.scopedIdentifier())
     current = scope.variables[var_name].value
 
     end = len(ctx.children)
 
-    if stop_before_last:
+    if stop_before_last_dot:
         last_dot_index = -1
         for j in range(1, len(ctx.children)):
             if ctx.getChild(j).getText() == ".":
                 last_dot_index = j
-
         if last_dot_index == -1:
             return current
-
         end = last_dot_index
+    elif stop_before_last_index:
+        last_index = -1
+        for j in range(1, len(ctx.children)):
+            if ctx.getChild(j).getText() == "<":
+                last_index = j
+        if last_index == -1:
+            return current
+        end = last_index
 
     i = 1
     while i < end:
@@ -91,7 +103,27 @@ def evaluateFieldAccessUntil(self: "Interpreter", ctx, stop_before_last=False):
             try:
                 current = current[index]
             except IndexError:
-                raise NetLangRuntimeError(f"Index {index} out of range", ctx)
+                raise NetLangRuntimeError(f"Index {index} is out of range for list of length {len(current)}", ctx)
             i += 3
 
     return current
+
+def get_last_field_access_step(ctx: NetLangParser.FieldAccessContext) -> tuple[str, any]:
+    i = 1
+    last_op = None
+    last_arg = None
+
+    while i < len(ctx.children):
+        op = ctx.getChild(i).getText()
+        if op == ".":
+            last_op = "."
+            last_arg = ctx.getChild(i + 1)
+            i += 2
+        elif op == "<":
+            last_op = "<"
+            last_arg = ctx.getChild(i + 1)
+            i += 3
+        else:
+            break
+
+    return last_op, last_arg

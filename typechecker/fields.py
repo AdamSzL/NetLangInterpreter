@@ -19,7 +19,7 @@ def visitFieldAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAs
 
     if not are_types_compatible(target_type, value_type):
         raise NetLangTypeError(
-            f"Cannot assign {value_type} to field of type {target_type}",
+            f"Type mismatch in assignment: expected '{target_type}', got '{value_type}'",
             ctx
         )
 
@@ -56,7 +56,7 @@ def evaluate_type_until(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAcc
         elif operator == "<":
             index_type = self.visit(ctx.getChild(i + 1))
             if index_type != "int":
-                raise NetLangTypeError("List index must be Int", ctx)
+                raise NetLangTypeError(f"List index must be of type int (got {index_type} instead)", ctx)
 
             if not current_type.startswith("[") or not current_type.endswith("]"):
                 raise NetLangTypeError(f"Tried to index non-list type '{current_type}'", ctx)
@@ -68,3 +68,18 @@ def evaluate_type_until(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAcc
             raise NetLangTypeError(f"Unknown field access operator '{operator}'", ctx)
 
     return current_type
+
+def was_last_operator_indexing(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAccessContext) -> bool:
+    i = 1
+    last_operator = None
+    while i < len(ctx.children):
+        operator = ctx.getChild(i).getText()
+        if operator in [".", "<"]:
+            last_operator = operator
+        if operator == ".":
+            i += 2
+        elif operator == "<":
+            i += 3
+        else:
+            i += 1
+    return last_operator == "<"

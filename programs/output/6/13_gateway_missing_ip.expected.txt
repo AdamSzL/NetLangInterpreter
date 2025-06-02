@@ -1,1 +1,1 @@
-Type Error: [Line 1, Column 32] Cannot specify 'gateway' without 'ip' in port of type 'CopperEthernetPort'
+Type Error: [Line 1, Column 12] Cannot specify 'gateway' without 'ip' in port of type 'CopperEthernetPort'

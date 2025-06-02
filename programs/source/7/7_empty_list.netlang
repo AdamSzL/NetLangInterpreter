@@ -1,0 +1,8 @@
+set names: [string] <- ["Adam", "John"]
+
+names <- []
+
+print names.size
+add "Ann" to names
+print names
+print names.size

@@ -1,1 +1,1 @@
-Runtime Error: [Line 1, Column 0] All ports in Host 'Host 1' must be in the same subnet
+Runtime Error: [Line 1, Column 12] All ports in Host 'Host 1' must be in the same subnet

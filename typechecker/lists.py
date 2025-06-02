@@ -22,11 +22,12 @@ def visitAddToListStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.AddT
     return None
 
 def visitDeleteListElementStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.DeleteListElementStatementContext):
-    scoped_ctx = ctx.listIndexAccess().scopedIdentifier()
-    list_type = self.visit(scoped_ctx)
+    field_access_ctx = ctx.fieldAccess()
 
-    if not list_type.startswith("[") or not list_type.endswith("]"):
-        raise NetLangTypeError("Target of 'delete' must be a list", ctx)
+    if not self.was_last_operator_indexing(field_access_ctx):
+        raise NetLangTypeError("Delete can only be used on a list element (index access required)", ctx)
+
+    self.visit(field_access_ctx)
     return None
 
 def visitListLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.ListLiteralContext):
@@ -37,9 +38,7 @@ def visitListLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.ListLiteral
             element_types.append(self.visit(expr))
 
     if not element_types:
-        if self.expected_type and self.expected_type.startswith("[") or self.expected_type.endswith("]"):
-            return self.expected_type
-        raise NetLangTypeError("Cannot infer type of empty list", ctx)
+        return "[]"
 
     common_type = find_common_supertype(element_types)
     if not common_type:
@@ -49,40 +48,3 @@ def visitListLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.ListLiteral
         )
 
     return f"[{common_type}]"
-
-def visitListIndexAccess(self: "TypeCheckingVisitor", ctx: NetLangParser.ListIndexAccessContext):
-    scoped_ctx = ctx.scopedIdentifier()
-    list_type = self.visit(scoped_ctx)
-    var_name = scoped_ctx.ID().getText()
-
-    index_type = self.visit(ctx.expression())
-    if index_type != "int":
-        raise NetLangTypeError("List index must be of type int", ctx)
-
-    if not list_type.startswith("[") or not list_type.endswith("]"):
-        raise NetLangTypeError(f"Variable '{var_name}' is not a list", ctx)
-
-    return list_type[1:-1]
-
-def visitListIndexAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.ListIndexAssignmentContext):
-    scoped_ctx = ctx.listIndexAccess().scopedIdentifier()
-    list_type = self.visit(scoped_ctx)
-
-    index_type = self.visit(ctx.listIndexAccess().expression())
-    value_type = self.visit(ctx.expression())
-    var_name = scoped_ctx.ID().getText()
-
-    if not list_type.startswith("[") or not list_type.endswith("]"):
-        raise NetLangTypeError(f"Variable '{var_name}' is not a list", ctx)
-
-    if index_type != "int":
-        raise NetLangTypeError("List index must be of type int", ctx)
-
-    element_type = list_type[1:-1]
-    if not are_types_compatible(element_type, value_type):
-        raise NetLangTypeError(
-            f"Cannot assign {value_type} to element of type {element_type} in list '{var_name}'",
-            ctx
-        )
-
-    return None

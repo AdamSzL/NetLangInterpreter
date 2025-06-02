@@ -152,6 +152,9 @@ def visitCastExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.CastExprContex
         if expr_type == target_type:
             return target_type
 
+        if expr_type == "[]" and target_type.startswith("[") and target_type.endswith("]"):
+            return target_type
+
         allowed_casts = {
             "int": ["float", "string", "bool"],
             "float": ["int", "string", "bool"],
@@ -159,10 +162,23 @@ def visitCastExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.CastExprContex
             "string": ["int", "float", "bool"]
         }
 
-        if expr_type in allowed_casts and target_type in allowed_casts[expr_type]:
-            return target_type
+        if expr_type.startswith("[") and target_type.startswith("["):
+            from_elem_type = expr_type[1:-1]
+            to_elem_type = target_type[1:-1]
 
-        if is_subtype(target_type, expr_type):
+            if (
+                    from_elem_type == to_elem_type
+                    or (from_elem_type in allowed_casts and to_elem_type in allowed_casts[from_elem_type])
+                    or is_subtype(to_elem_type, from_elem_type)
+            ):
+                return target_type
+
+            raise NetLangTypeError(
+                f"Cannot cast from {expr_type} to {target_type}",
+                ctx
+            )
+
+        if expr_type in allowed_casts and target_type in allowed_casts[expr_type] or is_subtype(expr_type, target_type):
             return target_type
 
         raise NetLangTypeError(f"Cannot cast from type '{expr_type}' to target type '{target_type}'", ctx)

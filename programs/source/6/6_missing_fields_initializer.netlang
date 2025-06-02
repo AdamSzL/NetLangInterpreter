@@ -1,2 +1,2 @@
-set host: Host <- {
+set host <- Host {
 }

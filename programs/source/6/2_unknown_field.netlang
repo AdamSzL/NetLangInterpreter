@@ -1,4 +1,4 @@
-set hostIP: Host <- {
+set hostIP <- Host {
     name <- "host 1",
     jeiwofwejio <- 5
 }

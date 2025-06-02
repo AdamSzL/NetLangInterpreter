@@ -1,1 +1,1 @@
-Type Error: [Line 1, Column 18] Missing required fields for type 'Host': name, ports
+Type Error: [Line 1, Column 12] Missing required fields for type 'Host': name, ports

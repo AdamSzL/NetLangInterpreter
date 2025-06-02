@@ -1,0 +1,112 @@
+set r1 <- Router {
+    name <- "Central Router",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 10.0.1.1/24
+        },
+        CopperEthernetPort {
+            portId <- "eth1",
+            ip <- 10.0.2.1/24
+        }
+    ],
+    routingTable <- [
+        RoutingEntry {
+            destination <- 10.0.3.0/24,
+            via <- "eth0",
+            nextHop <- 10.0.1.2
+        },
+        RoutingEntry {
+            destination <- 10.0.4.0/24,
+            via <- "eth1",
+            nextHop <- 10.0.2.2
+        }
+    ]
+}
+
+set r2 <- Router {
+    name <- "Router",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 10.0.1.2/24
+        },
+        CopperEthernetPort {
+            portId <- "eth1",
+            ip <- 10.0.3.1/24
+        }
+    ],
+    routingTable <- [
+        RoutingEntry {
+            destination <- 10.0.1.0/24,
+            via <- "eth0"
+        },
+        RoutingEntry {
+            destination <- 10.0.3.0/24,
+            via <- "eth1"
+        },
+        RoutingEntry {
+            destination <- 10.0.4.0/24,
+            via <- "eth0",
+            nextHop <- 10.0.1.1
+        }
+    ]
+}
+
+set r3 <- Router {
+    name <- "Router",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 10.0.2.2/24
+        },
+        CopperEthernetPort {
+            portId <- "eth1",
+            ip <- 10.0.4.1/24
+        }
+    ],
+    routingTable <- [
+        RoutingEntry {
+            destination <- 10.0.2.0/24,
+            via <- "eth0"
+        },
+        RoutingEntry {
+            destination <- 10.0.4.0/24,
+            via <- "eth1"
+        },
+        RoutingEntry {
+            destination <- 10.0.3.0/24,
+            via <- "eth0",
+            nextHop <- 10.0.2.1
+        }
+    ]
+}
+
+set hostA <- Host {
+    name <- "Host A",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 10.0.3.2/24,
+            gateway <- 10.0.3.1
+        }
+    ]
+}
+set hostB <- Host {
+    name <- "Host B",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 10.0.4.2/24,
+            gateway <- 10.0.4.1
+        }
+    ]
+}
+
+
+connect r1.ports<0> to r2.ports<0>
+connect r1.ports<1> to r3.ports<0>
+connect hostA.ports<0> to r2.ports<1>
+connect hostB.ports<0> to r3.ports<1>
+
+send "Hello from Host A!" from hostA.ports<0> to 10.0.4.2

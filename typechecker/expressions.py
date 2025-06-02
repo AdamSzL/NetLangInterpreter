@@ -53,23 +53,8 @@ def visitCIDRLiteralExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.CIDRLit
 def visitObjectInitializerExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.ObjectInitializerExprContext) -> NetLangObject:
     return self.visit(ctx.objectInitializer())
 
-def visitListIndexAccessExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.ListIndexAccessExprContext):
-    return self.visit(ctx.listIndexAccess())
-
-
 def visitObjectInitializer(self: "TypeCheckingVisitor", ctx: NetLangParser.ObjectInitializerContext):
-    if not ctx.objectType() and not ctx.deviceType():
-        if self.expected_type:
-            type_name = self.expected_type
-        else:
-            raise NetLangTypeError("Missing object type in initializer", ctx)
-    elif ctx.objectType():
-        type_name = ctx.objectType().getText()
-    elif ctx.deviceType():
-        type_name = ctx.deviceType().getText()
-    else:
-        raise NetLangTypeError("Invalid initializer", ctx)
-
+    type_name = ctx.objectType().getText()
     if type_name in abstract_types:
         raise NetLangTypeError(
             f"Cannot instantiate abstract type '{type_name}'",

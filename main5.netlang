@@ -1,0 +1,47 @@
+set names: [string] <- ["Adam", "John", "Test"]
+
+names<0> <- []
+
+
+/*set names: [string] <- ["Adam", "John", "test"]
+
+names<0> <- "nowy"
+
+print names
+
+delete names<0>
+
+print names
+
+set host: Switch <- {
+    name <- "Switch 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0"
+        },
+        CopperEthernetPort {
+            portId <- "eth1"
+        }
+    ]
+}
+
+print host.ports.size
+print host.ports
+
+set index: int <- 0
+delete host.ports<index>
+
+print host.ports
+
+print host.ports.size
+
+host.ports<0> <- []
+
+host.ports <- [
+    CopperEthernetPort {
+        portId <- "eth5"
+    }
+]
+
+print host.ports*/
+

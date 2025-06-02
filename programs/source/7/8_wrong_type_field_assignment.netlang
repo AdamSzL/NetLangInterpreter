@@ -1,0 +1,2 @@
+set names: [string] <- ["Adam", "John"]
+names<0> <- ["test"]
