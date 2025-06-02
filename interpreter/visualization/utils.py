@@ -158,9 +158,7 @@ def render_port_info(port: Port, screen, x, y) -> int:
         LogEntry("-------------------")
     ]
 
-    if isinstance(port, WirelessPort):
-        lines.append(LogEntry(f"Frequency: {port.frequency} GHz", (0, 70, 140)))
-    elif isinstance(port, OpticalEthernetPort):
+    if isinstance(port, OpticalEthernetPort):
         lines.append(LogEntry(f"Wavelength: {port.wavelength} nm", (140, 70, 0)))
         lines.append(LogEntry(f"Connector: {port.connector}", (140, 70, 0)))
 
