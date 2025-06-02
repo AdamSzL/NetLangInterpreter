@@ -1,4 +1,6 @@
 from dataclasses import dataclass, field
+from typing import Optional
+
 from shared.errors import NetLangRuntimeError
 
 
@@ -6,7 +8,7 @@ from shared.errors import NetLangRuntimeError
 class Device:
     name: str
     ports: list
-    uid: str = field(default="", init=False)
+    uid: Optional[str] = field(default=None, init=False)
 
     def validate_base_logic(self, ctx):
         seen_port_ids = set()

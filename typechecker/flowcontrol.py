@@ -69,13 +69,45 @@ def visitRepeatWhileLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatW
     self.in_loop = old_flag
 
 
-def visitRepeatTimesLoop(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatTimesLoopContext):
+def visitRepeatTimes(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatTimesContext):
     times_type = self.visit(ctx.expression())
     if times_type != "int":
         raise NetLangTypeError(
             f"Repeat-times count must be an integer (got {times_type} instead)",
             ctx
         )
+
+    index_var_name = ctx.ID().getText()
+
+    old_flag = self.in_loop
+    self.in_loop = True
+    self.push_scope()
+    self.declare_variable(index_var_name, Variable("int", ctx.start.line), ctx)
+    for stmt in ctx.block().statement():
+        self.visit(stmt)
+    self.pop_scope()
+    self.in_loop = old_flag
+
+def visitRepeatRange(self: "TypeCheckingVisitor", ctx: NetLangParser.RepeatRangeContext):
+    from_type = self.visit(ctx.expression(0))
+    to_type = self.visit(ctx.expression(1))
+
+    if from_type != "int" or to_type != "int":
+        raise NetLangTypeError(
+            (
+                f"Repeat-range 'from' and 'to' must be of type int "
+                f"(got: from={from_type}, to={to_type})"
+            ),
+            ctx
+        )
+
+    if ctx.expression(2) is not None:
+        step_type = self.visit(ctx.expression(2))
+        if step_type != "int":
+            raise NetLangTypeError(
+                f"'step' must be of type int (got {step_type})",
+                ctx
+            )
 
     index_var_name = ctx.ID().getText()
 

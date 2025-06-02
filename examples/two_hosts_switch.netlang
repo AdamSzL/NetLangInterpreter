@@ -1,0 +1,34 @@
+set hostA: Host <- {
+    name <- "Host A",
+    ports <- [
+        OpticalEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.1.0/24
+        }
+    ]
+}
+set hostB: Host <- {
+    name <- "Host B",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.1.1/24
+        }
+    ]
+}
+set switch: Switch <- {
+    name <- "Switch",
+    ports <- [
+        OpticalEthernetPort {
+            portId <- "eth0"
+        },
+        CopperEthernetPort {
+            portId <- "eth1"
+        }
+    ]
+}
+
+connect hostA.ports<0> to switch.ports<0>
+connect hostB.ports<0> to switch.ports<1>
+
+send "Hi from Host A" from hostA.ports<0> to 192.168.1.1

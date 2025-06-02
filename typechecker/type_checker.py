@@ -41,8 +41,8 @@ from .operators import (
     visitUnaryExpr
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluate_type_until, evaluate_type_of_parent
-from .devices import visitConnectStatement, visitShowInterfacesStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimesLoop, visitEachLoop, visitBreakStatement, visitContinueStatement
+from .devices import visitConnectStatement
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement
 from .packets import visitSendPacketStatement
 from types import MethodType
 
@@ -101,10 +101,10 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitFieldAssignment = MethodType(visitFieldAssignment, self)
         self.visitListIndexAccess = MethodType(visitListIndexAccess, self)
         self.visitListIndexAssignment = MethodType(visitListIndexAssignment, self)
-        self.visitShowInterfacesStatement = MethodType(visitShowInterfacesStatement, self)
         self.visitIfStatement = MethodType(visitIfStatement, self)
         self.visitRepeatWhileLoop = MethodType(visitRepeatWhileLoop, self)
-        self.visitRepeatTimesLoop = MethodType(visitRepeatTimesLoop, self)
+        self.visitRepeatTimes = MethodType(visitRepeatTimes, self)
+        self.visitRepeatRange = MethodType(visitRepeatRange, self)
         self.visitEachLoop = MethodType(visitEachLoop, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
         self.visitBreakStatement = MethodType(visitBreakStatement, self)

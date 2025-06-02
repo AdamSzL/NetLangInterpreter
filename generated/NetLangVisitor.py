@@ -49,16 +49,6 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#disconnectStatement.
-    def visitDisconnectStatement(self, ctx:NetLangParser.DisconnectStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by NetLangParser#showInterfacesStatement.
-    def visitShowInterfacesStatement(self, ctx:NetLangParser.ShowInterfacesStatementContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by NetLangParser#sendPacketStatement.
     def visitSendPacketStatement(self, ctx:NetLangParser.SendPacketStatementContext):
         return self.visitChildren(ctx)
@@ -94,8 +84,13 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by NetLangParser#repeatTimesLoop.
-    def visitRepeatTimesLoop(self, ctx:NetLangParser.RepeatTimesLoopContext):
+    # Visit a parse tree produced by NetLangParser#RepeatTimes.
+    def visitRepeatTimes(self, ctx:NetLangParser.RepeatTimesContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by NetLangParser#RepeatRange.
+    def visitRepeatRange(self, ctx:NetLangParser.RepeatRangeContext):
         return self.visitChildren(ctx)
 
 

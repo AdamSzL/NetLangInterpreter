@@ -5,7 +5,7 @@ from shared.errors import NetLangRuntimeError
 from shared.model.Port import Port
 from shared.model.Variable import Variable
 from shared.utils.types import type_map
-from shared.model import ConnectorType, Protocol, IPAddress, MACAddress, CIDR
+from shared.model import ConnectorType, IPAddress, MACAddress, CIDR
 from shared.model.base import NetLangObject
 from typing import TYPE_CHECKING
 
@@ -32,8 +32,6 @@ def visitVariableExpr(self: "Interpreter", ctx: NetLangParser.VariableExprContex
 
     if name in ConnectorType.__members__:
         return ConnectorType[name]
-    if name in Protocol.__members__:
-        return Protocol[name]
 
     scope, var_name = self.visit(ctx.scopedIdentifier())
     return scope.variables[var_name].value
@@ -72,6 +70,9 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
         result = type_map[type_name].from_dict(obj, ctx)
     else:
         return obj
+
+    if hasattr(result, "uid") and result.uid is None:
+        result.uid = self.generate_uid()
 
     if isinstance(result, Port) and result.ip is not None and result.mac is not None:
         self.arp_table[str(result.ip.ip)] = result.mac.mac

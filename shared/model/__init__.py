@@ -1,7 +1,7 @@
 from .Host import Host
 from .Router import Router
 from .Switch import Switch
-from .Packet import Packet, Protocol
+from .Packet import Packet
 from .RoutingEntry import RoutingEntry
 from .MACAddress import MACAddress
 from .IPAddress import IPAddress

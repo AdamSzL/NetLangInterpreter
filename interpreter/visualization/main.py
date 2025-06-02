@@ -223,17 +223,26 @@ def forward_packet_from_port(
         elif isinstance(device, Router):
             selected_entry = None
             routing_table_snapshot = device.routingTable[:]
-            dst_mac = arp_table.get(str(packet.destination_ip.ip))
-            packet.destination_mac = dst_mac
+
             for entry in device.routingTable:
                 if packet.destination_ip.ip in entry.destination.current_network():
                     selected_entry = entry
-                    for port in device.ports:
-                        if port.portId == entry.via:
-                            next_port = port.connectedTo
-                            if next_port and next_port not in visited_ports:
-                                port_queue.append((next_port, port))
                     break
+
+            if selected_entry:
+                next_hop_ip = packet.destination_ip.ip
+                if selected_entry.nextHop:
+                    print(selected_entry.nextHop.ip)
+                    next_hop_ip = selected_entry.nextHop.ip
+                dst_mac = arp_table.get(str(next_hop_ip))
+                packet.destination_mac = dst_mac
+
+                for port in device.ports:
+                    if port.portId == selected_entry.via:
+                        next_port = port.connectedTo
+                        if next_port and next_port not in visited_ports:
+                            port_queue.append((next_port, port))
+                        break
 
             if from_port:
                 hops.append(PacketHop(
@@ -249,3 +258,11 @@ def forward_packet_from_port(
             return hops
 
     return hops
+
+def assign_uids_from_connections(self: "Interpreter"):
+    seen_devices = set()
+    for conn in self.connections:
+        for device in [conn.device1, conn.device2]:
+            if hasattr(device, "uid") and device.uid is None and id(device) not in seen_devices:
+                device.uid = self.generate_uid()
+                seen_devices.add(id(device))

@@ -80,24 +80,6 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#disconnectStatement.
-    def enterDisconnectStatement(self, ctx:NetLangParser.DisconnectStatementContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#disconnectStatement.
-    def exitDisconnectStatement(self, ctx:NetLangParser.DisconnectStatementContext):
-        pass
-
-
-    # Enter a parse tree produced by NetLangParser#showInterfacesStatement.
-    def enterShowInterfacesStatement(self, ctx:NetLangParser.ShowInterfacesStatementContext):
-        pass
-
-    # Exit a parse tree produced by NetLangParser#showInterfacesStatement.
-    def exitShowInterfacesStatement(self, ctx:NetLangParser.ShowInterfacesStatementContext):
-        pass
-
-
     # Enter a parse tree produced by NetLangParser#sendPacketStatement.
     def enterSendPacketStatement(self, ctx:NetLangParser.SendPacketStatementContext):
         pass
@@ -161,12 +143,21 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by NetLangParser#repeatTimesLoop.
-    def enterRepeatTimesLoop(self, ctx:NetLangParser.RepeatTimesLoopContext):
+    # Enter a parse tree produced by NetLangParser#RepeatTimes.
+    def enterRepeatTimes(self, ctx:NetLangParser.RepeatTimesContext):
         pass
 
-    # Exit a parse tree produced by NetLangParser#repeatTimesLoop.
-    def exitRepeatTimesLoop(self, ctx:NetLangParser.RepeatTimesLoopContext):
+    # Exit a parse tree produced by NetLangParser#RepeatTimes.
+    def exitRepeatTimes(self, ctx:NetLangParser.RepeatTimesContext):
+        pass
+
+
+    # Enter a parse tree produced by NetLangParser#RepeatRange.
+    def enterRepeatRange(self, ctx:NetLangParser.RepeatRangeContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#RepeatRange.
+    def exitRepeatRange(self, ctx:NetLangParser.RepeatRangeContext):
         pass
 
 

@@ -11,8 +11,6 @@ statement
     | deleteListElementStatement
     | fieldAssignment
     | connectStatement
-    | disconnectStatement
-    | showInterfacesStatement
     | sendPacketStatement
     | ifStatement
     | printStatement
@@ -22,7 +20,6 @@ statement
     | functionCall
     | breakStatement
     | continueStatement
-//    | expression
     ;
 
 
@@ -52,17 +49,8 @@ connectStatement
     : 'connect' fieldAccess 'to' fieldAccess
     ;
 
-disconnectStatement
-    : 'disconnect' (fieldAccess 'from' fieldAccess | scopedIdentifier)
-    ;
-
-showInterfacesStatement
-    : 'show' 'interfaces' 'of' scopedIdentifier
-    ;
-
 sendPacketStatement
-    : 'send' fieldAccess 'from' fieldAccess 'to' IPADDR
-//    | 'send' 'from' fieldAccess 'to' IPADDR 'with' objectInitializer
+    : 'send' STRING 'from' fieldAccess 'to' IPADDR
     ;
 
 ifStatement
@@ -92,7 +80,8 @@ loopStatement
     ;
 
 repeatTimesLoop
-    : 'repeat' expression 'times' 'as' ID block
+    : 'repeat' expression 'times' 'as' ID block # RepeatTimes
+    | 'repeat' 'from' expression 'to' expression ('step' expression)? 'as' ID block # RepeatRange
     ;
 
 repeatWhileLoop
@@ -160,7 +149,6 @@ objectType
     | 'OpticalEthernetPort'
     | 'WirelessPort'
     | 'RoutingEntry'
-    | 'Packet'
     | 'Port'
     ;
 

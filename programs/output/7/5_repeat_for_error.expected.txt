@@ -1,0 +1,4 @@
+Syntax Error: Syntax Error at line 1, column 19:
+repeat from 1 to 5 {
+                   ^
+Unexpected token

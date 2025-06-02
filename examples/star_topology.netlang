@@ -1,0 +1,32 @@
+define createHost(index: int) => Host {
+    return Host {
+        name <- "Host " + index,
+        ports <- [
+            CopperEthernetPort {
+                portId <- "eth0",
+                ip <- 192.168.1.0/24 + index
+            }
+        ]
+    }
+}
+
+set switchPorts: [Port] <- []
+repeat from 1 to 8 as i {
+    set port: CopperEthernetPort <- {
+        portId <- "eth" + i
+    }
+    add port to switchPorts
+}
+set switch: Switch <- {
+    name <- "Hub",
+    ports <- switchPorts
+}
+
+set hosts: [Host] <- []
+repeat 8 times as index {
+    set host: Host <- createHost(index)
+    connect host.ports<0> to switch.ports<index>
+    add host to hosts
+}
+
+send "Hello!" from hosts<0>.ports<0> to 192.168.1.6

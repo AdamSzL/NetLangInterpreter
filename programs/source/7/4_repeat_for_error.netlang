@@ -1,0 +1,4 @@
+set stepVal: string <- "oops"
+repeat from 1 to 5 step stepVal as i {
+    print i
+}

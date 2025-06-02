@@ -1,0 +1,22 @@
+repeat from 1 to 3 as i {
+    print i
+}
+
+repeat from 5 to -1 step -2 as j {
+    print "j = " + j
+}
+
+set start: int <- 2
+set stop: int <- 4
+repeat from start to stop as i {
+    print "i = " + i
+}
+
+repeat from 7 to 7 as i {
+    print "i = " + i
+}
+
+set s: int <- 3
+repeat from 0 to 6 step s as i {
+    print i
+}

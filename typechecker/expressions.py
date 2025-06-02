@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangTypeError, NetLangRuntimeError
-from shared.model import CIDR, ConnectorType, Protocol
+from shared.model import CIDR, ConnectorType
 from shared.model.base import NetLangObject
 from shared.utils.types import type_map, type_field_map, are_types_compatible, abstract_types
 
@@ -30,8 +30,6 @@ def visitVariableExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableEx
     name = ctx.scopedIdentifier().ID().getText()
 
     if name in ConnectorType.__members__:
-        return "string"
-    if name in Protocol.__members__:
         return "string"
 
     self.scoped_identifier_expectation = "variable"

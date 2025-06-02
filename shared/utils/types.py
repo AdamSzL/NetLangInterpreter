@@ -59,7 +59,7 @@ type_field_map = {
             "mtu": "int",
             "connector": "string",
             "gateway": "IP"
-},
+    },
         "readonly": {}
     },
     "WirelessPort": {
@@ -130,16 +130,9 @@ type_field_map = {
             "destination": "CIDR",
             "via": "string"
         },
-        "optional": {},
-        "readonly": {}
-    },
-    "Packet": {
-        "required": {
-            "payload": "string",
-            "protocol": "string",
-            "size": "int"
+        "optional": {
+            "nextHop": "IP"
         },
-        "optional": {},
         "readonly": {}
     }
 }

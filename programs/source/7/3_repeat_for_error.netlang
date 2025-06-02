@@ -1,0 +1,3 @@
+repeat from "a" to "z" as i {
+    print i
+}
