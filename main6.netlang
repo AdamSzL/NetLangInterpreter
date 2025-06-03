@@ -1,4 +1,11 @@
-set x
+set a: IP <- 192.168.1.0
 
+set y: CIDR <- [a]/24
 
-print x
+print y
+
+define test() {
+
+}
+
+print test().hello

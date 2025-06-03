@@ -153,7 +153,7 @@ def serializedATN():
         0,0,0,385,386,5,33,0,0,386,81,1,0,0,0,387,392,3,56,28,0,388,389,
         5,46,0,0,389,391,3,56,28,0,390,388,1,0,0,0,391,394,1,0,0,0,392,390,
         1,0,0,0,392,393,1,0,0,0,393,83,1,0,0,0,394,392,1,0,0,0,395,396,5,
-        32,0,0,396,397,3,48,24,0,397,398,5,33,0,0,398,399,5,52,0,0,399,400,
+        32,0,0,396,397,3,92,46,0,397,398,5,33,0,0,398,399,5,52,0,0,399,400,
         5,66,0,0,400,405,1,0,0,0,401,402,5,69,0,0,402,403,5,52,0,0,403,405,
         5,66,0,0,404,395,1,0,0,0,404,401,1,0,0,0,405,85,1,0,0,0,406,407,
         3,54,27,0,407,409,5,10,0,0,408,410,3,88,44,0,409,408,1,0,0,0,409,
@@ -3756,8 +3756,8 @@ class NetLangParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def scopedIdentifier(self):
-            return self.getTypedRuleContext(NetLangParser.ScopedIdentifierContext,0)
+        def fieldAccess(self):
+            return self.getTypedRuleContext(NetLangParser.FieldAccessContext,0)
 
 
         def DIV(self):
@@ -3802,7 +3802,7 @@ class NetLangParser ( Parser ):
                 self.state = 395
                 self.match(NetLangParser.T__31)
                 self.state = 396
-                self.scopedIdentifier()
+                self.fieldAccess()
                 self.state = 397
                 self.match(NetLangParser.T__32)
                 self.state = 398

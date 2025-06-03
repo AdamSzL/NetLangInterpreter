@@ -72,19 +72,10 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
     return result
 
 def visitCidrLiteral(self: "Interpreter", ctx: NetLangParser.CidrLiteralContext):
-    scoped_ctx = ctx.scopedIdentifier()
-    if scoped_ctx:
-        scope, var_name = self.visit(scoped_ctx)
-        ip_var: Variable = scope.variables[var_name]
-
-        if ip_var.value is None:
-            raise NetLangRuntimeError(f"Variable '{var_name}' is used before being initialized", ctx)
-
-        if not isinstance(ip_var.value, IPAddress):
-            raise NetLangRuntimeError(f"Variable '{var_name}' is not an IP address", ctx)
-
+    if ctx.fieldAccess():
+        ip_value = self.visit(ctx.fieldAccess())
         mask = int(ctx.INT().getText())
-        return CIDR(cast(IPAddress, ip_var.value), mask)
+        return CIDR(cast(IPAddress, ip_value), mask)
 
     else:
         ip: IPAddress = IPAddress(ctx.IPADDR().getText())

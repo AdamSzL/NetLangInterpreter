@@ -215,7 +215,7 @@ expressionList
     ;
 
 cidrLiteral
-    : '[' scopedIdentifier ']' '/' INT
+    : '[' fieldAccess ']' '/' INT
     |  IPADDR '/' INT
     ;
 

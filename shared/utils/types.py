@@ -242,11 +242,15 @@ def get_field_type(type_name: str, field_name: str, ctx) -> str:
             f"Unknown field '{field_name}' for type '{type_name}'. "
             f"Did you mean '{suggestions[0]}'?"
         )
-    else:
+    elif available_fields:
         fields_list = ", ".join(available_fields)
         message = (
             f"Unknown field '{field_name}' for type '{type_name}'. "
             f"Available fields: {fields_list}."
+        )
+    else:
+        message = (
+            f"Unknown field '{field_name}' for type '{type_name}'."
         )
 
     raise NetLangTypeError(message, ctx)

@@ -1,9 +1,5 @@
 from antlr4.error.ErrorListener import ErrorListener
 
-# class NetLangErrorListener(ErrorListener):
-#     def syntaxError(self, recognizer, offendingSymbol, line: int, column: int, msg: str, e):
-#         raise NetLangSyntaxError(f"[Line {line}, Column {column}]: {msg}")
-
 class NetLangErrorListener(ErrorListener):
     def __init__(self, source_code: str):
         self.source_lines = source_code.splitlines()

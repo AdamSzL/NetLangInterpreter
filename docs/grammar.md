@@ -21,9 +21,8 @@ A NetLang program consists of a sequence of statements, followed by the end of f
 The core building blocks of the language:
 
 ```
-statement:
-    : listIndexAssignment
-    | variableDeclaration
+statement
+    : variableDeclaration
     | variableAssignment
     | addToListStatement
     | deleteListElementStatement
@@ -47,10 +46,10 @@ statement:
 
 ```antlr
 variableDeclaration
-    : 'set' ID COLON type ASSIGN expression
+    : 'set' ID (COLON type)? (ASSIGN expression)?
     ;
 ```
-Declares a new variable with type and value.
+Declares a new variable. Both type and expression are optional. If type is missing - type inference is used. If expression is missing - variable is uninitialized. If both are missing - the type checker reports an error.
 
 ```antlr
 variableAssignment
@@ -72,10 +71,10 @@ Adds a new element with value 'expression' to a list.
 
 ```antlr
 deleteListElementStatement
-    : 'delete' listIndexAccess
+    : 'delete' fieldAccess
     ;
 ```
-Removes an element from a specified index of a list.
+Removes an element from a specified index of a list (represented by 'fieldAccess').
 
 ---
 
@@ -226,12 +225,16 @@ Invokes a function referenced by scopedIdentifier, with parameters specified by 
 ### Break ('exit') and continue ('next')
 
 ```antlr
-breakStatement: 'exit';
+breakStatement
+    : EXIT
+    ;
 ```
 The 'exit' keyword is used to break from a loop.
 
 ```antlr
-continueStatement: 'next';
+continueStatement
+    : NEXT
+    ;
 ```
 The 'next' keyword is used to skip the current iteration and proceed to the next one.
 
@@ -250,7 +253,6 @@ type
     | 'MAC'
     | '[' type ']'
     | objectType
-    | deviceType
     ;
 ```
 All types in NetLang.
@@ -260,21 +262,14 @@ objectType
     : 'CIDR'
     | 'CopperEthernetPort'
     | 'OpticalEthernetPort'
-    | 'WirelessPort'
     | 'RoutingEntry'
     | 'Port'
-    ;
-```
-Types of objects in NetLang. These can be used in objectInitializer to construct objects.
-
-```antlr
-deviceType
-    : 'Router'
+    | 'Router'
     | 'Host'
     | 'Switch'
     ;
 ```
-Types of devices in NetLang. These can also be used in objectInitializer.
+Types of objects in NetLang. These can be used in objectInitializer to construct objects.
 
 ---
 
@@ -304,10 +299,19 @@ Scoped identifier is used to access variables and functions defined in different
 
 Expressions support arithmetic, logical, comparison, and function calls. Expressions are chained in a way that supports proper operator precedence. Part of the expression tree:
 ```antlr
-expression: orExpr;
-orExpr: andExpr ('||' andExpr)*;
-andExpr: notExpr ('&&' notExpr)*;
-notExpr: '!' notExpr | comparisonExpr;
+expression
+    : orExpr
+    ;
+orExpr
+    : andExpr (OR andExpr)*
+    ;
+andExpr
+    : notExpr (AND notExpr)*
+    ;
+notExpr
+    : NOT notExpr
+    | comparisonExpr
+    ;
 ...
 ```
 Full tree is available in the NetLang.g4 file.
@@ -337,7 +341,6 @@ atomExpr
     | objectInitializer               # ObjectInitializerExpr
     | fieldAccess                     # FieldAccessExpr
     | functionCall                    # FunctionCallExpr
-    | listIndexAccess                 # ListIndexAccessExpr
     ;
 ```
 
@@ -365,7 +368,7 @@ A list of values separated by a comma.
 #### CIDR literal
 ```antlr
 cidrLiteral
-    : '[' scopedIdentifier ']' '/' INT
+    : '[' fieldAccess ']' '/' INT
     |  IPADDR '/' INT
     ;
 ```
@@ -377,9 +380,10 @@ An IP address with a subnet mask. Can be used either with an identifier represen
 
 ```antlr
 objectInitializer
-    : (objectType | deviceType)? '{' objectFieldList? '}'
+    : objectType '{' objectFieldList? '}'
     ;
 ```
+
 ```antlr
 objectFieldList
     : objectField (COMMA objectField)*

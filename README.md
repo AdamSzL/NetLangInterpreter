@@ -1,16 +1,19 @@
-## 🚀 How to run
+# 🌐 NetLang
 
-1. Download the project
- ```bash
- git clone https://github.com/AdamSzL/NetLangInterpreter.git
- cd NetLangInterpreter
- ```
-2. Create and activate a virtual environment (optional).
-3. Install dependencies
-```bash
-  pip install -r requirements.txt
-```
-4. Run the interpreter with a sample program:
-```bash
-  python main.py programs/15.netlang
-```
+**NetLang** is a custom programming language designed for modeling and simulating computer networks.  
+The project includes an interpreter built with Python and ANTLR, as well as a simple visualization system.
+
+---
+
+## 📚 Documentation Overview
+
+This project contains both user and developer documentation. You can find it in the [`docs/`](docs/) directory.
+
+- 📦 [Installation and Usage Guide](docs/installation.md) – how to install and run the interpreter
+- ✏️ [Language Specification](docs/language.md) – syntax and semantics of NetLang
+- 🧪 [Example Programs](docs/examples.md) – sample programs with explanations
+
+- 📖 [ANTLR Grammar Description](docs/grammar.md) – formal grammar used to define NetLang
+- 🛠️ [Interpreter Implementation Report](docs/interpreter.md) – technical report on architecture and design decisions
+
+---

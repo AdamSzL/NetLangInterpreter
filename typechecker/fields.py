@@ -2,6 +2,7 @@ from generated.NetLangParser import NetLangParser
 from shared.errors import NetLangRuntimeError, NetLangTypeError
 from typing import TYPE_CHECKING
 
+from shared.model.Function import Function
 from shared.utils.types import get_field_type, are_types_compatible, type_field_map
 
 if TYPE_CHECKING:
@@ -30,6 +31,11 @@ def evaluate_type_of_parent(self: "TypeCheckingVisitor", ctx: NetLangParser.Fiel
 
 def evaluate_type_until(self: "TypeCheckingVisitor", ctx: NetLangParser.FieldAccessContext, stop_before_last: bool = False) -> str:
     current_type = self.visit(ctx.scopedIdentifier())
+    if isinstance(current_type, Function):
+        raise NetLangTypeError(
+            "Functions cannot be used in field access expressions.",
+            ctx
+        )
     limit = len(ctx.children)
 
     if stop_before_last:

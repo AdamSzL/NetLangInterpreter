@@ -125,4 +125,12 @@ def visitObjectInitializer(self: "TypeCheckingVisitor", ctx: NetLangParser.Objec
     return type_name
 
 def visitCidrLiteral(self: "TypeCheckingVisitor", ctx: NetLangParser.CidrLiteralContext):
+    if ctx.fieldAccess():
+        ip_type = self.visit(ctx.fieldAccess())
+        if ip_type != "IP":
+            raise NetLangTypeError(
+                f"Expected IP inside CIDR, but got {ip_type}",
+                ctx.fieldAccess()
+            )
+
     return "CIDR"
