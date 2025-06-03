@@ -48,13 +48,16 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
             self.visit(stmt)
 
     def visitPrintStatement(self, ctx):
-        value = self.visit(ctx.expression())
-        if isinstance(value, bool):
-            print("true" if value else "false")
-        elif value is None:
-            print("void")
-        else:
-            print(value)
+        values = [self.visit(expr) for expr in ctx.expressionList().expression()]
+        stringified = []
+        for value in values:
+            if isinstance(value, bool):
+                stringified.append("true" if value else "false")
+            elif value is None:
+                stringified.append("void")
+            else:
+                stringified.append(str(value))
+        print(" ".join(stringified))
 
     def __init__(self):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)

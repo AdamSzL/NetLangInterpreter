@@ -89,7 +89,7 @@ def serializedATN():
         24,12,0,178,23,1,0,0,0,179,183,5,10,0,0,180,182,3,2,1,0,181,180,
         1,0,0,0,182,185,1,0,0,0,183,181,1,0,0,0,183,184,1,0,0,0,184,186,
         1,0,0,0,185,183,1,0,0,0,186,187,5,11,0,0,187,25,1,0,0,0,188,189,
-        5,12,0,0,189,190,3,56,28,0,190,27,1,0,0,0,191,195,3,30,15,0,192,
+        5,12,0,0,189,190,3,82,41,0,190,27,1,0,0,0,191,195,3,30,15,0,192,
         195,3,32,16,0,193,195,3,34,17,0,194,191,1,0,0,0,194,192,1,0,0,0,
         194,193,1,0,0,0,195,29,1,0,0,0,196,197,5,13,0,0,197,198,3,56,28,
         0,198,199,5,14,0,0,199,200,5,15,0,0,200,201,5,65,0,0,201,202,3,24,
@@ -1316,8 +1316,8 @@ class NetLangParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def expression(self):
-            return self.getTypedRuleContext(NetLangParser.ExpressionContext,0)
+        def expressionList(self):
+            return self.getTypedRuleContext(NetLangParser.ExpressionListContext,0)
 
 
         def getRuleIndex(self):
@@ -1349,7 +1349,7 @@ class NetLangParser ( Parser ):
             self.state = 188
             self.match(NetLangParser.T__11)
             self.state = 189
-            self.expression()
+            self.expressionList()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)

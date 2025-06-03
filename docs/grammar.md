@@ -8,7 +8,7 @@ This document provides a detailed overview of the grammar rules defined in the `
 
 ## Program Structure
 
-```
+```antlr
 program: statement* EOF;
 ```
 
@@ -20,7 +20,7 @@ A NetLang program consists of a sequence of statements, followed by the end of f
 
 The core building blocks of the language:
 
-```
+```antlr
 statement
     : variableDeclaration
     | variableAssignment
@@ -112,9 +112,10 @@ Draws the network graph and starts the packet animation.
 
 ```antlr
 printStatement
-    : 'print' expression
+    : 'print' expressionList
     ;
 ```
+Prints a list of values to the console.
 
 ---
 

@@ -1,0 +1,81 @@
+set router <- Router {
+    name <- "Router 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.1.1/24
+        },
+        CopperEthernetPort {
+            portId <- "eth1",
+            ip <- 192.168.2.1/24
+        },
+        CopperEthernetPort {
+            portId <- "eth2",
+            ip <- 192.168.3.1/24
+        }
+    ],
+    routingTable <- [
+        RoutingEntry {
+            destination <- 192.168.1.0/24,
+            via <- "eth0"
+        },
+        RoutingEntry {
+            destination <- 192.168.2.0/24,
+            via <- "eth1"
+        },
+        RoutingEntry {
+            destination <- 0.0.0.0/0,
+            via <- "eth2"
+        }
+    ]
+}
+
+define createSwitch(name: string) => Switch {
+    return Switch {
+        name <- name,
+        ports <- [
+            CopperEthernetPort {
+                portId <- "eth0"
+            },
+            CopperEthernetPort {
+                portId <- "eth1"
+            },
+            CopperEthernetPort {
+                portId <- "eth2"
+            }
+        ]
+    }
+}
+
+define createHost(index: int, portIP: CIDR, portGateway: IP) => Host {
+    return Host {
+        name <- "Host " + index,
+        ports <- [
+            CopperEthernetPort {
+                portId <- "eth0",
+                ip <- portIP,
+                gateway <- portGateway
+            }
+        ]
+    }
+}
+
+set baseIP <- 192.168.1.1/24
+set firstHost: Host
+repeat 3 times as index {
+    set switch <- createSwitch("Switch " + index)
+    connect switch.ports<0> to router.ports<index>
+
+    set offset <- 256 * index
+    set offsetCIDR <- baseIP + offset
+    set firstHost <- createHost(index * 2, offsetCIDR + 1, offsetCIDR.ip)
+    set secondHost <- createHost(index * 2 + 1, offsetCIDR + 2, offsetCIDR.ip)
+    connect firstHost.ports<0> to switch.ports<1>
+    connect secondHost.ports<0> to switch.ports<2>
+
+    if index == 0 {
+        ~firstHost <- firstHost
+    }
+}
+
+send "Hello from first Host!" from firstHost.ports<0> to 192.168.3.2

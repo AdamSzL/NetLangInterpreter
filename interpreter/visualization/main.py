@@ -151,9 +151,14 @@ def handle_packet_arrival(hop: PacketHop, log_lines: list[LogEntry]) -> None:
         ))
 
     elif isinstance(dst_device, Host):
-        if hop.to_port.mac.mac == hop.packet_snapshot.destination_mac:
+        matched_port = next(
+            (port for port in dst_device.ports if port.mac.mac == hop.packet_snapshot.destination_mac),
+            None
+        )
+
+        if matched_port:
             log_lines.append(LogEntry(
-                f"{dst_device.name} accepted packet",
+                f"{dst_device.name} accepted packet on port {matched_port.portId}",
                 (0, 128, 0)
             ))
         else:
@@ -163,9 +168,14 @@ def handle_packet_arrival(hop: PacketHop, log_lines: list[LogEntry]) -> None:
             ))
 
     elif isinstance(dst_device, Router):
-        if hop.to_port.ip.ip.ip == hop.packet_snapshot.destination_ip.ip:
+        matched_port = next(
+            (port for port in dst_device.ports if port.ip.ip.ip == hop.packet_snapshot.destination_ip.ip),
+            None
+        )
+
+        if matched_port:
             log_lines.append(LogEntry(
-                f"{dst_device.name} accepted packet",
+                f"{dst_device.name} accepted packet on port {matched_port.portId}",
                 (0, 128, 0)
             ))
         else:
@@ -252,9 +262,9 @@ def forward_packet_from_port(
                     routing_table_snapshot=routing_table_snapshot
                 ))
 
-
-        if current_port.mac.mac == packet.destination_mac and current_port.ip.ip.ip == packet.destination_ip.ip:
-            return hops
+        for port in current_port.owner.ports:
+            if port.mac.mac == packet.destination_mac and port.ip.ip.ip == packet.destination_ip.ip:
+                return hops
 
     return hops
 

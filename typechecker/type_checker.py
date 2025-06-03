@@ -53,7 +53,8 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
             self.visit(stmt)
 
     def visitPrintStatement(self, ctx:NetLangParser.PrintStatementContext):
-        self.visit(ctx.expression())
+        for expr in ctx.expressionList().expression():
+            self.visit(expr)
 
     def __init__(self):
         self.visitVariableDeclaration = MethodType(visitVariableDeclaration, self)

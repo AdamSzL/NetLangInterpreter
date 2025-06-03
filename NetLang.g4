@@ -65,7 +65,7 @@ block
     ;
 
 printStatement
-    : 'print' expression
+    : 'print' expressionList
     ;
 
 loopStatement

@@ -74,10 +74,11 @@ def visitObjectInitializer(self: "Interpreter", ctx: NetLangParser.ObjectInitial
 def visitCidrLiteral(self: "Interpreter", ctx: NetLangParser.CidrLiteralContext):
     if ctx.fieldAccess():
         ip_value = self.visit(ctx.fieldAccess())
-        mask = int(ctx.INT().getText())
-        return CIDR(cast(IPAddress, ip_value), mask)
-
     else:
-        ip: IPAddress = IPAddress(ctx.IPADDR().getText())
-        mask: int = int(ctx.INT().getText())
-        return CIDR(ip, mask)
+        ip_value = IPAddress(ctx.IPADDR().getText())
+
+    mask: int = int(ctx.INT().getText())
+
+    if not (0 <= mask <= 32):
+        raise NetLangRuntimeError(f"CIDR mask must be between 0 and 32, got {mask}", ctx)
+    return CIDR(ip_value, mask)

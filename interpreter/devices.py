@@ -24,6 +24,12 @@ def visitConnectStatement(self: "Interpreter", ctx: NetLangParser.ConnectStateme
             ctx
         )
 
+    if port1.owner.uid == port2.owner.uid:
+        raise NetLangRuntimeError(
+            "Cannot connect two ports belonging to the same device",
+            ctx
+        )
+
     port1.connectedTo = port2
     port2.connectedTo = port1
 
