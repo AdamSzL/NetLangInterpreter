@@ -16,9 +16,16 @@ if TYPE_CHECKING:
 
 def visitVariableDeclaration(self: "Interpreter", ctx: NetLangParser.VariableDeclarationContext):
     name: str = ctx.ID().getText()
-    value = self.visit(ctx.expression())
+    has_type = ctx.type_() is not None
+    has_expr = ctx.expression() is not None
 
-    if ctx.type_():
+    if has_type and not has_expr:
+        declared_type = ctx.type_().getText()
+        self.declare_variable(name, Variable(declared_type, ctx.start.line, value=None), ctx)
+        return None
+
+    value = self.visit(ctx.expression())
+    if has_type:
         declared_type = ctx.type_().getText()
     else:
         declared_type = get_typename(value)

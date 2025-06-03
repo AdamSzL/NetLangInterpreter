@@ -21,7 +21,7 @@ statement
     ;
 
 variableDeclaration
-    : 'set' ID (COLON type)? ASSIGN expression
+    : 'set' ID (COLON type)? (ASSIGN expression)?
     ;
 
 variableAssignment

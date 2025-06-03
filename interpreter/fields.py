@@ -67,6 +67,8 @@ def evaluateFieldAccessUntil(
 ):
     scope, var_name = self.visit(ctx.scopedIdentifier())
     current = scope.variables[var_name].value
+    if current is None:
+        raise NetLangRuntimeError(f"Variable '{var_name}' is used before being initialized", ctx)
 
     end = len(ctx.children)
 

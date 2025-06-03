@@ -1,0 +1,1 @@
+Type Error: [Line 1, Column 0] Variable 'number' must have either a type or a value (or both)

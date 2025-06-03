@@ -1,3 +1,4 @@
+import difflib
 from typing import Any, cast, Optional
 
 from shared.errors import NetLangTypeError
@@ -221,7 +222,31 @@ def get_field_type(type_name: str, field_name: str, ctx) -> str:
         else:
             break
 
-    raise NetLangTypeError(
-        f"Unknown field '{field_name}' for type '{type_name}'",
-        ctx
-    )
+    available_fields = set()
+    current = type_name
+    while True:
+        field_sets = type_field_map.get(current)
+        if field_sets:
+            for section in ["required", "optional", "readonly"]:
+                available_fields.update(field_sets.get(section, {}).keys())
+        if current in type_hierarchy:
+            current = type_hierarchy[current]
+        else:
+            break
+
+    available_fields = list(available_fields)
+    suggestions = difflib.get_close_matches(field_name, available_fields, n=1, cutoff=0.7)
+
+    if suggestions:
+        message = (
+            f"Unknown field '{field_name}' for type '{type_name}'. "
+            f"Did you mean '{suggestions[0]}'?"
+        )
+    else:
+        fields_list = ", ".join(available_fields)
+        message = (
+            f"Unknown field '{field_name}' for type '{type_name}'. "
+            f"Available fields: {fields_list}."
+        )
+
+    raise NetLangTypeError(message, ctx)

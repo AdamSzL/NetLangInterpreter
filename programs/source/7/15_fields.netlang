@@ -1,0 +1,6 @@
+set host <- Host {
+    name <- "Host 1",
+    ports <- []
+}
+
+host.namef <- "Host 2"
