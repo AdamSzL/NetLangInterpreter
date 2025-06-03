@@ -1,6 +1,6 @@
 # NetLang Grammar Documentation
 
-This document provides a detailed overview of the grammar rules defined in the `NetLang.g4` file used by the NetLang interpreter.
+This document provides a detailed overview of the grammar rules defined in the [`NetLang.g4`](../NetLang.g4). file used by the NetLang interpreter.
 
 ---
 
