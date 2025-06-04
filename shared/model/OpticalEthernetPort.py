@@ -31,3 +31,6 @@ class OpticalEthernetPort(NetLangObject, Port):
 
     def __eq__(self, other):
         return isinstance(other, OpticalEthernetPort) and self.mac == other.mac
+
+    def __repr__(self):
+        return f"OpticalEthernetPort(portId='{self.portId}', ip={self.ip}, mac={self.mac})"

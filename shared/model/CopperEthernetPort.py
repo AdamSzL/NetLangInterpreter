@@ -21,3 +21,6 @@ class CopperEthernetPort(NetLangObject, Port):
 
     def __eq__(self, other):
         return isinstance(other, CopperEthernetPort) and self.mac == other.mac
+
+    def __repr__(self):
+        return f"CopperEthernetPort(portId='{self.portId}', ip={self.ip}, mac={self.mac})"
