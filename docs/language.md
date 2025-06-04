@@ -315,13 +315,23 @@ add value to list
 
 ```netlang
 add "Alice" to names
-add CopperEthernetPort {
-    portId <- "eth2"
-} to host.ports
 ```
 
-- `fieldAccess` must refer to a list
-- The type of `expression` must match the element type of the list
+```netlang
+set hosts: [Host] <- []
+add Host {
+    name <- "Host 1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 192.168.1.0/24
+        }
+    ]
+} to hosts
+```
+
+- `list` refers to a variable that is a list of any type
+- The type of `value` must match the element type of the list
 
 ---
 
