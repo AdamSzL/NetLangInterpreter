@@ -11,6 +11,7 @@ Each example demonstrates different aspects of the language such as variable usa
 - [Simple Routing](simple_routing.md)
 - [Star Topology](star_topology.md)
 - [Two Hosts with Switch](two_hosts_switch.md)
+- [Longest Prefix](longest_prefix.md)
 
 ---
 

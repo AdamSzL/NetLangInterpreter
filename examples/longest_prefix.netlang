@@ -1,0 +1,56 @@
+set hosts: [Host] <- []
+set subnets: [CIDR] <- [10.0.0.2/24, 172.16.0.2/16, 172.16.1.100/24]
+set gateways: [IP] <- [10.0.0.1, 172.16.0.1, 172.16.1.1]
+
+repeat 3 times as index {
+    set host <- Host {
+        name <- "Host " + index,
+        ports <- [
+            CopperEthernetPort {
+                portId <- "eth0",
+                ip <- subnets<index>,
+                gateway <- gateways<index>
+            },
+            CopperEthernetPort {
+                portId <- "eth1",
+                ip <- (subnets<index>) + 1,
+                gateway <- gateways<index>
+            }
+        ]
+    }
+    add host to hosts
+}
+
+set R1 <- Router {
+    name <- "Router1",
+    ports <- [
+        CopperEthernetPort {
+            portId <- "eth0",
+            ip <- 10.0.0.1/24
+        },
+        CopperEthernetPort {
+            portId <- "eth1",
+            ip <- 172.16.0.1/16
+        },
+        CopperEthernetPort {
+            portId <- "eth2",
+            ip <- 172.16.1.1/24
+        }
+    ],
+    routingTable <- [
+        RoutingEntry {
+            destination <- 172.16.0.0/16,
+            via <- "eth1"
+        },
+        RoutingEntry {
+            destination <- 172.16.1.0/24,
+            via <- "eth2"
+        }
+    ]
+}
+
+connect hosts<0>.ports<0> to R1.ports<0>
+connect R1.ports<1> to hosts<1>.ports<0>
+connect R1.ports<2> to hosts<2>.ports<0>
+
+send "Hello" from hosts<0>.ports<0> to 172.16.1.100

@@ -17,6 +17,8 @@ class Switch(NetLangObject, Device):
         switch.validate_logic(ctx)
 
         for port in ports:
+            if port.owner is not None:
+                raise NetLangRuntimeError(f"Port with id {port.portId} is already owned by device {switch.name}", ctx)
             port.owner = switch
 
         for port in ports:

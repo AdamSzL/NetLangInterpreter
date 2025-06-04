@@ -5,6 +5,7 @@ from shared.model import Host, Switch, Router
 from shared.model.Packet import Packet
 from shared.model.Connection import Connection
 from shared.model.Port import Port
+from shared.utils.errors import NetLangRuntimeError
 from .constants import SCREEN_WIDTH, SCREEN_HEIGHT, INFO_PANEL_WIDTH, NODE_RADIUS, icons, ICON_SIZE, LOG_PANEL_HEIGHT, suppress_stdout, \
     font, BACKGROUND_COLOR
 from .utils import get_device_type, build_uid_map, to_screen, draw_graph, LogEntry, show_constructed_frame, \
@@ -19,7 +20,7 @@ from typing import TYPE_CHECKING, Optional, cast
 if TYPE_CHECKING:
     from interpreter.interpreter import Interpreter
 
-def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet):
+def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet, ctx):
     def init_pygame_window():
         pygame.init()
         screen = pygame.display.set_mode((SCREEN_WIDTH + INFO_PANEL_WIDTH, SCREEN_HEIGHT + LOG_PANEL_HEIGHT))
@@ -78,13 +79,14 @@ def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet):
                 pending_log_hop = current_hop_index
 
     G = nx.Graph()
+    G.add_node(packet.source.owner.uid)
     for conn in self.connections:
         G.add_node(conn.device1.uid)
         G.add_node(conn.device2.uid)
         G.add_edge(conn.device1.uid, conn.device2.uid)
     raw_pos = nx.spring_layout(G, seed=42, k=0.8)
     pos = {uid: to_screen(x, y) for uid, (x, y) in raw_pos.items()}
-    uid_to_device = build_uid_map(self.connections)
+    uid_to_device = build_uid_map(self.connections, packet.source.owner)
     selected_device = None
     log_lines = []
     screen, clock = init_pygame_window()
@@ -105,7 +107,7 @@ def draw_graph_and_animate_packet(self: "Interpreter", packet: Packet):
         packet.destination_mac = dst_mac
         show_constructed_frame(packet, log_lines)
         frame_waiting = True
-        packet_hops = forward_packet_from_port(packet, self.arp_table)
+        packet_hops = forward_packet_from_port(packet, self.arp_table, ctx)
 
     running = True
     while running:
@@ -197,15 +199,28 @@ def handle_packet_arrival(hop: PacketHop, log_lines: list[LogEntry]) -> None:
 
 def forward_packet_from_port(
     packet: Packet,
-    arp_table: dict[str, str]
+    arp_table: dict[str, str],
+    ctx
 ) -> list[PacketHop]:
     visited_ports = set()
     port_queue = []
     hops: list[PacketHop] = []
 
     start_port = packet.source
+    source_device = start_port.owner
+
+    for port in source_device.ports:
+        if port.ip.ip.ip == packet.destination_ip.ip:
+            hops.append(PacketHop(start_port, port, copy.deepcopy(packet)))
+            return hops
+
     if start_port.connectedTo:
         port_queue.append((start_port.connectedTo, start_port))
+    else:
+        raise NetLangRuntimeError(
+            f"Cannot send packet: port '{start_port.portId}' is not connected to any other device",
+            ctx
+        )
 
     while port_queue:
         current_port, from_port = port_queue.pop(0)
@@ -231,13 +246,19 @@ def forward_packet_from_port(
                 hops.append(PacketHop(from_port, current_port, copy.deepcopy(packet)))
 
         elif isinstance(device, Router):
-            selected_entry = None
             routing_table_snapshot = device.routingTable[:]
 
+            best_entry = None
+            longest_prefix = -1
+
             for entry in device.routingTable:
-                if packet.destination_ip.ip in entry.destination.current_network():
-                    selected_entry = entry
-                    break
+                network = entry.destination.current_network()
+                if packet.destination_ip.ip in network:
+                    if network.prefixlen > longest_prefix:
+                        best_entry = entry
+                        longest_prefix = network.prefixlen
+
+            selected_entry = best_entry
 
             if selected_entry:
                 next_hop_ip = packet.destination_ip.ip

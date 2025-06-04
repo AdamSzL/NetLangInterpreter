@@ -1,5 +1,1 @@
-192.168.1.1/24
-192.168.2.1/24
-eth2
-192.168.4.1/24
-192.168.2.0/24
+Runtime Error: [Line 23, Column 0] Cannot modify ports of the device 'router 1'

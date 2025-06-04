@@ -1,4 +1,6 @@
 from generated.NetLangParser import NetLangParser
+from shared.model.Device import Device
+from shared.model.Port import Port
 from shared.utils.errors import NetLangRuntimeError
 from typing import TYPE_CHECKING
 
@@ -12,6 +14,9 @@ def visitAddToListStatement(self: "Interpreter", ctx: NetLangParser.AddToListSta
     parent = self.evaluateParentOfAccess(field_access_ctx)
     target_list = self.visit(field_access_ctx)
     target_list.append(value)
+
+    if isinstance(parent, Device) and isinstance(value, Port):
+        raise NetLangRuntimeError(f"Cannot modify ports of the device '{parent.name}'", ctx)
 
     if hasattr(parent, "validate_logic") and callable(parent.validate_logic):
         parent.validate_logic(ctx)

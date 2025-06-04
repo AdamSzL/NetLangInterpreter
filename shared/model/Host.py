@@ -17,6 +17,8 @@ class Host(NetLangObject, Device):
         host.validate_logic(ctx)
 
         for port in ports:
+            if port.owner is not None:
+                raise NetLangRuntimeError(f"Port with id {port.portId} is already owned by device '{host.name}'", ctx)
             port.owner = host
 
         for port in ports:

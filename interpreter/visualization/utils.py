@@ -145,8 +145,8 @@ def get_device_type(device) -> str:
         return "switch"
     return "unknown"
 
-def build_uid_map(connections):
-    uid_map = {}
+def build_uid_map(connections, start_device):
+    uid_map = {start_device.uid: start_device}
     for conn in connections:
         uid_map[conn.device1.uid] = conn.device1
         uid_map[conn.device2.uid] = conn.device2

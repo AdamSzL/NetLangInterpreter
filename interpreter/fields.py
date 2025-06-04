@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
+from shared.model.Device import Device
+from shared.model.Port import Port
 from shared.utils.errors import NetLangRuntimeError
 from shared.model import IPAddress, MACAddress
 
@@ -39,6 +41,9 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
             MACAddress.register(value.mac, ctx)
             self.arp_table[str(parent.ip.ip)] = value.mac
 
+        elif field_name == "ports":
+            raise NetLangRuntimeError(f"Cannot modify ports of the device '{parent.name}'", ctx)
+
         setattr(parent, field_name, value)
 
         if hasattr(parent, "validate_logic") and callable(parent.validate_logic):
@@ -46,8 +51,13 @@ def visitFieldAssignment(self: "Interpreter", ctx: NetLangParser.FieldAssignment
 
         return value
     elif last_operator == "<":
+        object_parent = self.evaluateFieldAccessUntil(access, stop_before_last_dot=True)
         parent = self.evaluateFieldAccessUntil(access, stop_before_last_index=True)
         index = int(self.visit(last_operand))
+
+        if object_parent is not None and isinstance(object_parent, Device) and isinstance(value, Port):
+            raise NetLangRuntimeError(f"Cannot modify ports of the device '{object_parent.name}'", ctx)
+
         try:
             parent[index] = value
         except:

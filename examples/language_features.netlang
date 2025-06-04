@@ -1,0 +1,25 @@
+set name <- "Adam"
+
+//print namfe
+
+/*set port <- CopperEthernetPort {
+    portId <- "eth0",
+    ipd <- 192.168.1.0/24
+}*/
+
+/*repeat from 10 to 0 step -2 as index {
+    if index == 6 {
+        next
+    }
+    else if index == 4 {
+        exit
+    }
+    print index
+}*/
+
+//print [2.3, 5.6, 0.8] as [int]
+
+//set x <- "5.2" as float
+//print x + 2.4
+
+//print 5 \ 2, 5 / 2

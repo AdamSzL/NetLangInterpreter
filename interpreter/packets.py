@@ -15,4 +15,4 @@ def visitSendPacketStatement(self: "Interpreter", ctx: NetLangParser.SendPacketS
     packet.source = port
     packet.destination_ip = target_ip
 
-    self.draw_graph_and_animate_packet(packet)
+    self.draw_graph_and_animate_packet(packet, ctx)
