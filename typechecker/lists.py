@@ -1,5 +1,5 @@
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.utils.errors import NetLangTypeError
 
 from typing import TYPE_CHECKING
 

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from shared.errors import NetLangRuntimeError
 from shared.model import IPAddress
 from shared.model.CIDR import CIDR
 from shared.model.base import NetLangObject

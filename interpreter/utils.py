@@ -1,7 +1,3 @@
-from typing import Any
-
-from shared.errors import NetLangRuntimeError, NetLangTypeError
-
 def get_interface_label(port_id: str, bandwidth: int) -> str:
     if bandwidth == 10:
         prefix = "Ethernet"

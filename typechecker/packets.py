@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangTypeError
-from shared.model.Variable import Variable
+from shared.utils.errors import NetLangTypeError
 from shared.utils.types import are_types_compatible
 
 if TYPE_CHECKING:

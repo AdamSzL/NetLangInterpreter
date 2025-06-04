@@ -2,7 +2,6 @@ import ipaddress
 from dataclasses import dataclass
 from typing import cast
 
-from shared.errors import NetLangRuntimeError
 from shared.model.IPAddress import IPAddress
 from shared.model.base import NetLangObject
 

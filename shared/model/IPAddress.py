@@ -1,8 +1,7 @@
 import ipaddress
-from dataclasses import dataclass
 from typing import ClassVar
 
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 
 class IPAddress:
     active_addresses: ClassVar[set[str]] = set()

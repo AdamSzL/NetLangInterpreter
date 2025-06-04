@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from generated.NetLangVisitor import NetLangVisitor
 from shared.model import Connection
-from shared.scopes import ScopedVisitorBase
+from shared.utils.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier,assign_device_uids, generate_uid
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, visitFunctionDeclarationStatement
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral, getListAndIndex

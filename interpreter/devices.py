@@ -1,11 +1,6 @@
-from rich.table import Table
-from rich.text import Text
-
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError
-from .utils import get_interface_label
-from shared.logging import log
-from shared.model import Host, Router, Switch, Connection
+from shared.utils.errors import NetLangRuntimeError
+from shared.model import Connection
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

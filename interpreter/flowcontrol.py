@@ -1,7 +1,7 @@
 from generated.NetLangParser import NetLangParser
 from typing import TYPE_CHECKING
 
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.utils.errors import NetLangRuntimeError
 from shared.model.Variable import Variable
 from typechecker.flowcontrol import BreakException, ContinueException
 

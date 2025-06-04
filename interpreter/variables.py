@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 from generated.NetLangParser import NetLangParser
-from shared.model.Device import Device
-from shared.model.Port import Port
 from shared.model.Scope import Scope
 from shared.model.Variable import Variable
-from shared.model.base import NetLangObject
-from shared.errors import NetLangRuntimeError
-from shared.utils.types import type_map, reverse_type_map, get_typename
+from shared.utils.errors import NetLangRuntimeError
+from shared.utils.types import get_typename
 from typing import TYPE_CHECKING
 import uuid
 

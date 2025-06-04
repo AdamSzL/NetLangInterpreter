@@ -1,6 +1,6 @@
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError
-from shared.utils.types import type_map, are_types_compatible, is_subtype
+from shared.utils.errors import NetLangRuntimeError
+from shared.utils.types import type_map, is_subtype
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

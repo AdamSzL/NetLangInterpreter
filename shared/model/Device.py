@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 
 
 @dataclass

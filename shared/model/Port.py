@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional, Any
 
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 from shared.model.CIDR import CIDR
 from shared.model.MACAddress import MACAddress
 from shared.model.IPAddress import IPAddress

@@ -1,9 +1,3 @@
-from typing import Any, Optional
-
-from shared.errors import NetLangRuntimeError
-from shared.model import IPAddress
-from shared.model.MACAddress import MACAddress
-from shared.model.CIDR import CIDR
 from enum import Enum
 
 from shared.model.Port import Port

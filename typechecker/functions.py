@@ -1,8 +1,7 @@
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING, Optional
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
+from shared.utils.errors import NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
 from shared.model.Function import Function
 from shared.model.Variable import Variable
 from shared.utils.types import are_types_compatible, is_known_type

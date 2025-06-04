@@ -1,4 +1,4 @@
-from shared.errors import NetLangTypeError
+from shared.utils.errors import NetLangTypeError
 
 
 def check_bool(actual_type: str, ctx, operator: str = None, statement: str = None):

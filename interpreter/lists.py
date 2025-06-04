@@ -1,8 +1,6 @@
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 from typing import TYPE_CHECKING
-
-from shared.model.Variable import Variable
 
 if TYPE_CHECKING:
     from .interpreter import Interpreter

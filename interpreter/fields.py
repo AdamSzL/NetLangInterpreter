@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 from shared.model import IPAddress, MACAddress
 
 if TYPE_CHECKING:

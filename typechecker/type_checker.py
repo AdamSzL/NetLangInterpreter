@@ -1,13 +1,9 @@
-from dataclasses import dataclass, field
-from types import MethodType
+from dataclasses import dataclass
 from typing import Optional
 
 from generated.NetLangParser import NetLangParser
 from generated.NetLangVisitor import NetLangVisitor
-from shared.model.Function import Function
-from shared.model.Scope import Scope
-from shared.model.Variable import Variable
-from shared.scopes import ScopedVisitorBase
+from shared.utils.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier, _resolve_identifier_in_scope
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement, execute_function_body, block_returns_type
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral

@@ -1,9 +1,9 @@
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.utils.errors import NetLangTypeError
 from typing import TYPE_CHECKING
 
 from shared.model.Function import Function
-from shared.utils.types import get_field_type, are_types_compatible, type_field_map
+from shared.utils.types import get_field_type, are_types_compatible
 
 if TYPE_CHECKING:
     from type_checker import TypeCheckingVisitor

@@ -1,11 +1,9 @@
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 from shared.model.Function import Function
 from shared.model.ReturnValue import ReturnValue
-from shared.model.Scope import Scope
 from shared.model.Variable import Variable
 
 if TYPE_CHECKING:

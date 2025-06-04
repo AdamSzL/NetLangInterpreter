@@ -1,13 +1,6 @@
-from rich.panel import Panel
-from rich.text import Text
-
 from generated.NetLangParser import NetLangParser
-from shared.model import Switch, Router, Host, Packet, IPAddress
-from time import sleep
+from shared.model import Packet, IPAddress
 
-from shared.errors import NetLangRuntimeError
-from .utils import get_port_by_id
-from shared.logging import log
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

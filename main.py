@@ -3,10 +3,9 @@ from antlr4 import *
 
 from generated.NetLangLexer import NetLangLexer
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangErrorListener, NetLangRuntimeError, NetLangSyntaxError, NetLangTypeError
+from shared.utils.errors import NetLangErrorListener, NetLangRuntimeError, NetLangSyntaxError, NetLangTypeError
 from interpreter import Interpreter
-from shared.logging import log
-from shared.model.Scope import Scope
+from shared.utils.logging import log
 
 from typechecker.type_checker import TypeCheckingVisitor
 

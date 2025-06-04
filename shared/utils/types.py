@@ -1,7 +1,7 @@
 import difflib
-from typing import Any, cast, Optional
+from typing import Any, Optional
 
-from shared.errors import NetLangTypeError
+from shared.utils.errors import NetLangTypeError
 from shared.model.CIDR import CIDR
 from shared.model import CopperEthernetPort, Port
 from shared.model.Host import Host

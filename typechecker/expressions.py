@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangTypeError, NetLangRuntimeError
+from shared.utils.errors import NetLangTypeError
 from shared.model import CIDR, ConnectorType
 from shared.model.base import NetLangObject
-from shared.utils.types import type_map, type_field_map, are_types_compatible, abstract_types
+from shared.utils.types import type_field_map, are_types_compatible, abstract_types
 
 import difflib
 

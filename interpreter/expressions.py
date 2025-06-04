@@ -1,9 +1,6 @@
-from typing import Any, cast
-
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 from shared.model.Port import Port
-from shared.model.Variable import Variable
 from shared.utils.types import type_map
 from shared.model import ConnectorType, IPAddress, MACAddress, CIDR
 from shared.model.base import NetLangObject

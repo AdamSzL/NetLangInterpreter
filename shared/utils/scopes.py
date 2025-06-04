@@ -1,9 +1,7 @@
-from dataclasses import field, dataclass
+from dataclasses import dataclass
 
-from generated.NetLangParser import NetLangParser
-from generated.NetLangVisitor import NetLangVisitor
-from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedVariableError, UndefinedFunctionError
-from typing import TYPE_CHECKING, Any, Optional
+from shared.utils.errors import NetLangTypeError
+from typing import Optional
 
 from shared.model.Function import Function
 from shared.model.Scope import Scope

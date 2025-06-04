@@ -1,5 +1,5 @@
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedVariableError, UndefinedFunctionError
+from shared.utils.errors import NetLangTypeError
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

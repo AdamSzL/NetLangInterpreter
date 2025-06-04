@@ -1,10 +1,10 @@
 from __future__ import annotations
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
-from typing import TYPE_CHECKING, Any
+from shared.utils.errors import NetLangTypeError, UndefinedFunctionError, UndefinedVariableError
+from typing import TYPE_CHECKING
 from shared.model.Scope import Scope
 from shared.model.Variable import Variable
-from shared.utils.types import is_known_type, are_types_compatible
+from shared.utils.types import are_types_compatible
 import difflib
 
 if TYPE_CHECKING:

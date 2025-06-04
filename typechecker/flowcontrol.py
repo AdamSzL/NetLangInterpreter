@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from generated.NetLangParser import NetLangParser
-from shared.errors import NetLangRuntimeError, NetLangTypeError
+from shared.utils.errors import NetLangTypeError
 from shared.model.Variable import Variable
 from shared.utils.types import are_types_compatible
 from typechecker.utils import check_bool

@@ -2,7 +2,7 @@ import re
 import random
 from typing import ClassVar
 
-from shared.errors import NetLangRuntimeError
+from shared.utils.errors import NetLangRuntimeError
 
 
 class MACAddress:
