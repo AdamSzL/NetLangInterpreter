@@ -66,7 +66,7 @@ Represents a single scope frame. Each scope knows its parent.
 A base class used by both the type checker and interpreter. It manages:
 
 - `scopes`: A list of currently active `Scope` objects (acting like a stack).
-- `call_stack`: A list of tuples `(function_name, scope)` used to track dynamic call relationships.
+- `call_stack`: A list of tuples `(function, scope)` used to track dynamic call relationships.
 
 This system allows us to model:
 - Dynamic function calls (including recursion),
