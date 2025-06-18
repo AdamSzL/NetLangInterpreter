@@ -1,0 +1,8 @@
+define show() {
+    print ^x
+}
+
+repeat from 1 to 4 as i {
+    set x <- i * 10
+    show()
+}

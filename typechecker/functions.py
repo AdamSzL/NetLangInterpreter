@@ -17,10 +17,8 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
     function_name = scoped_ctx.ID().getText()
 
     expr_list_ctx = ctx.expressionList()
-    call_line = ctx.start.line
     arg_types = [self.visit(expr) for expr in expr_list_ctx.expression()] if expr_list_ctx else []
 
-    self.current_call_line = call_line
     self.scoped_identifier_expectation = "function"
 
     try:
@@ -37,7 +35,6 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
             raise undefined_function_error
     finally:
         self.scoped_identifier_expectation = None
-        self.current_call_line = None
 
     if len(arg_types) != len(function.parameters):
         raise NetLangTypeError(
@@ -52,13 +49,11 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
                 ctx
             )
 
-    self.current_call_line = call_line
     if function_name not in self.currently_checking_functions:
         self.currently_checking_functions.add(function_name)
         self.execute_function_body(function_name, function, ctx)
         self.currently_checking_functions.remove(function_name)
         self.checked_function_names.add(function_name)
-    self.current_call_line = None
 
     return function.return_type or "void"
 

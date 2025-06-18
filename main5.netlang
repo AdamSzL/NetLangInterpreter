@@ -1,0 +1,9 @@
+define foo() {
+    print "foo outer"
+    define foo() {
+        print "foo inner"
+    }
+    foo()
+}
+
+foo()

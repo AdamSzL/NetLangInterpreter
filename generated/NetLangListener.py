@@ -26,6 +26,15 @@ class NetLangListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by NetLangParser#blockStatement.
+    def enterBlockStatement(self, ctx:NetLangParser.BlockStatementContext):
+        pass
+
+    # Exit a parse tree produced by NetLangParser#blockStatement.
+    def exitBlockStatement(self, ctx:NetLangParser.BlockStatementContext):
+        pass
+
+
     # Enter a parse tree produced by NetLangParser#variableDeclaration.
     def enterVariableDeclaration(self, ctx:NetLangParser.VariableDeclarationContext):
         pass

@@ -428,7 +428,7 @@ Operators are grouped by precedence (from highest to lowest):
 | Precedence | Operator(s)          | Description                             | Associativity     |
 |------------|----------------------|-----------------------------------------|-------------------|
 | 1          | `()`                 | Parentheses (grouping)                  | —                 |
-| 2          | `x^y`                | Power                                   | Right-associative |
+| 2          | `x**y`               | Power                                   | Right-associative |
 | 3          | `+x`, `-x`           | Unary plus, minus                       | Right-associative |
 | 4          | `as type`            | Explicit cast                           | Right-associative |
 | 5          | `*`, `/`, `\`, `%`   | Multiplication, division, floor, modulo | Left-associative  |
@@ -469,7 +469,7 @@ Operators are grouped by precedence (from highest to lowest):
   - `int % int` → `int`
 - ❌ Modulo `%` is **only allowed for `int % int`**
 
-#### ⬆️ Power (`^`)
+#### ⬆️ Power (`**`)
 - Supported types:
   - Base: `int` or `float`
   - Exponent: `int` or `float`

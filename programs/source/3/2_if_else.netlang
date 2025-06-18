@@ -19,7 +19,7 @@ else {
     print "flag is false"
 }
 
-if 2 ^ 4 == 8 {
+if 2 ** 4 == 8 {
     print "2 to the power of 4 is equal to 8"
 }
 else {

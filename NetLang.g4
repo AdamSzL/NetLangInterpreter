@@ -18,7 +18,11 @@ statement
     | functionCall
     | breakStatement
     | continueStatement
-    | block
+    | blockStatement
+    ;
+
+blockStatement
+    : '{' statement* '}'
     ;
 
 variableDeclaration
@@ -255,7 +259,7 @@ MUL: '*';
 FLOORDIV: '\\';
 DIV: '/';
 MOD: '%';
-POW: '^';
+POW: '**';
 
 EQ: '==';
 NEQ: '!=';

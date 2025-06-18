@@ -19,6 +19,11 @@ class NetLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by NetLangParser#blockStatement.
+    def visitBlockStatement(self, ctx:NetLangParser.BlockStatementContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by NetLangParser#variableDeclaration.
     def visitVariableDeclaration(self, ctx:NetLangParser.VariableDeclarationContext):
         return self.visitChildren(ctx)

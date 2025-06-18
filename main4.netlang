@@ -1,12 +1,9 @@
-set x <- 2
-
-define test(n: int) {
-    {
-        if n > 0 {
-            print ~x
-            ^test(n - 1)
-        }
+set y <- 1
+{
+    set y <- 2
+    define outer() {
+        print ^y
     }
-}
 
-test(3)
+    outer()
+}

@@ -36,7 +36,7 @@ from .operators import (
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluateParentOfAccess, evaluateFieldAccessUntil
 from .devices import visitConnectStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement, visitRepeatTimesLoop, visitBlock
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement, visitRepeatTimesLoop, visitBlockStatement
 from interpreter.visualization.main import draw_graph_and_animate_packet, assign_uids_from_connections
 from .packets import visitSendPacketStatement
 from types import MethodType
@@ -113,7 +113,7 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitRepeatTimes = MethodType(visitRepeatTimes, self)
         self.visitRepeatRange = MethodType(visitRepeatRange, self)
         self.visitEachLoop = MethodType(visitEachLoop, self)
-        self.visitBlock = MethodType(visitBlock, self)
+        self.visitBlockStatement = MethodType(visitBlockStatement, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
         self.visitBreakStatement = MethodType(visitBreakStatement, self)
         self.visitContinueStatement = MethodType(visitContinueStatement, self)

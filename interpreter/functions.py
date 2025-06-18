@@ -15,7 +15,6 @@ def visitFunctionCallExpr(self, ctx: NetLangParser.FunctionCallExprContext):
 def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContext):
     scoped_ctx = ctx.scopedIdentifier()
     expr_list_ctx = ctx.expressionList()
-    call_line = ctx.start.line
 
     args = [self.visit(expr) for expr in expr_list_ctx.expression()] if expr_list_ctx else []
 
@@ -29,7 +28,6 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
         )
 
     self.call_depth += 1
-    self.current_call_line = call_line
 
     is_recursive = self.call_stack and self.call_stack[-1][0] == function_name
     parent_scope = self.call_stack[-1][1].parent if is_recursive else self.scopes[-1]
@@ -49,7 +47,6 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
     finally:
         self.pop_scope()
         self.call_stack.pop()
-        self.current_call_line = None
         self.call_depth -= 1
 
 def visitFunctionDeclarationStatement(self: "Interpreter", ctx: NetLangParser.FunctionDeclarationStatementContext):

@@ -136,7 +136,7 @@ def visitBreakStatement(self: "Interpreter", ctx: NetLangParser.BreakStatementCo
 def visitContinueStatement(self: "Interpreter", ctx: NetLangParser.ContinueStatementContext):
     raise ContinueException()
 
-def visitBlock(self: "Interpreter", ctx: NetLangParser.BlockContext):
+def visitBlockStatement(self: "Interpreter", ctx: NetLangParser.BlockStatementContext):
     self.push_scope()
     try:
         for stmt in ctx.statement():

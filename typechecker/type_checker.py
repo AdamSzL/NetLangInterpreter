@@ -37,7 +37,7 @@ from .operators import (
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluate_type_until, evaluate_type_of_parent, was_last_operator_indexing
 from .devices import visitConnectStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement, visitBlock
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement, visitBlockStatement
 from .packets import visitSendPacketStatement
 from types import MethodType
 
@@ -99,7 +99,7 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitRepeatTimes = MethodType(visitRepeatTimes, self)
         self.visitRepeatRange = MethodType(visitRepeatRange, self)
         self.visitEachLoop = MethodType(visitEachLoop, self)
-        self.visitBlock = MethodType(visitBlock, self)
+        self.visitBlockStatement = MethodType(visitBlockStatement, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
         self.visitBreakStatement = MethodType(visitBreakStatement, self)
         self.visitContinueStatement = MethodType(visitContinueStatement, self)

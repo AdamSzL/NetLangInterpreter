@@ -149,7 +149,7 @@ def visitContinueStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.Conti
     if not self.in_loop:
         raise NetLangTypeError("'continue' can only be used inside a loop", ctx)
 
-def visitBlock(self: "TypeCheckingVisitor", ctx: NetLangParser.BlockContext):
+def visitBlockStatement(self: "TypeCheckingVisitor", ctx: NetLangParser.BlockStatementContext):
     self.push_scope()
     try:
         for stmt in ctx.statement():

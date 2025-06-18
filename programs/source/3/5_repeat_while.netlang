@@ -1,6 +1,6 @@
 set pow: int <- 0
 repeat while pow < 10 {
-    print 2 ^ pow
+    print 2 ** pow
     pow <- pow + 1
 }
 

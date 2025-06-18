@@ -37,7 +37,7 @@ statement
     | functionCall
     | breakStatement
     | continueStatement
-    | block
+    | blockStatement
     ;
 ```
 

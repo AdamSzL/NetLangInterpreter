@@ -16,6 +16,144 @@ Both visitors implement traversal over the AST (Abstract Syntax Tree) produced f
 
 ---
 
+## Scope and Activation Record System in NetLang
+
+In the NetLang interpreter, the scoping system and activation records are implemented using several key classes. The following UML diagrams illustrate the most important data structures used to manage variable/function scopes and function call stack tracking.
+
+---
+
+### `Variable` Class
+
+![Variable](assets/variable.png)
+
+Represents a variable in the current scope.
+
+- `type`: The declared type of the variable (e.g., `"int"`).
+- `line_declared`: The line number where this variable was declared, used for error messages.
+- `value`: The current runtime value of the variable (interpreter only).
+
+---
+
+### `Function` Class
+
+![Function](assets/function.png)
+
+Represents a user-defined function.
+
+- `parameters`: A list of parameter names and their types.
+- `return_type`: The declared return type, or `None` for void.
+- `line_declared`: The line where the function is defined.
+- `body_ctx`: The ANTLR context (parse tree node) for the function body.
+
+---
+
+### `Scope` Class
+
+![Scope](assets/scope.png)
+
+Represents a single scope frame. Each scope knows its parent.
+
+- `variables`: Dictionary mapping variable names to `Variable` objects.
+- `functions`: Dictionary mapping function names to `Function` objects.
+- `parent`: Reference to the parent scope (or `None` if this is the global scope).
+
+---
+
+### `ScopedVisitorBase` and Call Stack
+
+![ScopedVisitorBase](assets/scoped_visitor_base.png)
+
+A base class used by both the type checker and interpreter. It manages:
+
+- `scopes`: A list of currently active `Scope` objects (acting like a stack).
+- `call_stack`: A list of tuples `(function_name, scope)` used to track dynamic call relationships.
+
+This system allows us to model:
+- Dynamic function calls (including recursion),
+- Scoped variables with proper resolution using the `parent` chain,
+- Nested scopes via blocks (`{}`), loops, and functions.
+
+---
+
+_The next section describes how these components work together to simulate a stack-based execution model with lexical scoping and dynamic activation frames._
+
+---
+
+## Scope Stack and Activation Records
+
+In NetLang, scopes are implemented through a stack-like structure and managed using the `ScopedVisitorBase` class. Each `Scope` object contains a dictionary of `variables` and `functions`, along with a reference to its `parent` scope.
+
+### Scope Push and Pop
+
+The interpreter uses `push_scope()` and `pop_scope()` to control scope activation:
+
+```python
+def push_scope(self):
+    new_scope = Scope(parent=self.scopes[-1])
+    self.scopes.append(new_scope)
+
+def pop_scope(self):
+    self.scopes.pop()
+```
+
+When a new scope is created, it is appended to the `self.scopes` list and initially inherits the previous scope as its parent. Depending on the context (e.g., function calls), the parent reference might be updated immediately after creation.
+
+### Function Call Handling and Recursion
+
+Function calls may either use the current dynamic scope or a statically captured one. To distinguish between recursive and non-recursive calls, we use:
+
+```python
+is_recursive = self.call_stack and self.call_stack[-1][0] == function_name
+parent_scope = self.call_stack[-1][1].parent if is_recursive else self.scopes[-1]
+```
+
+- If the current function is recursive, the parent is not the most recent scope but the original parent used in the first invocation (stored on the call stack).
+- The new scope is pushed and updated as follows:
+
+```python
+self.push_scope()
+self.scopes[-1].parent = parent_scope
+```
+
+Next, we declare the function parameters insdie that scope. Then, an entry is added to the call stack and the function body is executed:
+```python
+self.call_stack.append((function_name, self.scopes[-1]))
+self.visit(function.body_ctx)
+```
+
+After executing the body, we remove the corresponding scope and call stack entry:
+```python
+self.pop_scope()
+self.call_stack.pop()
+```
+
+### Scoped Identifier Resolution
+
+To resolve scoped identifiers like `^x` or `~x`, we recursively walk through the parent scopes:
+
+```python
+if prefix.startswith("^"):
+    levels_up = len(prefix)
+    for _ in range(levels_up):
+        scope = scope.parent
+elif prefix == "~":
+    while scope.parent is not None:
+        scope = scope.parent
+```
+
+After resolving the reference point, the interpreter searches for a matching variable or function in that scope chain:
+
+```python
+while s:
+    if var_name in s.variables or var_name in s.functions:
+        return s, var_name
+    s = s.parent
+```
+
+This mechanism ensures correct visibility and isolation of variables depending on their declaration scope and how the function was invoked (static vs dynamic context).
+
+---
+
 ## 📁 Project Structure
 
 ### `main.py`
