@@ -30,18 +30,25 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
 
     self.call_depth += 1
     self.current_call_line = call_line
+
+    is_recursive = self.call_stack and self.call_stack[-1][0] == function_name
+    parent_scope = self.call_stack[-1][1].parent if is_recursive else self.scopes[-1]
+
     self.push_scope()
+    self.scopes[-1].parent = parent_scope
 
     for (param_name, param_type), arg_value in zip(function.parameters, args):
         self.declare_variable(param_name, Variable(param_type, 1, arg_value), ctx)
 
     try:
+        self.call_stack.append((function_name, self.scopes[-1]))
         self.visit(function.body_ctx)
         return None
     except ReturnValue as r:
         return r.value
     finally:
         self.pop_scope()
+        self.call_stack.pop()
         self.current_call_line = None
         self.call_depth -= 1
 
@@ -62,7 +69,7 @@ def visitFunctionDeclarationStatement(self: "Interpreter", ctx: NetLangParser.Fu
         parameters=parameters,
         return_type=return_type,
         line_declared=line,
-        body_ctx=ctx.block()
+        body_ctx=ctx.block(),
     )
 
     self.declare_function(function_name, function, ctx)

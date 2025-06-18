@@ -1,0 +1,10 @@
+set x <- 0
+
+define foo() {
+    print ^x
+}
+
+if true {
+    set x <- 5
+    foo()
+}

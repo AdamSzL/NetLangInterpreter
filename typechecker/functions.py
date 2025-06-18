@@ -57,6 +57,7 @@ def visitFunctionCall(self: "TypeCheckingVisitor", ctx: NetLangParser.FunctionCa
         self.currently_checking_functions.add(function_name)
         self.execute_function_body(function_name, function, ctx)
         self.currently_checking_functions.remove(function_name)
+        self.checked_function_names.add(function_name)
     self.current_call_line = None
 
     return function.return_type or "void"
@@ -119,7 +120,7 @@ def visitFunctionDeclarationStatement(self: "TypeCheckingVisitor", ctx: NetLangP
         parameters=parameters,
         return_type=return_type,
         line_declared=line,
-        body_ctx=ctx.block()
+        body_ctx=ctx.block(),
     )
 
     self.declare_function(function_name, function, ctx)
@@ -127,18 +128,25 @@ def visitFunctionDeclarationStatement(self: "TypeCheckingVisitor", ctx: NetLangP
 def check_all_function_bodies(self: "TypeCheckingVisitor"):
     for scope in self.scopes:
         for name, function in scope.functions.items():
-            if name in self.currently_checking_functions:
+            if name in self.currently_checking_functions or name in self.checked_function_names:
                 continue
             self.currently_checking_functions.add(name)
-            self.disable_line_checks = True
+            self.checking_in_isolation = True
             self.execute_function_body(name, function, None)
-            self.disable_line_checks = False
+            self.checking_in_isolation = False
             self.currently_checking_functions.remove(name)
 
 def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Function, ctx):
+    is_recursive = self.call_stack and self.call_stack[-1][0] == name
+    parent_scope = self.call_stack[-1][1].parent if is_recursive else self.scopes[-1]
+
     self.push_scope()
+    self.scopes[-1].parent = parent_scope
+
     for param_name, param_type in function.parameters:
         self.declare_variable(param_name, Variable(param_type, function.line_declared), ctx)
+
+    self.call_stack.append((name, self.scopes[-1]))
 
     self.in_function_body = True
     self.expected_return_type = function.return_type
@@ -146,6 +154,7 @@ def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Func
     self.in_function_body = False
     self.expected_return_type = None
     self.pop_scope()
+    self.call_stack.pop()
 
     if function.return_type != "void" and return_type is None:
         raise NetLangTypeError(

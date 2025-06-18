@@ -87,9 +87,13 @@ def visitRepeatRange(self: "Interpreter", ctx: NetLangParser.RepeatRangeContext)
         raise NetLangRuntimeError("Step in repeat-range loop cannot be zero", ctx)
 
     i = start
-    while (step > 0 and i <= end) or (step < 0 and i >= end):
+    while True:
+        if (step > 0 and i > end) or (step < 0 and i < end):
+            break
+
         self.push_scope()
-        self.declare_variable(index_var_name, Variable("int", ctx.start.line, i), ctx)
+        counter_var = Variable("int", ctx.start.line, i)
+        self.declare_variable(index_var_name, counter_var, ctx)
         try:
             for stmt in ctx.block().statement():
                 try:
@@ -99,8 +103,8 @@ def visitRepeatRange(self: "Interpreter", ctx: NetLangParser.RepeatRangeContext)
         except BreakException:
             break
         finally:
+            i = counter_var.value + step
             self.pop_scope()
-        i += step
 
 def visitEachLoop(self: "Interpreter", ctx: NetLangParser.EachLoopContext):
     loop_var_name: str = ctx.ID().getText()
@@ -131,3 +135,11 @@ def visitBreakStatement(self: "Interpreter", ctx: NetLangParser.BreakStatementCo
 
 def visitContinueStatement(self: "Interpreter", ctx: NetLangParser.ContinueStatementContext):
     raise ContinueException()
+
+def visitBlock(self: "Interpreter", ctx: NetLangParser.BlockContext):
+    self.push_scope()
+    try:
+        for stmt in ctx.statement():
+            self.visit(stmt)
+    finally:
+        self.pop_scope()

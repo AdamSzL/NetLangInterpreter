@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-from typing import Optional, Any
+from typing import Optional, Any, TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from shared.model.Scope import Scope
 
 @dataclass
 class Function:

@@ -41,7 +41,6 @@ def visitVariableDeclaration(self: "TypeCheckingVisitor", ctx: NetLangParser.Var
         self.declare_variable(name, Variable(declared_type, ctx.start.line), ctx)
         return None
 
-
     expr_type = self.visit(ctx.expression())
     if expr_type == "[]":
         raise NetLangTypeError(
@@ -50,33 +49,6 @@ def visitVariableDeclaration(self: "TypeCheckingVisitor", ctx: NetLangParser.Var
         )
     self.declare_variable(name, Variable(expr_type, ctx.start.line), ctx)
     return None
-
-    # if ctx.type_():
-    #     declared_type = ctx.type_().getText()
-    #
-    #     if not is_known_type(declared_type):
-    #         raise NetLangTypeError(f"Unknown type '{declared_type}'", ctx)
-    #
-    #     if declared_type == "void":
-    #         raise NetLangTypeError("Cannot declare variable of type 'void'", ctx)
-    #
-    #     expr_type = self.visit(ctx.expression())
-    #     if not are_types_compatible(declared_type, expr_type):
-    #         raise NetLangTypeError(
-    #             f"Type mismatch: cannot assign {expr_type} to variable '{name}' of type {declared_type}",
-    #             ctx
-    #         )
-    # else:
-    #     expr_type = self.visit(ctx.expression())
-    #     if expr_type == "[]":
-    #         raise NetLangTypeError(
-    #             "Cannot infer type of empty list — please provide explicit type",
-    #             ctx
-    #         )
-    #     declared_type = expr_type
-    #
-    # self.declare_variable(name, Variable(declared_type, ctx.start.line), ctx)
-    # return None
 
 def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.VariableAssignmentContext):
     scoped_ctx = ctx.scopedIdentifier()
@@ -107,61 +79,60 @@ def visitVariableAssignment(self: "TypeCheckingVisitor", ctx: NetLangParser.Vari
 def visitScopedIdentifier(self: "TypeCheckingVisitor", ctx: NetLangParser.ScopedIdentifierContext):
     prefix_ctx = ctx.scopePrefix()
     var_name = ctx.ID().getText()
-    scopes = self.scopes
-    current_index = len(scopes) - 1
+    scope = self.scopes[-1]
 
     if prefix_ctx:
         prefix = prefix_ctx.getText()
         if prefix.startswith('^'):
+            self.refers_to_outer_scope = True
             levels_up = len(prefix)
-            target_index = current_index - levels_up
-            if target_index < 0:
-                raise NetLangTypeError(f"Too many '^' levels when accessing identifier '{var_name}'", ctx)
+            for _ in range(levels_up):
+                if scope.parent is None:
+                    raise NetLangTypeError(f"Too many '^' levels when accessing identifier '{var_name}'", ctx)
+                scope = scope.parent
+
+            return self._resolve_identifier_recursive(scope, var_name, ctx)
         elif prefix == '~':
-            target_index = 0
-        else:
-            raise NetLangTypeError(f"Unknown scope prefix: '{prefix}'")
+            while scope.parent is not None:
+                scope = scope.parent
+            return self._resolve_identifier_recursive(scope, var_name, ctx)
+        raise NetLangTypeError(f"Unknown scope prefix: '{prefix}'")
 
-        scope = scopes[target_index]
-        return self._resolve_identifier_in_scope(scope, var_name, ctx)
+    return self._resolve_identifier_recursive(scope, var_name, ctx)
 
-    last_error = None
-    for scope in reversed(scopes):
-        try:
-            return self._resolve_identifier_in_scope(scope, var_name, ctx)
-        except (UndefinedVariableError, UndefinedFunctionError) as e:
-            last_error = e
-            continue
-
-    if last_error:
-        all_names = set()
-        for scope in self.scopes:
-            all_names.update(scope.variables.keys())
-            all_names.update(scope.functions.keys())
-
-        suggestions = difflib.get_close_matches(var_name, all_names, n=1, cutoff=0.6)
-        if suggestions:
-            suggestion = suggestions[0]
-            if isinstance(last_error, UndefinedVariableError):
-                raise UndefinedVariableError(f"{last_error.message}. Did you mean '{suggestion}'?")
-            elif isinstance(last_error, UndefinedFunctionError):
-                raise UndefinedFunctionError(f"{last_error.message}. Did you mean '{suggestion}'?")
-
-        raise last_error
-
-    raise NetLangTypeError(f"Unknown identifier '{var_name}'", ctx)
-
-def _resolve_identifier_in_scope(self: "TypeCheckingVisitor", scope: Scope, name: str, ctx):
+def _resolve_identifier_recursive(self: "TypeCheckingVisitor", scope: Scope, name: str, ctx):
+    error = None
     if self.scoped_identifier_expectation == "variable":
-        if name not in scope.variables:
-            raise UndefinedVariableError(f"Undefined variable '{name}'", ctx)
-        return scope.variables[name].type
+        if name in scope.variables:
+            return scope.variables[name].type
+        error = UndefinedVariableError(f"Undefined variable '{name}'", ctx)
     elif self.scoped_identifier_expectation == "function":
-        if name not in scope.functions:
-            raise UndefinedFunctionError(f"Undefined function '{name}'", ctx)
-        return scope.functions[name]
-    if name in scope.variables:
+        if name in scope.functions:
+            return scope.functions[name]
+        error = UndefinedFunctionError(f"Undefined function '{name}'", ctx)
+    elif name in scope.variables:
         return scope.variables[name].type
-    if name in scope.functions:
+    elif name in scope.functions:
         return scope.functions[name]
-    raise UndefinedVariableError(f"Undefined variable '{name}'", ctx)
+
+    if scope.parent:
+        return self._resolve_identifier_recursive(scope.parent, name, ctx)
+    else:
+        if error:
+            all_names = set()
+            current = scope
+            while current:
+                all_names.update(current.variables.keys())
+                all_names.update(current.functions.keys())
+                current = current.parent
+
+            suggestions = difflib.get_close_matches(name, all_names, n=1, cutoff=0.6)
+            if suggestions:
+                suggestion = suggestions[0]
+                if isinstance(error, UndefinedVariableError):
+                    raise UndefinedVariableError(f"{error.message}. Did you mean '{suggestion}'?")
+                elif isinstance(error, UndefinedFunctionError):
+                    raise UndefinedFunctionError(f"{error.message}. Did you mean '{suggestion}'?")
+
+            raise error
+        raise UndefinedVariableError(f"Undefined identifier'{name}'", ctx)

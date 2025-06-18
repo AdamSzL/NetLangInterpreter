@@ -1,0 +1,12 @@
+set x <- 2
+
+define test(n: int) {
+    {
+        if n > 0 {
+            print ~x
+            ^test(n - 1)
+        }
+    }
+}
+
+test(3)

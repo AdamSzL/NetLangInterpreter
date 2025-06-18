@@ -18,6 +18,7 @@ statement
     | functionCall
     | breakStatement
     | continueStatement
+    | block
     ;
 
 variableDeclaration

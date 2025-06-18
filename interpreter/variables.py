@@ -40,23 +40,23 @@ def visitVariableAssignment(self: "Interpreter", ctx: NetLangParser.VariableAssi
 def visitScopedIdentifier(self: "Interpreter", ctx: NetLangParser.ScopedIdentifierContext) -> (Scope, str):
     prefix_ctx = ctx.scopePrefix()
     var_name = ctx.ID().getText()
-    scopes = self.scopes
-    current_index = len(scopes) - 1
+    scope = self.scopes[-1]
 
     if prefix_ctx:
         prefix = prefix_ctx.getText()
         if prefix.startswith("^"):
             levels_up = len(prefix)
-            target_index = current_index - levels_up
-        else:  # ~
-            target_index = 0
+            for _ in range(levels_up):
+                scope = scope.parent
+        else:
+            while scope.parent is not None:
+                scope = scope.parent
 
-        scope = scopes[target_index]
-        return scope, var_name
-
-    for scope in reversed(scopes):
-        if var_name in scope.variables or var_name in scope.functions:
-            return scope, var_name
+    s = scope
+    while s:
+        if var_name in s.variables or var_name in s.functions:
+            return s, var_name
+        s = s.parent
 
     raise NetLangRuntimeError(f"Identifier '{var_name}' not found (should be impossible at runtime)")
 

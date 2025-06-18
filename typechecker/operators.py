@@ -137,7 +137,7 @@ def visitPowExpr(self: "TypeCheckingVisitor", ctx: NetLangParser.PowExprContext)
         if base_type not in ["int", "float"]:
             raise NetLangTypeError(f"Base of power expression must be numeric, got {base_type}", ctx)
         if exponent_type not in ["int", "float"]:
-            raise NetLangTypeError(f"Base of power expression must be numeric, got {base_type}", ctx)
+            raise NetLangTypeError(f"Exponent of power expression must be numeric, got {exponent_type}", ctx)
 
         return "int" if base_type == "int" and exponent_type == "int" else "float"
     else:

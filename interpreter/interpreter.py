@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from generated.NetLangVisitor import NetLangVisitor
 from shared.model import Connection
+from shared.model.Scope import Scope
 from shared.utils.scopes import ScopedVisitorBase
 from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier,assign_device_uids, generate_uid
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, visitFunctionDeclarationStatement
@@ -35,7 +36,7 @@ from .operators import (
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluateParentOfAccess, evaluateFieldAccessUntil
 from .devices import visitConnectStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement, visitRepeatTimesLoop
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement, visitRepeatTimesLoop, visitBlock
 from interpreter.visualization.main import draw_graph_and_animate_packet, assign_uids_from_connections
 from .packets import visitSendPacketStatement
 from types import MethodType
@@ -112,6 +113,7 @@ class Interpreter(NetLangVisitor, ScopedVisitorBase):
         self.visitRepeatTimes = MethodType(visitRepeatTimes, self)
         self.visitRepeatRange = MethodType(visitRepeatRange, self)
         self.visitEachLoop = MethodType(visitEachLoop, self)
+        self.visitBlock = MethodType(visitBlock, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
         self.visitBreakStatement = MethodType(visitBreakStatement, self)
         self.visitContinueStatement = MethodType(visitContinueStatement, self)

@@ -4,7 +4,7 @@ from typing import Optional
 from generated.NetLangParser import NetLangParser
 from generated.NetLangVisitor import NetLangVisitor
 from shared.utils.scopes import ScopedVisitorBase
-from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier, _resolve_identifier_in_scope
+from .variables import visitVariableDeclaration, visitVariableAssignment, visitScopedIdentifier, _resolve_identifier_recursive
 from .functions import visitFunctionCall, visitFunctionCallExpr, visitReturnStatement, check_all_function_bodies, visitFunctionDeclarationStatement, execute_function_body, block_returns_type
 from .lists import visitAddToListStatement, visitDeleteListElementStatement, visitListLiteral
 from .expressions import (
@@ -37,7 +37,7 @@ from .operators import (
 )
 from .fields import visitFieldAccess, visitFieldAccessExpr, visitFieldAssignment, evaluate_type_until, evaluate_type_of_parent, was_last_operator_indexing
 from .devices import visitConnectStatement
-from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement
+from .flowcontrol import visitIfStatement, visitRepeatWhileLoop, visitRepeatTimes, visitRepeatRange, visitEachLoop, visitBreakStatement, visitContinueStatement, visitBlock
 from .packets import visitSendPacketStatement
 from types import MethodType
 
@@ -99,6 +99,7 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.visitRepeatTimes = MethodType(visitRepeatTimes, self)
         self.visitRepeatRange = MethodType(visitRepeatRange, self)
         self.visitEachLoop = MethodType(visitEachLoop, self)
+        self.visitBlock = MethodType(visitBlock, self)
         self.visitSendPacketStatement = MethodType(visitSendPacketStatement, self)
         self.visitBreakStatement = MethodType(visitBreakStatement, self)
         self.visitContinueStatement = MethodType(visitContinueStatement, self)
@@ -114,7 +115,7 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.execute_function_body = MethodType(execute_function_body, self)
         self.block_returns_type = MethodType(block_returns_type, self)
 
-        self._resolve_identifier_in_scope = MethodType(_resolve_identifier_in_scope, self)
+        self._resolve_identifier_recursive = MethodType(_resolve_identifier_recursive, self)
         self.visitScopedIdentifier = MethodType(visitScopedIdentifier, self)
 
         ScopedVisitorBase.__init__(self)
@@ -124,3 +125,6 @@ class TypeCheckingVisitor(NetLangVisitor, ScopedVisitorBase):
         self.in_function_body = False
         self.currently_checking_functions: set[str] = set()
         self.in_loop = False
+        self.checking_in_isolation = False
+        self.refers_to_outer_scope = False
+        self.checked_function_names: set[str] = set()
