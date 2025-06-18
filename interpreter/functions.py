@@ -29,7 +29,7 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
 
     self.call_depth += 1
 
-    is_recursive = self.call_stack and self.call_stack[-1][0] == function_name
+    is_recursive = self.call_stack and self.call_stack[-1][0] is function
     parent_scope = self.call_stack[-1][1].parent if is_recursive else self.scopes[-1]
 
     self.push_scope()
@@ -39,7 +39,7 @@ def visitFunctionCall(self: "Interpreter", ctx: NetLangParser.FunctionCallContex
         self.declare_variable(param_name, Variable(param_type, 1, arg_value), ctx)
 
     try:
-        self.call_stack.append((function_name, self.scopes[-1]))
+        self.call_stack.append((function, self.scopes[-1]))
         self.visit(function.body_ctx)
         return None
     except ReturnValue as r:

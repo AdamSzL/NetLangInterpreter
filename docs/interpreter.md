@@ -96,14 +96,14 @@ def pop_scope(self):
     self.scopes.pop()
 ```
 
-When a new scope is created, it is appended to the `self.scopes` list and initially inherits the previous scope as its parent. Depending on the context (e.g., function calls), the parent reference might be updated immediately after creation.
+When a new scope is created, it is appended to the `self.scopes` list and initially inherits the previous scope as its parent. Depending on the context (e.g., function calls), the parent reference might be updated immediately after creation.  A new scope can be created with curly braces: { ... }, if block body, loop body or function body.
 
 ### Function Call Handling and Recursion
 
 Function calls may either use the current dynamic scope or a statically captured one. To distinguish between recursive and non-recursive calls, we use:
 
 ```python
-is_recursive = self.call_stack and self.call_stack[-1][0] == function_name
+is_recursive = self.call_stack and self.call_stack[-1][0] is function
 parent_scope = self.call_stack[-1][1].parent if is_recursive else self.scopes[-1]
 ```
 
@@ -117,7 +117,7 @@ self.scopes[-1].parent = parent_scope
 
 Next, we declare the function parameters insdie that scope. Then, an entry is added to the call stack and the function body is executed:
 ```python
-self.call_stack.append((function_name, self.scopes[-1]))
+self.call_stack.append((function, self.scopes[-1]))
 self.visit(function.body_ctx)
 ```
 

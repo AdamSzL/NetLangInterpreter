@@ -12,7 +12,7 @@ class ScopedVisitorBase:
 
     def __init__(self):
         self.scopes: list[Scope] = [Scope()]
-        self.call_stack: list[tuple[str, Scope]] = []
+        self.call_stack: list[tuple[Function, Scope]] = []
 
     def push_scope(self):
         new_scope = Scope(parent=self.scopes[-1])

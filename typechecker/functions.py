@@ -132,7 +132,7 @@ def check_all_function_bodies(self: "TypeCheckingVisitor"):
             self.currently_checking_functions.remove(name)
 
 def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Function, ctx):
-    is_recursive = self.call_stack and self.call_stack[-1][0] == name
+    is_recursive = self.call_stack and self.call_stack[-1][0] is function
     parent_scope = self.call_stack[-1][1].parent if is_recursive else self.scopes[-1]
 
     self.push_scope()
@@ -141,7 +141,7 @@ def execute_function_body(self: "TypeCheckingVisitor", name: str, function: Func
     for param_name, param_type in function.parameters:
         self.declare_variable(param_name, Variable(param_type, function.line_declared), ctx)
 
-    self.call_stack.append((name, self.scopes[-1]))
+    self.call_stack.append((function, self.scopes[-1]))
 
     self.in_function_body = True
     self.expected_return_type = function.return_type
